@@ -1,11 +1,18 @@
 <?php
 
-define('DEBUG', true);
-
 define('ROOT', __DIR__);
 
-require_once ROOT.'/System/App.php';
+switch ($_SERVER['REQUEST_URI'])
+{
+	case '/':
+		echo 'Index';
+		break;
 
-App::init();
-App::run();
+	case '/electre1':
+		require ROOT.'/electre/electre1.php';
+		break;
 
+	default:
+		echo '404';
+		break;
+}
