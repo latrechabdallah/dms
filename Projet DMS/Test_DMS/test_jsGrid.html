@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid-theme.min.css" />
+
+    <script src="js/jquery.js"></script>
+    <script type="text/javascript" src="jsgrid-1.4.1/jsgrid.min.js"></script>
+  </head>
+  <body>
+    <div id="jsGrid"></div>
+    <script>
+          $(function() {
+            $("#jsGrid").jsGrid({
+              height: "70%",
+              width: "100%",
+              filtering: true,
+              editing: true,
+              inserting: true,
+              sorting: true,
+              paging: true,
+              autoload: true,
+              pageSize: 15,
+              pageButtonCount: 5,
+              noDataContent: "Aucune donnée",
+              loadMessage: "Veuillez patienter...",
+              deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+              controller: {
+                loadData: $.noop,
+                insertItem: $.noop,
+                updateItem: $.noop,
+                deleteItem: $.noop
+              },
+              fields: [
+                { name: "Name", type: "text", width: 150 },
+                { name: "Age", type: "number", width: 50 },
+                { name: "Address", type: "text", width: 200 },
+                { name: "Country", type: "text", valueField: "Id", textField: "Name" },
+                { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+                { type: "control" }
+              ],
+              data: [
+                //{"Pierre Nerzic", "82", "Ici", "Chine", true}
+              ]
+            });
+          });
+    </script>
+  </body>
+</html>
