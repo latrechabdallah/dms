@@ -34,7 +34,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">Liste des crit&egrave;res sp&eacute;ciaux</div>
               <div class="panel-body">
-                <div class="list-group scrollable-menu">
+                <div class="list-group scrollable-menu" id="specialCrit">
                   <a href="#" class="list-group-item">Couleur</a>
                   <a href="#" class="list-group-item">Crit&egrave;re</a>
                   <a href="#" class="list-group-item">Crit&egrave;re</a>
@@ -42,47 +42,49 @@
                   <a href="#" class="list-group-item">Crit&egrave;re</a>
                 </div>
                 <div id="panel_edit" class="panel panel-default" style="display: none"> <!-- Panel modifier liste -->
-                  <div class="panel-body">
-                      <p>
-                      Modifier la liste :
-                      </p>
-                      <button id="close_edit_panel" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
-                        <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
-                      </button>
-                    <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
-                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                      <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2">
+                    <div class="panel-body">
+                        <p>
+                        Modifier la liste :
+                        </p>
+                        <button id="close_edit_panel" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+                          <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+                        </button>
+                      <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
+                        <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                        <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
+                        <span class="input-group-addon" id="sizing-addon2">Variables</span>
+                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp">
+                        <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      </div>
+                      <button type="button" class="btn btn-success" id="btn_edit_list">Enregistrer</button>
                     </div>
-                    <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
-                      <span class="input-group-addon" id="sizing-addon2">Variables</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
-                    </div>
-                    <div class="input-group inp">
-                      <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
-                    </div>
-                    <button type="button" class="btn btn-success" id="btn_sav_list">Enregistrer</button>
-                  </div>
                 </div> <!-- Fin panel modifier liste -->
                 <div class="panel panel-default"> <!-- Panel nouvelle liste -->
+                  <form>
                   <div class="panel-body">
                     <p>
                     Nouvelle liste :
                     </p>
                     <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
                       <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                      <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2">
+                      <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2" id="nListName">
                     </div>
                     <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
                       <span class="input-group-addon" id="sizing-addon2">Variables</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nListVar">
                     </div>
                     <div class="input-group inp">
                       <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nListVal">
                     </div>
                     <button type="button" class="btn btn-success" id="btn_sav_list">Enregistrer</button>
                   </div>
+                  </form>
                 </div> <!-- Fin panel nouvelle liste -->
               </div> <!-- Fin du contenu du panel de gauche -->
             </div>

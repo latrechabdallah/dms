@@ -22,15 +22,17 @@ $("#jsGrid").jsGrid({
     deleteItem: $.noop
   },
   fields: [
-    { name: "Name", type: "text", width: 150 },
-    { name: "Age", type: "number", width: 50 },
-    { name: "Address", type: "text", width: 200 },
-    { name: "Country", type: "text", valueField: "Id", textField: "Name" },
-    { name: "Married", type: "text", title: "Is Married", sorting: false },
+    { name: "Constructeur", type: "text" },
+    { name: "Couleur", type: "text" },
+    { name: "Puissance", type: "number" },
+    { name: "Millesime", type: "number" },
+    { name: "Nombre de portes", type: "number", valueField: "Id", textField: "Name" },
+    { name: "Nombre de places", type: "number", sorting: true },
     { type: "control" }
   ],
   data: [
-    {"Name":"Pierre Nerzic", "Age":"82", "Address":"Ici", "Country":"Chine", "Married":"Yes"}
+    {"Constructeur":"Renault", "Couleur":"Noir", "Puissance":"75", "Millesime":"2008", "Nombre de portes":"5", "Nombre de places":"5"},
+    {"Constructeur":"Bugatti", "Couleur":"Noir", "Puissance":"1200", "Millesime":"2008", "Nombre de portes":"3", "Nombre de places":"2"}
   ]
 });
 
@@ -67,7 +69,17 @@ $("#btn_exp_csv").click(function() {
 });
 
 $("#btn_sav_list").click(function() {
-  $("");
+  if($("#nListName").val() == "" || $("nListVar").val() == "" || $("nListVal").val() == "") // + Vérifier si la liste existe déja
+  {
+  }
+  else
+  {
+    $("#specialCrit").append("<a href='#' class='list-group-item'>"+$("#nListName").val()+"</a>");
+  }
+});
+
+$("#btn_edit_list").click(function() {
+  alert("Editer liste");
 });
 
 $("#btn_open_proj").click(function() {
@@ -88,7 +100,7 @@ $( "#fileOpen" ).change(function() {
       $("#jsGrid").jsGrid("render");
       $("#jsGrid").jsGrid("refresh");
     }
-    reader.readAsText(file);
+  reader.readAsText(file);
   }
 
 });
