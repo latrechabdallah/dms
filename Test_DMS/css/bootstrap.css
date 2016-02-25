@@ -6765,13 +6765,13 @@ button.close {
 /*# sourceMappingURL=bootstrap.css.map */
 
 #myGrid {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 
-    .col-md-8 {
-      height: 80%;
-    }
+#jsGrid {
+  width: auto;
+}

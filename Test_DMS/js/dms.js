@@ -1,4 +1,111 @@
-function requiredFieldValidator(value) {
+var projet;
+
+$("#jsGrid").jsGrid({
+  height: "auto",
+  width: "auto",
+  autowidth: true,
+  filtering: true,
+  editing: true,
+  inserting: true,
+  sorting: true,
+  paging: true,
+  autoload: true,
+  pageSize: 15,
+  pageButtonCount: 5,
+  noDataContent: "Aucune donn&eacute;e",
+  loadMessage: "Veuillez patienter...",
+  deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+  controller: {
+    loadData: $.noop,
+    insertItem: $.noop,
+    updateItem: $.noop,
+    deleteItem: $.noop
+  },
+  fields: [
+    { name: "Constructeur", type: "text" },
+    { name: "Couleur", type: "text" },
+    { name: "Puissance", type: "number" },
+    { name: "Millesime", type: "number" },
+    { name: "Nombre de portes", type: "number", valueField: "Id", textField: "Name" },
+    { name: "Nombre de places", type: "number", sorting: true },
+    { type: "control" }
+  ],
+  data: [
+    {"Constructeur":"Renault", "Couleur":"Noir", "Puissance":"75", "Millesime":"2008", "Nombre de portes":"5", "Nombre de places":"5"},
+    {"Constructeur":"Bugatti", "Couleur":"Noir", "Puissance":"1200", "Millesime":"2008", "Nombre de portes":"3", "Nombre de places":"2"}
+  ]
+});
+
+$("#btn_open_csv").click(function() {
+  $('#fileLoader').trigger('click');
+});
+
+$("#btn_exp_csv").click(function() {
+  var entetes = $("#jsGrid").fields;
+  var lignes = $("#jsGrid").data;
+
+  /* merge defaults and options, without modifying defaults */
+  var tab = $.extend({}, entetes, lignes);
+  var csv = Papa.unparse(tab);
+  var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+  if (navigator.msSaveBlob)
+  { // IE 10+
+    navigator.msSaveBlob(blob, 'dms_table.csv');
+  }
+  else
+  {
+    var link = document.createElement("a");
+    if (link.download !== undefined)// feature detection Browsers that support HTML5 download attribute
+    {
+      var url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", 'dms_table.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+});
+
+$("#btn_sav_list").click(function() {
+  if($("#nListName").val() == "" || $("nListVar").val() == "" || $("nListVal").val() == "") // + Vérifier si la liste existe déja
+  {
+  }
+  else
+  {
+    $("#specialCrit").append("<a href='#' class='list-group-item'>"+$("#nListName").val()+"</a>");
+  }
+});
+
+$("#btn_edit_list").click(function() {
+  alert("Editer liste");
+});
+
+$("#btn_open_proj").click(function() {
+  $('#fileOpen').trigger('click');
+});
+
+$( "#fileOpen" ).change(function() {
+  var file = document.getElementById('fileOpen').files[0];
+  if(file)
+  {
+    var reader = new FileReader();
+    var text;
+    reader.onload = function(e) {
+      projet = JSON.parse(reader.result);
+
+      $("#jsGrid").fields = projet["projet dms"]["tableau"]["criteres"];
+      $("#jsGrid").data = projet["projet dms"]["tableau"]["lignes"];
+      $("#jsGrid").jsGrid("render");
+      $("#jsGrid").jsGrid("refresh");
+    }
+  reader.readAsText(file);
+  }
+
+});
+
+/*function requiredFieldValidator(value) {
 if (value == null || value == undefined || !value.length) {
   return {valid: false, msg: "This is a required field"};
 } else {
@@ -66,27 +173,4 @@ function DeleteData(id, rowId) {
       dataView.deleteItem(id);
       dataView.refresh();
     }
-}
-
-$("#btn_open_csv").click(function() {
-  $('#fileLoader').trigger('click');
-});
-
-$("#btn_exp_csv").click(function() {
-  alert("Exporter CSV");
-});
-
-$("#btn_sav_list").click(function() {
-  alert("Enregistrer liste");
-});
-
-$("#btn_open_proj").click(function() {
-  $('#fileOpen').trigger('click');
-});
-
-$("#btn_add_row").click(function() {
-  //alert("Ce bouton doit \"normalement\" ajouter une ligne");
-  dataView.addItem({'id': '500'});
-  grid.updateRowCount();
-  grid.render();
-});
+}*/
