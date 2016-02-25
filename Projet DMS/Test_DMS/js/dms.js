@@ -1,3 +1,5 @@
+var projet;
+
 $("#jsGrid").jsGrid({
   height: "auto",
   width: "auto",
@@ -24,15 +26,72 @@ $("#jsGrid").jsGrid({
     { name: "Age", type: "number", width: 50 },
     { name: "Address", type: "text", width: 200 },
     { name: "Country", type: "text", valueField: "Id", textField: "Name" },
-    { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+    { name: "Married", type: "text", title: "Is Married", sorting: false },
     { type: "control" }
   ],
   data: [
-    //{"Pierre Nerzic", "82", "Ici", "Chine", true}
+    {"Name":"Pierre Nerzic", "Age":"82", "Address":"Ici", "Country":"Chine", "Married":"Yes"}
   ]
 });
 
+$("#btn_open_csv").click(function() {
+  $('#fileLoader').trigger('click');
+});
 
+$("#btn_exp_csv").click(function() {
+  var entetes = $("#jsGrid").fields;
+  var lignes = $("#jsGrid").data;
+
+  /* merge defaults and options, without modifying defaults */
+  var tab = $.extend({}, entetes, lignes);
+  var csv = Papa.unparse(tab);
+  var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+  if (navigator.msSaveBlob)
+  { // IE 10+
+    navigator.msSaveBlob(blob, 'dms_table.csv');
+  }
+  else
+  {
+    var link = document.createElement("a");
+    if (link.download !== undefined)// feature detection Browsers that support HTML5 download attribute
+    {
+      var url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", 'dms_table.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+});
+
+$("#btn_sav_list").click(function() {
+  $("");
+});
+
+$("#btn_open_proj").click(function() {
+  $('#fileOpen').trigger('click');
+});
+
+$( "#fileOpen" ).change(function() {
+  var file = document.getElementById('fileOpen').files[0];
+  if(file)
+  {
+    var reader = new FileReader();
+    var text;
+    reader.onload = function(e) {
+      projet = JSON.parse(reader.result);
+
+      $("#jsGrid").fields = projet["projet dms"]["tableau"]["criteres"];
+      $("#jsGrid").data = projet["projet dms"]["tableau"]["lignes"];
+      $("#jsGrid").jsGrid("render");
+      $("#jsGrid").jsGrid("refresh");
+    }
+    reader.readAsText(file);
+  }
+
+});
 
 /*function requiredFieldValidator(value) {
 if (value == null || value == undefined || !value.length) {
@@ -103,26 +162,3 @@ function DeleteData(id, rowId) {
       dataView.refresh();
     }
 }*/
-
-$("#btn_open_csv").click(function() {
-  $('#fileLoader').trigger('click');
-});
-
-$("#btn_exp_csv").click(function() {
-  alert("Exporter CSV");
-});
-
-$("#btn_sav_list").click(function() {
-  alert("Enregistrer liste");
-});
-
-$("#btn_open_proj").click(function() {
-  $('#fileOpen').trigger('click');
-});
-
-$("#btn_add_row").click(function() {
-  //alert("Ce bouton doit \"normalement\" ajouter une ligne");
-  dataView.addItem({'id': '500'});
-  grid.updateRowCount();
-  grid.render();
-});

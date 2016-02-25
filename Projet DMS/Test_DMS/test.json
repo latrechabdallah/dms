@@ -1,0 +1,24 @@
+{
+  "projet dms": {
+    "criteres speciaux": [
+      {"nom":"Couleurs", "variables":["bleu", "vert", "rouge"], "valeurs":["2", "3", "4"]},
+      {"nom":"Villes", "variables":["Lannion", "Plélo", "Saint-Brieuc"], "valeurs":["2", "5", "1"]},
+      {"nom":"Refroidissements", "variables":["air", "eau", "huile"], "valeurs":["2", "3", "4"]}
+    ],
+    "tableau": {
+      "criteres": [
+        {"nom": "Couleur", "poids":"5"},
+        {"nom": "Puissance", "poids":"10"},
+        {"nom": "Millésime", "poids":"8"},
+        {"nom": "Nombre de portes", "poids":"7"},
+        {"nom": "Nombre de places", "poids":"8"}
+      ],
+      "lignes": [
+        {"Couleur": "bleu", "Puissance":"130", "Millésime":"2015", "Nombre de portes":"5", "Nombre de places":"5"},
+        {"Couleur": "vert", "Puissance":"75", "Millésime":"1999", "Nombre de portes":"3", "Nombre de places":"5"},
+        {"Couleur": "rouge", "Puissance":"90", "Millésime":"2012", "Nombre de portes":"5", "Nombre de places":"5"},
+        {"Couleur": "vert", "Puissance":"65", "Millésime":"2007", "Nombre de portes":"3", "Nombre de places":"4"}
+      ]
+    }
+  }
+}
