@@ -11,6 +11,15 @@
  *   - `debug` : si défini, le script retournera du contenu HTML lisible au lieu de JSON.
  *
  * Retourne une chaine JSON contenant les actions retenues par la méthode Electre 1.
+ *
+ * Exemple d'utilidation en bash :
+ * curl \
+ *	--request POST \
+ *	--data 'criteres={"Cr1":3,"Cr2":2,"Cr3":3,"Cr4":1,"Cr5":1}' \
+ *	--data 'actions={"P1":{"Cr1":10,"Cr2":20,"Cr3":5,"Cr4":10,"Cr5":16},"P2":{"Cr1":0,"Cr2":5,"Cr3":5,"Cr4":16,"Cr5":10},"P3":{"Cr1":0,"Cr2":10,"Cr3":0,"Cr4":16,"Cr5":7},"P4":{"Cr1":20,"Cr2":5,"Cr3":10,"Cr4":10,"Cr5":13},"P5":{"Cr1":20,"Cr2":10,"Cr3":15,"Cr4":10,"Cr5":13},"P6":{"Cr1":20,"Cr2":10,"Cr3":20,"Cr4":13,"Cr5":13}}' \
+ *	'http://localhost:8080/electre1'
+ *
+ * curl --request POST --form "criteres=@criteres.json" --form "actions=@actions.json" http://localhost:8080/electre1
  */
 
 
