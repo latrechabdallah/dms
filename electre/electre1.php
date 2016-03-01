@@ -12,7 +12,7 @@
  *
  * Retourne une chaine JSON contenant les actions retenues par la méthode Electre 1.
  *
- * Exemple d'utilidation en bash :
+ * Exemple d'utilisation en Bash :
  * curl \
  *	--request POST \
  *	--data 'criteres={"Cr1":3,"Cr2":2,"Cr3":3,"Cr4":1,"Cr5":1}' \
