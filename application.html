@@ -1,0 +1,167 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="http://dms.13h37.tk/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/jsgrid-1.4.1/jsgrid.css" />
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/jsgrid-1.4.1/jsgrid-theme.min.css" />
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/jQuery-contextMenu/jquery.contextMenu.min.css" />
+    <script src="http://dms.13h37.tk/js/jquery.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/jsgrid-1.4.1/jsgrid.min.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/jQuery-contextMenu/jquery.contextMenu.min.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/jQuery-contextMenu/jquery.ui.position.min.js"></script>
+    <title>DMS Project - Application</title>
+  </head>
+    <body>
+      <script>
+        $(document).ready(function(){
+          $(".item_crit").click(function(){
+            $("#panel_edit").slideDown("slow");
+          });
+
+          $("#close_edit_panel").click(function(){
+            $("#panel_edit").slideUp("slow");
+          });
+
+          $(".colonne").click(function(){
+            $("#panel_edit_col").slideDown("slow");
+          });
+
+          $("#close_edit_panel_col").click(function(){
+            $("#panel_edit_col").slideUp("slow");
+          });
+        });
+      </script>
+      <nav>
+        <ul class="nav nav-pills">
+          <li><a href="#">Nouveau</a></li>
+          <li><a href="#" id="btn_open_proj">Ouvrir</a></li>
+          <li><a href="#">Sauvegarder</a></li>
+        </ul>
+        <input type="file" id="fileOpen" name="project_open" title="Ouvrir un fichier json" accept =".json" style="display: none"/>
+      </nav>
+      <br>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="panel panel-default">
+              <div class="panel-heading">Liste des crit&egrave;res sp&eacute;ciaux</div>
+              <div class="panel-body">
+                <div class="list-group scrollable-menu" id="specialCrit">
+                  <a href="#" class="list-group-item item_crit context-menu-one btn">Couleur</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one btn">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one btn">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one btn">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one">Crit&egrave;re</a>
+                </div>
+                <div id="panel_edit" class="panel panel-default" style="display: none"> <!-- Panel modifier liste -->
+                    <div class="panel-body">
+                        <p>
+                        Modifier la liste :
+                        </p>
+                        <button id="close_edit_panel" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+                          <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+                        </button>
+                      <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
+                        <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                        <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
+                        <span class="input-group-addon" id="sizing-addon2">Variables</span>
+                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp">
+                        <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      </div>
+                      <button type="button" class="btn btn-success" id="btn_edit_list">Enregistrer</button>
+                    </div>
+                </div> <!-- Fin panel modifier liste -->
+                <div class="panel panel-default"> <!-- Panel nouvelle liste -->
+                  <div class="panel-body">
+                    <p>
+                    Nouvelle liste :
+                    </p>
+                    <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
+                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                      <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2" id="nListName">
+                    </div>
+                    <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
+                      <span class="input-group-addon" id="sizing-addon2">Variables</span>
+                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nListVar">
+                    </div>
+                    <div class="input-group inp">
+                      <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nListVal">
+                    </div>
+                    <button type="button" class="btn btn-success" id="btn_sav_list">Enregistrer</button>
+                  </div>
+                </div> <!-- Fin panel nouvelle liste -->
+              </div> <!-- Fin du contenu du panel de gauche -->
+            </div>
+          </div> <!-- Fin du panel de gauche -->
+          <div class="col-md-6">
+          	<div id="jsGrid" style="width: auto"></div>
+            <br>
+            <div>
+              <a href="electre1"><button type="button" class="btn btn-success btn-align">Ex&eacute;cuter</button></a>
+              <a href="#"><button type="button" class="btn btn-danger">R&eacute;initialiser</button></a>
+            </div>
+          </div> <!-- Fin du panel central -->
+          <div class="col-md-3" id="entetes">
+            <div class="panel panel-default">
+              <div class="panel-heading">Colonnes</div>
+              <div class="panel-body">
+                <button type="button" class="btn btn-success" title="Ajouter une colonne">+</button>
+                <br><br>
+                <ul class="list-group">
+                  <li class="list-group-item colonne">Constructeur <a href="#"><font color="firebrick"><span class="glyphicon glyphicon-remove"></span></font></a></li>
+                  <li class="list-group-item colonne">Couleur <a href="#"><font color="firebrick"><span class="glyphicon glyphicon-remove"></span></font></a></li>
+                  <li class="list-group-item colonne">Puissance <a href="#"><font color="firebrick"><span class="glyphicon glyphicon-remove"></span></font></a></li>
+                  <li class="list-group-item colonne">Mill&eacute;sime <a href="#"><font color="firebrick"><span class="glyphicon glyphicon-remove"></span></font></a></li>
+                  <li class="list-group-item colonne">Nombre de portes <a href="#"><font color="firebrick"><span class="glyphicon glyphicon-remove"></span></font></a></li>
+                  <li class="list-group-item colonne">Nombre de places <a href="#"><font color="firebrick"><span class="glyphicon glyphicon-remove"></span></font></a></li>
+                </ul>
+                <div id="panel_edit_col" class="panel panel-default" style="display: none"> <!-- Panel modifier liste -->
+                    <div class="panel-body">
+                        <p>
+                        Modifier la colonne :
+                        </p>
+                        <button id="close_edit_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+                          <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+                        </button>
+                      <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
+                        <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                        <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
+                        <span class="input-group-addon" id="sizing-addon2">Variables</span>
+                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp">
+                        <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
+                      </div>
+                      <button type="button" class="btn btn-success" id="btn_edit_list">Enregistrer</button>
+                    </div>
+                </div> <!-- Fin panel modifier liste -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <div class="panel panel-default">
+              <div class="panel-heading">Importer/Exporter un fichier CSV</div>
+              <div class="panel-body">
+                <button type="button" class="btn btn-primary" id="btn_open_csv">Ouvrir</button>
+                <button type="button" class="btn btn-primary" id="btn_exp_csv">Exporter</button>
+                <input type="file" id="fileLoader" name="files_open" title="Ouvrir un fichier CSV" accept =".csv" style="display: none"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      <script src="http://dms.13h37.tk/PapaParse/papaparse.js"></script>
+      <script src="http://dms.13h37.tk/js/dms.js">
+    </script>
+    </body>
+  </html>

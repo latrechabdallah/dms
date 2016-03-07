@@ -12,6 +12,10 @@ switch ($_SERVER['REQUEST_URI'])
 		require ROOT.'/electre/electre1.php';
 		break;
 
+	case '/application':
+		require ROOT.'/application.html';
+		break;
+
 	default:
 		echo '404';
 		break;
