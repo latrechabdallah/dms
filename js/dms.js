@@ -4,6 +4,7 @@ function Projet(nom)
   this.tableau = {};
   this.tableau.colonnes = [];
   this.tableau.donnees = [];
+  this.criteres_speciaux = [];
 }
 
 var projet = new Projet("Default project");
@@ -15,6 +16,14 @@ projet.tableau.colonnes = Array(
 { name: "Nombre de portes", type: "number", valueField: "Id", textField: "Name" },
 { name: "Nombre de places", type: "number", sorting: true},
 { type: "control" });
+
+projet.criteres_speciaux = Array(
+{"nom":"Couleurs", "variables":["bleu", "vert", "rouge", "noir"], "valeurs":["2", "3", "4", "6"]},
+{"nom":"Villes", "variables":["Lannion", "Plélo", "Saint-Brieuc"], "valeurs":["2", "5", "1"]},
+{"nom":"Refroidissements", "variables":["air", "eau", "huile"], "valeurs":["2", "3", "4"]}
+);
+
+loadSpecialCrit();
 
 $("#jsGrid").jsGrid({
   height: "auto",
@@ -156,6 +165,15 @@ function updateTable()
   });
 }
 
+function loadSpecialCrit()
+{
+  $("#selectCrit option").remove();
+  for(critere in projet.criteres_speciaux)
+  {
+    $("#selectCrit").append("<option>"+projet.criteres_speciaux[critere].nom+"</option>");
+  }
+}
+
   $(document).on('click', '.item_crit', function(){
     $("#panel_edit").slideDown("slow");
   });
@@ -246,74 +264,3 @@ $.contextMenu({
         $('.context-menu-one').on('click', function(e){
             console.log('clicked', this);
         })
-
-
-/*function requiredFieldValidator(value) {
-if (value == null || value == undefined || !value.length) {
-  return {valid: false, msg: "This is a required field"};
-} else {
-  return {valid: true, msg: null};
-}
-}
-
-var grid;
-var dataView;
-var data = [];
-var columns = [
-{id: "title", name: "Title", field: "title", width: 120, cssClass: "cell-title", editor: Slick.Editors.Text, validator: requiredFieldValidator},
-{id: "desc", name: "Description", field: "description", width: 100, editor: Slick.Editors.LongText},
-{id: "duration", name: "Duration", field: "duration", editor: Slick.Editors.Text},
-{id: "%", name: "% Complete", field: "percentComplete", width: 80, resizable: false, formatter: Slick.Formatters.PercentCompleteBar, editor: Slick.Editors.PercentComplete},
-{id: "start", name: "Start", field: "start", minWidth: 60, editor: Slick.Editors.Date},
-{id: "finish", name: "Finish", field: "finish", minWidth: 60, editor: Slick.Editors.Date},
-{id: "effort-driven", name: "Effort Driven", width: 80, minWidth: 20, maxWidth: 80, cssClass: "cell-effort-driven", field: "effortDriven", editor: Slick.Editors.Text},
-{id: "delete", name: "Action", width: 40, cssClass: "cell-title", formatter: Slick.Formatters.Link }
-];
-var options = {
-editable: true,
-enableAddRow: true,
-enableCellNavigation: true,
-asyncEditorLoading: false,
-autoEdit: false
-};
-
-$(function () {
-for (var i = 0; i < 20; i++) {
-  var d = (data[i] = {});
-
-  d["id"] = i;
-  d["title"] = "Task " + i;
-  d["description"] = "This is a sample task description.\n  It can be multiline";
-  d["duration"] = "5 days";
-  d["percentComplete"] = Math.round(Math.random() * 100);
-  d["start"] = "01/01/2009";
-  d["finish"] = "01/05/2009";
-  d["effortDriven"] = (i % 5 == 0);
-}
-dataView = new Slick.Data.DataView();
-dataView.setItems(data);
-grid = new Slick.Grid("#myGrid", dataView, columns, options);
-
-grid.setSelectionModel(new Slick.CellSelectionModel());
-
-dataView.onRowCountChanged.subscribe(function (e, args) {
-  grid.updateRowCount();
-  grid.render();
-});
-
-grid.onAddNewRow.subscribe(function (e, args) {
-  var item = args.item;
-  grid.invalidateRow(data.length);
-  data.push(item);
-  grid.updateRowCount();
-  grid.render();
-});
-});
-
-function DeleteData(id, rowId) {
-    var result = confirm("Etes-vous sur de vouloir supprimer definitivement cette ligne ?");
-    if (result == true) {
-      dataView.deleteItem(id);
-      dataView.refresh();
-    }
-}*/
