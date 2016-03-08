@@ -1,24 +1,19 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-    <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid.css" />
-    <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid-theme.min.css" />
-    <script src="js/jquery.js"></script>
-    <script type="text/javascript" src="jsgrid-1.4.1/jsgrid.min.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="http://dms.13h37.tk/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/jsgrid-1.4.1/jsgrid.css" />
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/jsgrid-1.4.1/jsgrid-theme.min.css" />
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/jQuery-contextMenu/jquery.contextMenu.min.css" />
+    <link type="text/css" rel="stylesheet" href="http://dms.13h37.tk/bootstrap-toggle/bootstrap-toggle.min.css" />
+    <script src="http://dms.13h37.tk/js/jquery.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/jsgrid-1.4.1/jsgrid.min.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/jQuery-contextMenu/jquery.contextMenu.min.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/jQuery-contextMenu/jquery.ui.position.min.js"></script>
+    <script type="text/javascript" src="http://dms.13h37.tk/bootstrap-toggle/bootstrap-toggle.min.js"></script>
     <title>DMS Project - Application</title>
   </head>
     <body>
-      <script>
-        $(document).ready(function(){
-          $(".list-group-item").click(function(){
-            $("#panel_edit").slideDown("slow");
-          });
-
-          $("#close_edit_panel").click(function(){
-            $("#panel_edit").slideUp("slow");
-          });
-        });
-      </script>
       <nav>
         <ul class="nav nav-pills">
           <li><a href="#">Nouveau</a></li>
@@ -30,28 +25,53 @@
       <br>
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             <div class="panel panel-default">
               <div class="panel-heading">Liste des crit&egrave;res sp&eacute;ciaux</div>
               <div class="panel-body">
+                <button type="button" class="btn btn-success" id="btnNouveauCritere" title="Ajouter un crit&egrave;">+</button>
+                <br><br>
+                <div id="panel_nouveau_critere" class="panel panel-default" style="display: none"> <!-- Panel nouvelle liste -->
+                  <div class="panel-body">
+                    <p>
+                    Nouveau crit&egrave;re :
+                    <button id="close_nouveau_critere" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+                      <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+                    </button>
+                    </p>
+                    <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
+                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                      <input type="text" class="form-control" placeholder="Nom du crit&egrave;re" aria-describedby="sizing-addon2" id="nCritereNom">
+                    </div>
+                    <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
+                      <span class="input-group-addon" id="sizing-addon2">Variables</span>
+                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nCritereVar">
+                    </div>
+                    <div class="input-group inp">
+                      <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nCritereVal">
+                    </div>
+                    <button type="button" class="btn btn-success" id="btn_sav_critere">Enregistrer</button>
+                  </div>
+                </div> <!-- Fin panel nouvelle liste -->
                 <div class="list-group scrollable-menu" id="specialCrit">
-                  <a href="#" class="list-group-item">Couleur</a>
-                  <a href="#" class="list-group-item">Crit&egrave;re</a>
-                  <a href="#" class="list-group-item">Crit&egrave;re</a>
-                  <a href="#" class="list-group-item">Crit&egrave;re</a>
-                  <a href="#" class="list-group-item">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one">Couleur</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one">Crit&egrave;re</a>
+                  <a href="#" class="list-group-item item_crit context-menu-one">Crit&egrave;re</a>
                 </div>
                 <div id="panel_edit" class="panel panel-default" style="display: none"> <!-- Panel modifier liste -->
                     <div class="panel-body">
                         <p>
-                        Modifier la liste :
-                        </p>
+                        Modifier le crit&egrave;re :
                         <button id="close_edit_panel" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
                           <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
                         </button>
+                        </p>
                       <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
                         <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                        <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2">
+                        <input type="text" class="form-control" placeholder="Nom du crit&egrave;re" aria-describedby="sizing-addon2">
                       </div>
                       <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
                         <span class="input-group-addon" id="sizing-addon2">Variables</span>
@@ -64,34 +84,85 @@
                       <button type="button" class="btn btn-success" id="btn_edit_list">Enregistrer</button>
                     </div>
                 </div> <!-- Fin panel modifier liste -->
-                <div class="panel panel-default"> <!-- Panel nouvelle liste -->
-                  <form>
-                  <div class="panel-body">
-                    <p>
-                    Nouvelle liste :
-                    </p>
-                    <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
-                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                      <input type="text" class="form-control" placeholder="Nom de la liste" aria-describedby="sizing-addon2" id="nListName">
-                    </div>
-                    <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
-                      <span class="input-group-addon" id="sizing-addon2">Variables</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nListVar">
-                    </div>
-                    <div class="input-group inp">
-                      <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nListVal">
-                    </div>
-                    <button type="button" class="btn btn-success" id="btn_sav_list">Enregistrer</button>
-                  </div>
-                  </form>
-                </div> <!-- Fin panel nouvelle liste -->
               </div> <!-- Fin du contenu du panel de gauche -->
             </div>
           </div> <!-- Fin du panel de gauche -->
-          <div class="col-md-9">
+          <div class="col-md-6">
           	<div id="jsGrid" style="width: auto"></div>
+            <br>
+            <div>
+              <a href="electre1"><button type="button" class="btn btn-success btn-align">Ex&eacute;cuter</button></a>
+              <a href="#"><button type="button" class="btn btn-danger" id="btnReinit">R&eacute;initialiser</button></a>
+            </div>
           </div> <!-- Fin du panel central -->
+          <div class="col-md-3" id="entetes">
+            <div class="panel panel-default">
+              <div class="panel-heading">Colonnes</div>
+              <div class="panel-body">
+                <button type="button" class="btn btn-success" id="btnAjouterCol" title="Ajouter une colonne">+</button>
+                <br><br>
+                <div id="panel_ajouter_col" class="panel panel-default" style="display: none"> <!-- Panel nouvelle liste -->
+                  <div class="panel-body">
+                    <p>
+                    Nouvelle colonne :
+                    <button id="close_ajouter_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+                      <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+                    </button>
+                    </p>
+                    <div class="checkbox">
+                      <label>
+                        <input id="toggle-special" data-toggle="toggle" data-onstyle="success" type="checkbox">
+                        Crit&egrave;re sp&eacute;cial
+                      </label>
+                    </div>
+                    <select id="selectCrit" class="form-control">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select>
+                    <div id="nomCol" class="input-group inp" title="Choisir un nom pour la colonne">
+                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                      <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id="nListName">
+                    </div>
+                    <div class="input-group inp">
+                      <span class="input-group-addon" id="sizing-addon2">Poids</span>
+                      <input type="text" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="nListVal">
+                    </div>
+                    <button type="button" class="btn btn-success" id="btn_sav_colonne">Ajouter</button>
+                  </div>
+                </div> <!-- Fin panel nouvelle liste -->
+                <ul class="list-group">
+                  <a href="#" class="list-group-item colonne context-menu-one">Constructeur</a>
+                  <a href="#" class="list-group-item colonne context-menu-one">Couleur</a>
+                  <a href="#" class="list-group-item colonne context-menu-one">Puissance</a>
+                  <a href="#" class="list-group-item colonne context-menu-one">Mill&eacute;sime</a>
+                  <a href="#" class="list-group-item colonne context-menu-one">Nombre de portes</a>
+                  <a href="#" class="list-group-item colonne context-menu-one">Nombre de places</a>
+                </ul>
+                <div id="panel_edit_col" class="panel panel-default" style="display: none"> <!-- Panel modifier colonne -->
+                    <div class="panel-body">
+                        <p>
+                        Modifier la colonne :
+                        <button id="close_edit_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+                          <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+                        </button>
+                        </p>
+                      <div class="input-group inp" title="Choisir un nom pour la colonne">
+                        <span class="input-group-addon" id="sizing-addon2">Nom</span>
+                        <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2">
+                      </div>
+                      <div class="input-group inp">
+                        <span class="input-group-addon" id="sizing-addon2">Poids</span>
+                        <input type="text" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2">
+                      </div>
+                      <button type="button" class="btn btn-success" id="btn_edit_col">Enregistrer</button>
+                    </div>
+                </div> <!-- Fin panel modifier colonne -->
+              </div>
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-2">
@@ -104,16 +175,21 @@
               </div>
             </div>
           </div>
-          <div class="col-md-8">
-            <!--
-            <br>
-            <button type="button" id="btn_add_row" class="btn btn-success">+</button>
-            -->
+        </div>
+        </div>
+        <div href="#dialog" id="oeuf1"></div>
+        <div id="boxes">
+          <div id="dialog" class="window">
+            <p><img src="images/Koala.jpg"></p>
+            <p>Ceci est un secret, ne le montre à personne !</p>
+            <br/>
+            <a href="#" class="close">Fermer</a>
+
           </div>
-        </div>
-        </div>
-      <script src="PapaParse/papaparse.js"></script>
-      <script src="js/dms.js">
-    </script>
+        <div id="mask"></div>
+      </div>
+      <script src="http://dms.13h37.tk/PapaParse/papaparse.js"></script>
+      <script src="http://dms.13h37.tk/js/dms.js"></script>
+      <script src="http://dms.13h37.tk/js/lol.js"></script>
     </body>
   </html>

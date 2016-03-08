@@ -1,4 +1,20 @@
-var projet;
+function Projet(nom)
+{
+  this.nom = nom;
+  this.tableau = {};
+  this.tableau.colonnes = [];
+  this.tableau.donnees = [];
+}
+
+var projet = new Projet("Default project");
+projet.tableau.colonnes = Array(
+{ name: "Constructeur", type: "text" },
+{ name: "Couleur", type: "text" },
+{ name: "Puissance", type: "number" },
+{ name: "Millesime", type: "number" },
+{ name: "Nombre de portes", type: "number", valueField: "Id", textField: "Name" },
+{ name: "Nombre de places", type: "number", sorting: true},
+{ type: "control" });
 
 $("#jsGrid").jsGrid({
   height: "auto",
@@ -15,21 +31,14 @@ $("#jsGrid").jsGrid({
   noDataContent: "Aucune donn&eacute;e",
   loadMessage: "Veuillez patienter...",
   deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+  datatype: "json",
   controller: {
     loadData: $.noop,
     insertItem: $.noop,
     updateItem: $.noop,
     deleteItem: $.noop
   },
-  fields: [
-    { name: "Constructeur", type: "text" },
-    { name: "Couleur", type: "text" },
-    { name: "Puissance", type: "number" },
-    { name: "Millesime", type: "number" },
-    { name: "Nombre de portes", type: "number", valueField: "Id", textField: "Name" },
-    { name: "Nombre de places", type: "number", sorting: true },
-    { type: "control" }
-  ],
+  fields: projet.tableau.colonnes,
   data: [
     {"Constructeur":"Renault", "Couleur":"Noir", "Puissance":"75", "Millesime":"2008", "Nombre de portes":"5", "Nombre de places":"5"},
     {"Constructeur":"Bugatti", "Couleur":"Noir", "Puissance":"1200", "Millesime":"2008", "Nombre de portes":"3", "Nombre de places":"2"}
@@ -41,8 +50,8 @@ $("#btn_open_csv").click(function() {
 });
 
 $("#btn_exp_csv").click(function() {
-  var entetes = $("#jsGrid").fields;
-  var lignes = $("#jsGrid").data;
+  var entetes = projet.tableau.colonnes;
+  var lignes = projet.tableau.donnees;
 
   /* merge defaults and options, without modifying defaults */
   var tab = $.extend({}, entetes, lignes);
@@ -68,13 +77,13 @@ $("#btn_exp_csv").click(function() {
   }
 });
 
-$("#btn_sav_list").click(function() {
-  if($("#nListName").val() == "" || $("nListVar").val() == "" || $("nListVal").val() == "") // + Vérifier si la liste existe déja
+$("#btn_sav_critere").click(function() {
+  if($("#nCritereNom").val() == "" || $("nCritereVar").val() == "" || $("nCritereVal").val() == "") // + Vérifier si la liste existe déja
   {
   }
   else
   {
-    $("#specialCrit").append("<a href='#' class='list-group-item'>"+$("#nListName").val()+"</a>");
+    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-one'>"+$("#nCritereNom").val()+"</a>");
   }
 });
 
@@ -82,28 +91,162 @@ $("#btn_edit_list").click(function() {
   alert("Editer liste");
 });
 
+$("#btn_edit_col").click(function() {
+  alert("Editer colonne");
+});
+
 $("#btn_open_proj").click(function() {
   $('#fileOpen').trigger('click');
 });
+
+$("#btnReinit").click(function() {
+  $("#jsGrid").jsGrid({
+    height: "auto",
+    width: "auto",
+    autowidth: true,
+    filtering: true,
+    editing: true,
+    inserting: true,
+    sorting: true,
+    paging: true,
+    autoload: true,
+    pageSize: 15,
+    pageButtonCount: 5,
+    noDataContent: "Aucune donn&eacute;e",
+    loadMessage: "Veuillez patienter...",
+    deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+    datatype: "json",
+    controller: {
+      loadData: $.noop,
+      insertItem: $.noop,
+      updateItem: $.noop,
+      deleteItem: $.noop
+    },
+    fields: projet.colonnes,
+    data: []
+  });
+});
+
+function updateTable()
+{
+  $("#jsGrid").jsGrid({
+    height: "auto",
+    width: "auto",
+    autowidth: true,
+    filtering: true,
+    editing: true,
+    inserting: true,
+    sorting: true,
+    paging: true,
+    autoload: true,
+    pageSize: 15,
+    pageButtonCount: 5,
+    noDataContent: "Aucune donn&eacute;e",
+    loadMessage: "Veuillez patienter...",
+    deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+    datatype: "json",
+    controller: {
+      loadData: $.noop,
+      insertItem: $.noop,
+      updateItem: $.noop,
+      deleteItem: $.noop
+    },
+    fields: projet.colonnes,
+    data: projet.donnees
+  });
+}
+
+  $(document).on('click', '.item_crit', function(){
+    $("#panel_edit").slideDown("slow");
+  });
+
+  $(".item_crit").click(function(){
+    $("#panel_edit").slideDown("slow");
+  });
+
+  $("#close_edit_panel").click(function(){
+    $("#panel_edit").slideUp("slow");
+  });
+
+  $(".colonne").click(function(){
+    $("#panel_edit_col").slideDown("slow");
+  });
+
+  $("#close_edit_panel_col").click(function(){
+    $("#panel_edit_col").slideUp("slow");
+  });
+
+  $("#btnAjouterCol").click(function(){
+    $("#panel_ajouter_col").slideToggle("slow");
+  });
+
+  $("#close_ajouter_panel_col").click(function(){
+    $("#panel_ajouter_col").slideUp("slow");
+  });
+
+  $("#btnNouveauCritere").click(function(){
+    $("#panel_nouveau_critere").slideToggle("slow");
+  });
+
+  $("#close_nouveau_critere").click(function(){
+    $("#panel_nouveau_critere").slideUp("slow");
+  });
+
+  $('#toggle-special').bootstrapToggle();
+  $('#selectCrit').hide();
+
+  $('#toggle-special').change(function() {
+      if($(this).prop('checked'))
+      {
+        $('#nomCol').hide();
+        $('#selectCrit').show();
+      }
+      else
+      {
+        $('#nomCol').show();
+        $('#selectCrit').hide();
+      }
+    })
 
 $( "#fileOpen" ).change(function() {
   var file = document.getElementById('fileOpen').files[0];
   if(file)
   {
     var reader = new FileReader();
-    var text;
+    reader.readAsText(file);
     reader.onload = function(e) {
+      temp =
       projet = JSON.parse(reader.result);
 
-      $("#jsGrid").fields = projet["projet dms"]["tableau"]["criteres"];
-      $("#jsGrid").data = projet["projet dms"]["tableau"]["lignes"];
-      $("#jsGrid").jsGrid("render");
-      $("#jsGrid").jsGrid("refresh");
+      console.log(JSON.stringify(projet));
+      updateTable();
     }
-  reader.readAsText(file);
   }
 
 });
+
+$.contextMenu({
+            selector: '.context-menu-one',
+            callback: function(key, options) {
+                if(key == "edit")
+                {
+                  $('.item_crit').trigger('click');
+                }
+                else
+                {
+
+                }
+            },
+            items: {
+                "edit": {name: "Modifier", icon: "edit"},
+                "delete": {name: "Supprimer", icon: "delete"}
+            }
+        });
+
+        $('.context-menu-one').on('click', function(e){
+            console.log('clicked', this);
+        })
+
 
 /*function requiredFieldValidator(value) {
 if (value == null || value == undefined || !value.length) {
