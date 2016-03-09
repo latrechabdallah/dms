@@ -7,7 +7,8 @@ function Projet(nom)
   this.criteres_speciaux = [];
 }
 
-var projet = new Projet("Default project");
+var projet;
+/*var projet = new Projet("Default project");
 projet.tableau.colonnes = Array(
 { name: "Constructeur", type: "text" },
 { name: "Couleur", type: "text" },
@@ -21,38 +22,21 @@ projet.criteres_speciaux = Array(
 {"nom":"Couleurs", "variables":["bleu", "vert", "rouge", "noir"], "valeurs":["2", "3", "4", "6"]},
 {"nom":"Villes", "variables":["Lannion", "Plélo", "Saint-Brieuc"], "valeurs":["2", "5", "1"]},
 {"nom":"Refroidissements", "variables":["air", "eau", "huile"], "valeurs":["2", "3", "4"]}
-);
-
-loadSpecialCrit();
-
-$("#jsGrid").jsGrid({
-  height: "auto",
-  width: "auto",
-  autowidth: true,
-  filtering: true,
-  editing: true,
-  inserting: true,
-  sorting: true,
-  paging: true,
-  autoload: true,
-  pageSize: 15,
-  pageButtonCount: 5,
-  noDataContent: "Aucune donn&eacute;e",
-  loadMessage: "Veuillez patienter...",
-  deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
-  datatype: "json",
-  controller: {
-    loadData: $.noop,
-    insertItem: $.noop,
-    updateItem: $.noop,
-    deleteItem: $.noop
-  },
-  fields: projet.tableau.colonnes,
-  data: [
-    {"Constructeur":"Renault", "Couleur":"Noir", "Puissance":"75", "Millesime":"2008", "Nombre de portes":"5", "Nombre de places":"5"},
-    {"Constructeur":"Bugatti", "Couleur":"Noir", "Puissance":"1200", "Millesime":"2008", "Nombre de portes":"3", "Nombre de places":"2"}
-  ]
-});
+);*/
+if (typeof projet !== 'undefined')
+{
+  $("#btnExec").show();
+  $("#btnReinit").show();
+  $("#btn_exp_csv").prop("disabled", false);
+  loadSpecialCrit();
+  loadCol();
+}
+else
+{
+  $("#btnExec").hide();
+  $("#btnReinit").hide();
+  $("#btn_exp_csv").prop("disabled", true);
+}
 
 $("#btn_open_csv").click(function() {
   $('#fileLoader').trigger('click');
@@ -87,8 +71,35 @@ $("#btn_exp_csv").click(function() {
 });
 
 $("#btn_sav_critere").click(function() {
-  if($("#nCritereNom").val() == "" || $("nCritereVar").val() == "" || $("nCritereVal").val() == "") // + Vérifier si la liste existe déja
+  if($("#nCritereNom").val() == "" || $("nCritereVar").val() == "" || $("nCritereVal").val() == "")
   {
+    var n = noty({
+      layout: 'bottomLeft',
+      theme: 'relax',
+      text: 'Tous les champs doivent être remplis',
+      type: 'error',
+      animation: {
+        open: {height: 'toggle'}, // jQuery animate function property object
+        close: {height: 'toggle'}, // jQuery animate function property object
+        easing: 'swing', // easing
+        speed: 500 // opening & closing animation speed
+      }
+    });
+  }
+  else if(projet.criteres_speciaux.indexOf($("#nCritereNom").val(), 0) != -1)
+  {
+    var n = noty({
+      layout: 'bottomLeft',
+      theme: 'relax',
+      text: 'Il existe déjà un critère portant ce nom',
+      type: 'error',
+      animation: {
+        open: {height: 'toggle'}, // jQuery animate function property object
+        close: {height: 'toggle'}, // jQuery animate function property object
+        easing: 'swing', // easing
+        speed: 500 // opening & closing animation speed
+      }
+    });
   }
   else
   {
@@ -97,14 +108,16 @@ $("#btn_sav_critere").click(function() {
 });
 
 $("#btn_edit_list").click(function() {
-  alert("Editer liste");
 });
 
 $("#btn_edit_col").click(function() {
-  alert("Editer colonne");
 });
 
-$("#btn_open_proj").click(function() {
+$("#btn_nouveau_proj").click(function() {
+  projet = new Projet("Projet");
+});
+
+$("#btn_ouvrir_proj").click(function() {
   $('#fileOpen').trigger('click');
 });
 
@@ -168,9 +181,20 @@ function updateTable()
 function loadSpecialCrit()
 {
   $("#selectCrit option").remove();
+  $("#specialCrit a").remove();
   for(critere in projet.criteres_speciaux)
   {
     $("#selectCrit").append("<option>"+projet.criteres_speciaux[critere].nom+"</option>");
+    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-one' id='critere_"+critere+"'>"+projet.criteres_speciaux[critere].nom+"</a>");
+  }
+}
+
+function loadCol()
+{
+  $("#colList a").remove();
+  for(colonne in projet.tableau.colonnes)
+  {
+    $("#colList").append("<a href='#' class='list-group-item item_crit context-menu-one' id='colonne_"+colonne+"'>"+projet.tableau.colonnes[colonne].name+"</a>");
   }
 }
 
