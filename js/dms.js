@@ -25,16 +25,14 @@ projet.criteres_speciaux = Array(
 );*/
 if (typeof projet !== 'undefined')
 {
-  $("#btnExec").show();
-  $("#btnReinit").show();
-  $("#btn_exp_csv").prop("disabled", false);
-  loadSpecialCrit();
-  loadCol();
+  updateProject();
 }
 else
 {
   $("#btnExec").hide();
   $("#btnReinit").hide();
+  $("#btnNouveauCritere").prop("disabled", true);
+  $("#btnAjouterCol").prop("disabled", true);
   $("#btn_exp_csv").prop("disabled", true);
 }
 
@@ -104,6 +102,9 @@ $("#btn_sav_critere").click(function() {
   else
   {
     $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-one'>"+$("#nCritereNom").val()+"</a>");
+    projet.criteres_speciaux.push({'nom': $("#nCritereNom").val()}); // Ajouter aussi les variables et les scores $("#nCritereVar") et $("#nCritereVal")
+    loadSpecialCrit();
+    updateProject();
   }
 });
 
@@ -115,6 +116,7 @@ $("#btn_edit_col").click(function() {
 
 $("#btn_nouveau_proj").click(function() {
   projet = new Projet("Projet");
+  updateProject();
 });
 
 $("#btn_ouvrir_proj").click(function() {
@@ -198,6 +200,36 @@ function loadCol()
   }
 }
 
+function updateProject()
+{
+  if(projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
+  {
+    $("#btn_exp_csv").prop("disabled", false);
+    $("#btnExec").show();
+    $("#btnReinit").show();
+  }
+  if(projet.criteres_speciaux.length == 0)
+  {
+    $('#toggle-special').bootstrapToggle('disable');
+  }
+  else
+  {
+    $('#toggle-special').bootstrapToggle('enable');
+  }
+
+  $("#toggle-special").bootstrapToggle('off');
+  $("#btnNouveauCritere").prop("disabled", false);
+  $("#btnAjouterCol").prop("disabled", false);
+  loadSpecialCrit();
+  loadCol();
+}
+
+function saveProject()
+{
+  var projet_string = JSON.stringify(projet);
+  localStorage.setItem("projetDMS", projet_string);
+}
+
   $(document).on('click', '.item_crit', function(){
     $("#panel_edit").slideDown("slow");
   });
@@ -224,6 +256,9 @@ function loadCol()
 
   $("#close_ajouter_panel_col").click(function(){
     $("#panel_ajouter_col").slideUp("slow");
+  });
+
+  $("#btn_sav_colonne").click(function() {
   });
 
   $("#btnNouveauCritere").click(function(){
