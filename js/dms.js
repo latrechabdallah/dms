@@ -33,6 +33,7 @@ else
   $("#btnReinit").hide();
   $("#btnNouveauCritere").prop("disabled", true);
   $("#btnAjouterCol").prop("disabled", true);
+  $("#btn_open_csv").prop("disabled", true);
   $("#btn_exp_csv").prop("disabled", true);
 }
 
@@ -218,6 +219,7 @@ function updateProject()
   }
 
   $("#toggle-special").bootstrapToggle('off');
+  $("#btn_open_csv").prop("disabled", false);
   $("#btnNouveauCritere").prop("disabled", false);
   $("#btnAjouterCol").prop("disabled", false);
   loadSpecialCrit();
