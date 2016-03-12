@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     setTimeout(function() {
         //select all the a tag with name equal to modal
         $('#oeuf1').click(function(e) {
@@ -47,4 +48,9 @@ $(document).ready(function() {
             $('.window').hide();
         });
     }, 1000); //delay time
+
+    $('#oeuf2').raptorize({
+          'enterOn' : 'konami-code', //timer, konami-code, click
+          'delayTime' : 5000 //time before raptor attacks on timer mode
+     });
 });

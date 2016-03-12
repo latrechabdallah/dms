@@ -114,14 +114,14 @@ $("#btn_sav_critere").click(function() {
   }
   if(!vide && !trouve)
   {
-    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-one'>"+$("#nCritereNom").val()+"</a>");
+    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres'>"+$("#nCritereNom").val()+"</a>");
     projet.criteres_speciaux.push({'nom': $("#nCritereNom").val()}); // Ajouter aussi les variables et les scores $("#nCritereVar") et $("#nCritereVal")
     loadSpecialCrit();
     updateProject();
   }
 });
 
-$("#btn_edit_list").click(function() {
+$("#btn_edit_crit").click(function() {
 });
 
 $("#btn_edit_col").click(function() {
@@ -130,18 +130,21 @@ $("#btn_edit_col").click(function() {
 $("#btn_nouveau_proj").click(function() {
   if(projet != undefined)
   {
-    var confirmation = confirm("Êtes-vous sûr de vouloir créer un nouveau projet ? \n\n /!\\ Vous perdrez les données du projet actuel /!\\");
-    if(confirmation)
-    {
-      projet = new Projet("Projet");
-      updateProject();
-    }
+      var confirmation = $('[data-remodal-id=modal]').remodal();
+      confirmation.open();
   }
   else
   {
     projet = new Projet("Projet");
+    $("#toggle-special").bootstrapToggle('off');
     updateProject();
   }
+});
+
+$(document).on('confirmation', '.remodal', function () {
+  projet = new Projet("Projet");
+  $("#toggle-special").bootstrapToggle('off');
+  updateProject();
 });
 
 $("#btn_ouvrir_proj").click(function() {
@@ -212,7 +215,7 @@ function loadSpecialCrit()
   for(critere in projet.criteres_speciaux)
   {
     $("#selectCrit").append("<option>"+projet.criteres_speciaux[critere].nom+"</option>");
-    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-one' id='critere_"+critere+"'>"+projet.criteres_speciaux[critere].nom+"</a>");
+    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres' id='critere_"+critere+"'>"+projet.criteres_speciaux[critere].nom+"</a>");
   }
 }
 
@@ -221,7 +224,7 @@ function loadCol()
   $("#colList a").remove();
   for(colonne in projet.tableau.colonnes)
   {
-    $("#colList").append("<a href='#' class='list-group-item item_crit context-menu-one' id='colonne_"+colonne+"'>"+projet.tableau.colonnes[colonne].name+"</a>");
+    $("#colList").append("<a href='#' class='list-group-item item_crit context-menu-colonnes' id='colonne_"+colonne+"'>"+projet.tableau.colonnes[colonne].name+"</a>");
   }
 }
 
@@ -329,15 +332,17 @@ $( "#fileOpen" ).change(function() {
 });
 
 $.contextMenu({
-            selector: '.context-menu-one',
+            selector: '.context-menu-criteres',
             callback: function(key, options) {
                 if(key == "edit")
                 {
                   $('.item_crit').trigger('click');
                 }
-                else
+                else if(key == "delete")
                 {
-
+                  var position = projet.criteres_speciaux.map(function(e) { return e.nom; }).indexOf($(this).val());
+                  projet.criteres_speciaux.splice(position, 1);
+                  $(this).remove();
                 }
             },
             items: {
@@ -346,6 +351,20 @@ $.contextMenu({
             }
         });
 
-        $('.context-menu-one').on('click', function(e){
-            console.log('clicked', this);
-        })
+$.contextMenu({
+            selector: '.context-menu-colonnes',
+            callback: function(key, options) {
+                if(key == "edit")
+                {
+                  $('.item_crit').trigger('click');
+                }
+                else if(key == "delete")
+                {
+                  $(this).remove();
+                }
+              },
+              items: {
+                "edit": {name: "Modifier", icon: "edit"},
+                "delete": {name: "Supprimer", icon: "delete"}
+              }
+            });

@@ -6,12 +6,15 @@
     <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid-theme.min.css" />
     <link type="text/css" rel="stylesheet" href="jQuery-contextMenu/jquery.contextMenu.min.css" />
     <link type="text/css" rel="stylesheet" href="bootstrap-toggle/bootstrap-toggle.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/remodal.css" />
+    <link type="text/css" rel="stylesheet" href="css/remodal-default-theme.css" />
     <script src="js/jquery.js"></script>
     <script type="text/javascript" src="jsgrid-1.4.1/jsgrid.min.js"></script>
     <script type="text/javascript" src="jQuery-contextMenu/jquery.contextMenu.min.js"></script>
     <script type="text/javascript" src="jQuery-contextMenu/jquery.ui.position.min.js"></script>
     <script type="text/javascript" src="bootstrap-toggle/bootstrap-toggle.min.js"></script>
     <script type="text/javascript" src="js/noty/packaged/jquery.noty.packaged.min.js"></script>
+    <script type="text/javascript" src="js/remodal.min.js"></script>
     <title>DMS Project - Application</title>
   </head>
     <body>
@@ -55,10 +58,10 @@
                     </div>
                     <button type="button" class="btn btn-success" id="btn_sav_critere">Enregistrer</button>
                   </div>
-                </div> <!-- Fin panel nouvelle liste -->
+                </div> <!-- Fin panel nouveau critère -->
                 <div class="list-group scrollable-menu" id="specialCrit">
                 </div>
-                <div id="panel_edit" class="panel panel-default" style="display: none"> <!-- Panel modifier liste -->
+                <div id="panel_edit" class="panel panel-default" style="display: none"> <!-- Panel modifier critère -->
                     <div class="panel-body">
                         <p>
                         Modifier le crit&egrave;re :
@@ -78,9 +81,9 @@
                         <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
                         <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2">
                       </div>
-                      <button type="button" class="btn btn-success" id="btn_edit_list">Enregistrer</button>
+                      <button type="button" class="btn btn-success" id="btn_edit_crit">Enregistrer</button>
                     </div>
-                </div> <!-- Fin panel modifier liste -->
+                </div> <!-- Fin panel modifier critere -->
               </div> <!-- Fin du contenu du panel de gauche -->
             </div>
             <div class="panel panel-default">
@@ -166,12 +169,23 @@
             <p>Ceci est un secret, ne le montre à personne !</p>
             <br/>
             <a href="#" class="close">Fermer</a>
-
           </div>
         <div id="mask"></div>
       </div>
+      <button id="oeuf2" style="display: none">Test</button>
+      <div data-remodal-id="modal">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <h1>Confirmation</h1>
+        <p>
+          Êtes-vous sûr de vouloir créer un nouveau projet ? <br><br><font color="red">/!\ Vous perdrez les données du projet actuel /!\</font>
+        </p>
+        <br>
+        <button data-remodal-action="cancel" class="remodal-cancel">Non</button>
+        <button data-remodal-action="confirm" class="remodal-confirm">Oui</button>
+      </div>
       <script src="PapaParse/papaparse.js"></script>
       <script src="js/dms.js"></script>
+      <script src="Raptorize-Kit/jquery.raptorize.1.0.js"></script>
       <script src="js/lol.js"></script>
     </body>
   </html>
