@@ -70,6 +70,7 @@ $("#btn_exp_csv").click(function() {
 });
 
 $("#btn_sav_critere").click(function() {
+  var vide = false;
   if($("#nCritereNom").val() == "" || $("nCritereVar").val() == "" || $("nCritereVal").val() == "")
   {
     var n = noty({
@@ -84,23 +85,34 @@ $("#btn_sav_critere").click(function() {
         speed: 500 // opening & closing animation speed
       }
     });
+    vide = true;
   }
-  else if(projet.criteres_speciaux.indexOf($("#nCritereNom").val(), 0) != -1)
+  if(!vide)
   {
-    var n = noty({
-      layout: 'bottomLeft',
-      theme: 'relax',
-      text: 'Il existe déjà un critère portant ce nom',
-      type: 'error',
-      animation: {
-        open: {height: 'toggle'}, // jQuery animate function property object
-        close: {height: 'toggle'}, // jQuery animate function property object
-        easing: 'swing', // easing
-        speed: 500 // opening & closing animation speed
-      }
-    });
+    var i = 0;
+    var trouve = false;
+    while(i < projet.criteres_speciaux.length && !trouve)
+    {
+      if(projet.criteres_speciaux[i].nom == $("#nCritereNom").val()) trouve = true;
+      i += 1;
+    }
+    if(trouve)
+    {
+      var n = noty({
+        layout: 'bottomLeft',
+        theme: 'relax',
+        text: 'Il existe déjà un critère portant ce nom',
+        type: 'error',
+        animation: {
+          open: {height: 'toggle'}, // jQuery animate function property object
+          close: {height: 'toggle'}, // jQuery animate function property object
+          easing: 'swing', // easing
+          speed: 500 // opening & closing animation speed
+        }
+      });
+    }
   }
-  else
+  if(!vide && !trouve)
   {
     $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-one'>"+$("#nCritereNom").val()+"</a>");
     projet.criteres_speciaux.push({'nom': $("#nCritereNom").val()}); // Ajouter aussi les variables et les scores $("#nCritereVar") et $("#nCritereVal")
@@ -116,8 +128,20 @@ $("#btn_edit_col").click(function() {
 });
 
 $("#btn_nouveau_proj").click(function() {
-  projet = new Projet("Projet");
-  updateProject();
+  if(projet != undefined)
+  {
+    var confirmation = confirm("Êtes-vous sûr de vouloir créer un nouveau projet ? \n\n /!\\ Vous perdrez les données du projet actuel /!\\");
+    if(confirmation)
+    {
+      projet = new Projet("Projet");
+      updateProject();
+    }
+  }
+  else
+  {
+    projet = new Projet("Projet");
+    updateProject();
+  }
 });
 
 $("#btn_ouvrir_proj").click(function() {
