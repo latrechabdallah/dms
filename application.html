@@ -22,8 +22,9 @@
         <ul class="nav nav-pills">
           <li><a href="#" id="btn_nouveau_proj">Nouveau</a></li>
           <li><a href="#" id="btn_ouvrir_proj">Ouvrir...</a></li>
-          <li><a href="#" title="">Exporter le projet</a></li>
+          <li><a href="#" id="btn_exp_proj" title="">Exporter le projet</a></li>
           <li><a href="#">Aide</a></li>
+          <li><a href="#" id="btn_settings"><font color="grey" size="4"><span class="glyphicon glyphicon-cog"></span></font></a></li>
         </ul>
         <input type="file" id="fileOpen" name="project_open" title="Ouvrir un fichier json" accept =".json" style="display: none"/>
       </nav>
@@ -172,16 +173,25 @@
           </div>
         <div id="mask"></div>
       </div>
-      <button id="oeuf2" style="display: none">Test</button>
+      <button id="oeuf2" style="display: none">Surprise</button>
       <div data-remodal-id="modal">
         <button data-remodal-action="close" class="remodal-close"></button>
         <h1>Confirmation</h1>
         <p>
-          Êtes-vous sûr de vouloir créer un nouveau projet ? <br><br><font color="red">/!\ Vous perdrez les données du projet actuel /!\</font>
+          Êtes-vous sûr de vouloir créer un nouveau projet ? <br><br><font color="red"><span class="glyphicon glyphicon-alert"></span> Vous perdrez les données du projet actuel <span class="glyphicon glyphicon-alert"></span></font>
         </p>
         <br>
         <button data-remodal-action="cancel" class="remodal-cancel">Non</button>
         <button data-remodal-action="confirm" class="remodal-confirm">Oui</button>
+      </div>
+      <div data-remodal-id="modal-settings">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <h1>Param&egrave;tres</h1>
+        <br>
+        <div class="input-group inp" title="Choisissez un nom pour votre projet">
+          <span class="input-group-addon" id="sizing-addon2">Nom du projet</span>
+          <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="nom_projet">
+        </div>
       </div>
       <script src="PapaParse/papaparse.js"></script>
       <script src="js/dms.js"></script>

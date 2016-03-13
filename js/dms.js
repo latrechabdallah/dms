@@ -35,6 +35,7 @@ else
   $("#btnAjouterCol").prop("disabled", true);
   $("#btn_open_csv").prop("disabled", true);
   $("#btn_exp_csv").prop("disabled", true);
+  $("btn_exp_proj").addClass("disabled");
 }
 
 $("#btn_open_csv").click(function() {
@@ -151,6 +152,11 @@ $("#btn_ouvrir_proj").click(function() {
   $('#fileOpen').trigger('click');
 });
 
+$("#btn_settings").click(function() {
+  var settings = $('[data-remodal-id=modal-settings]').remodal();
+  settings.open();
+});
+
 $("#btnReinit").click(function() {
   $("#jsGrid").jsGrid({
     height: "auto",
@@ -249,6 +255,7 @@ function updateProject()
   $("#btn_open_csv").prop("disabled", false);
   $("#btnNouveauCritere").prop("disabled", false);
   $("#btnAjouterCol").prop("disabled", false);
+  $("btn_exp_proj").removeClass("disabled");
   loadSpecialCrit();
   loadCol();
 }
