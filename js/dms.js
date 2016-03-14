@@ -1,7 +1,7 @@
-function Projet(nom)
+function Projet(nom, key)
 {
   this.nom = nom;
-  this.key = "";
+  this.key = key;
   this.tableau = {};
   this.tableau.colonnes = [];
   this.tableau.donnees = [];
@@ -9,24 +9,16 @@ function Projet(nom)
 }
 
 var projet;
+
+// Fenetres modales
+var confirmation;
 var settings;
 var key;
 
 if(typeof(Storage) !== "undefined") {
     projet = JSON.parse(localStorage.getItem("projetDMS")) || undefined;
 } else {
-  var n = noty({
-    layout: 'bottomLeft',
-    theme: 'relax',
-    text: 'Attention, votre navigateur ne supporte pas le stockage local',
-    type: 'error',
-    animation: {
-      open: {height: 'toggle'}, // jQuery animate function property object
-      close: {height: 'toggle'}, // jQuery animate function property object
-      easing: 'swing', // easing
-      speed: 500 // opening & closing animation speed
-    }
-  });
+  notification('error', 'Attention, votre navigateur ne supporte pas le stockage local')
 }
 
 if (typeof projet !== 'undefined')
@@ -79,48 +71,49 @@ $("#btn_exp_csv").click(function() {
 
 $("#btn_sav_critere").click(function() {
   var vide = false;
-  if($("#nCritereNom").val() == "" || $("nCritereVar").val() == "" || $("nCritereVal").val() == "")
+  var format_correct = true;
+  var nb_egaux = true;
+  if($("#nCritereNom").val() == "" || $("#nCritereVar").val() == "" || $("#nCritereVal").val() == "")
   {
-    var n = noty({
-      layout: 'bottomLeft',
-      theme: 'relax',
-      text: 'Tous les champs doivent être remplis',
-      type: 'error',
-      animation: {
-        open: {height: 'toggle'}, // jQuery animate function property object
-        close: {height: 'toggle'}, // jQuery animate function property object
-        easing: 'swing', // easing
-        speed: 500 // opening & closing animation speed
-      }
-    });
+    notification('error', 'Tous les champs doivent être remplis');
     vide = true;
   }
   if(!vide)
   {
     var i = 0;
     var trouve = false;
-    while(i < projet.criteres_speciaux.length && !trouve)
+    var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
+    var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
+
+    if(!(reg1.test($("#nCritereVar").val())))
+    {
+      format_correct = false;
+      notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+    }
+    else if(!(reg2.test($("#nCritereVal").val())))
+    {
+      format_correct = false;
+      notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+    }
+    if(format_correct)
+    {
+      if($("#nCritereVar").val().split(";").length != $("#nCritereVal").val().split(";").length)
+      {
+        nb_egaux = false;
+        notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
+      }
+    }
+    while(i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
     {
       if(projet.criteres_speciaux[i].nom == $("#nCritereNom").val()) trouve = true;
       i += 1;
     }
     if(trouve)
     {
-      var n = noty({
-        layout: 'bottomLeft',
-        theme: 'relax',
-        text: 'Il existe déjà un critère portant ce nom',
-        type: 'error',
-        animation: {
-          open: {height: 'toggle'}, // jQuery animate function property object
-          close: {height: 'toggle'}, // jQuery animate function property object
-          easing: 'swing', // easing
-          speed: 500 // opening & closing animation speed
-        }
-      });
+      notification('error', 'Il existe déjà un critère portant ce nom');
     }
   }
-  if(!vide && !trouve)
+  if(!vide && !trouve && format_correct && nb_egaux)
   {
     $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres'>"+$("#nCritereNom").val()+"</a>");
     projet.criteres_speciaux.push({'nom': $("#nCritereNom").val()}); // Ajouter aussi les variables et les scores $("#nCritereVar") et $("#nCritereVal")
@@ -138,25 +131,69 @@ $("#btn_edit_col").click(function() {
 $("#btn_nouveau_proj").click(function() {
   if(projet != undefined)
   {
-      var confirmation = $('[data-remodal-id=modal]').remodal();
-      confirmation.open();
+      $("#btn_confirm_key_del").hide();
+      $("#btn_confirm_key_new").show();
+      confirmKey();
   }
   else
   {
-    projet = new Projet("Projet");
     $("#toggle-special").bootstrapToggle('off');
-    updateProject();
+    new_project = $('[data-remodal-id=modal-new-project]').remodal();
+    new_project.open();
   }
 });
 
-$(document).on('confirmation', '.remodal', function () {
-  projet = new Projet("Projet");
-  $("#toggle-special").bootstrapToggle('off');
-  updateProject();
+$("#btn_confirm_key_new").click(function() {
+  if($("#project_key").val() == projet.key)
+  {
+    $("#project_key").val("");
+    key.close();
+    confirmation = $('[data-remodal-id=modal]').remodal();
+    confirmation.open();
+  }
+  else
+  {
+    notification('error', 'La clé entrée est incorrecte');
+  }
+});
+
+$("#btn_new_project").click(function() {
+  if($("#project_name_new").val() == "" || $("#project_key_new").val() == "")
+  {
+    notification('error', 'Tous les champs doivent être remplis');
+  }
+  else if($("#project_key_new").val().length < 4)
+  {
+    notification('error', 'La clé doit faire au moins 4 caractères');
+  }
+  else
+  {
+    projet = new Projet($("#project_name_new").val(), $("#project_key_new").val());
+    new_project.close();
+    updateProject();
+    changeTitle($("#project_name_new").val());
+    $("#project_name_new").val("");
+    $("#project_key_new").val("");
+    if(projet != undefined)
+    {
+      notification('success', 'Le projet '+projet.nom+' a bien été créé');
+    }
+  }
 });
 
 $("#btn_ouvrir_proj").click(function() {
   $('#fileOpen').trigger('click');
+});
+
+$("#btn_cancel_new_proj").click(function() {
+  confirmation.close();
+});
+
+$("#btn_val_new_proj").click(function() {
+  confirmation.close();
+  new_project = $('[data-remodal-id=modal-new-project]').remodal();
+  new_project.open();
+  $("#toggle-special").bootstrapToggle('off');
 });
 
 $("#btn_settings").click(function() {
@@ -282,10 +319,8 @@ function saveProject()
   localStorage.setItem("projetDMS", projet_string);
 }
 
-function changeTitle() {
-  console.log("Updating project name");
-  setTimeout(changeTitle, 3000);
-  projet.nom = $("#nom_projet").val();
+function changeTitle(newTitle) {
+  projet.nom = newTitle;
   updateTitle();
 }
 
@@ -300,25 +335,33 @@ function confirmKey()
   key.open();
 }
 
-$("#btn_confirm_key").click(function(){
-  if($("project_key").val() == projet.key)
+function notification(type, message)
+{
+  var n = noty({
+    layout: 'bottomLeft',
+    theme: 'relax',
+    text: message,
+    type: type,
+    animation: {
+      open: {height: 'toggle'}, // jQuery animate function property object
+      close: {height: 'toggle'}, // jQuery animate function property object
+      easing: 'swing', // easing
+      speed: 500 // opening & closing animation speed
+    }
+  });
+}
+
+$("#btn_confirm_key_del").click(function(){
+  if($("#project_key").val() == projet.key)
   {
     localStorage.removeItem("projetDMS");
+    $("#project_key").val("");
+    key.close();
+    location.reload();
   }
   else
   {
-    var n = noty({
-      layout: 'bottomLeft',
-      theme: 'relax',
-      text: 'La clé entrée est incorrecte',
-      type: 'error',
-      animation: {
-        open: {height: 'toggle'}, // jQuery animate function property object
-        close: {height: 'toggle'}, // jQuery animate function property object
-        easing: 'swing', // easing
-        speed: 500 // opening & closing animation speed
-      }
-    });
+    notification('error', 'La clé entrée est incorrecte');
   }
 });
 
@@ -362,25 +405,15 @@ $("#close_nouveau_critere").click(function(){
 });
 
 $("#btn_sav_settings").click(function() {
-  console.log("Saving settings");
-  if($("#nom_projet").val() != projet.nom) changeTitle();
+  if($("#nom_projet").val() != projet.nom) changeTitle($("#nom_projet").val());
   settings.close();
   saveProject();
-  var n = noty({
-    layout: 'bottomLeft',
-    theme: 'relax',
-    text: 'Les paramètres ont bien été enregistrés',
-    type: 'success',
-    animation: {
-      open: {height: 'toggle'}, // jQuery animate function property object
-      close: {height: 'toggle'}, // jQuery animate function property object
-      easing: 'swing', // easing
-      speed: 500 // opening & closing animation speed
-    }
-  });
+  notification('success', 'Les paramètres ont bien été enregistrés');
 });
 
 $("#del_local").click(function() {
+  $("#btn_confirm_key_del").show();
+  $("#btn_confirm_key_new").hide();
   confirmKey();
   key.close();
 });
@@ -430,6 +463,7 @@ $.contextMenu({
                   var position = projet.criteres_speciaux.map(function(e) { return e.nom; }).indexOf($(this).val());
                   projet.criteres_speciaux.splice(position, 1);
                   $(this).remove();
+                  saveProject();
                 }
             },
             items: {
@@ -448,6 +482,8 @@ $.contextMenu({
                 else if(key == "delete")
                 {
                   $(this).remove();
+                  updateTable();
+                  saveProject();
                 }
               },
               items: {

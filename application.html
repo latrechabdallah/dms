@@ -181,8 +181,8 @@
           Êtes-vous sûr de vouloir créer un nouveau projet ? <br><br><font color="red"><span class="glyphicon glyphicon-alert"></span> Vous perdrez les données du projet actuel <span class="glyphicon glyphicon-alert"></span></font>
         </p>
         <br>
-        <button data-remodal-action="cancel" class="remodal-cancel">Non</button>
-        <button data-remodal-action="confirm" class="remodal-confirm">Oui</button>
+        <button class="remodal-cancel" id="btn_cancel_new_proj">Non</button>
+        <button class="remodal-confirm" id="btn_val_new_proj">Oui</button>
       </div>
       <div data-remodal-id="modal-settings">
         <button data-remodal-action="close" class="remodal-close"></button>
@@ -199,13 +199,28 @@
       </div>
       <div data-remodal-id="modal-key">
         <button data-remodal-action="close" class="remodal-close"></button>
-        <h2>La clé du projet est requise pour effectuer cette action</h2>
+        <h2>Veuillez entrer la cl&eacute; du projet</h2>
         <br>
         <div class="input-group inp" title="Entrez la cl&eacute; de ce projet">
           <span class="input-group-addon" id="sizing-addon2">Clé</span>
-          <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key">
+          <input type="password" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key">
         </div>
-        <button class="remodal-confirm" id="btn_confirm_key">Enregistrer</button>
+        <button class="remodal-confirm" id="btn_confirm_key_del">Valider</button>
+        <button class="remodal-confirm" id="btn_confirm_key_new">Valider</button>
+      </div>
+      <div data-remodal-id="modal-new-project">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <h2>Nouveau projet</h2>
+        <br>
+        <div class="input-group inp" title="Choisissez un nom pour ce projet">
+          <span class="input-group-addon" id="sizing-addon2">Nom</span>
+          <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_name_new">
+        </div>
+        <div class="input-group inp" title="Cette cl&eacute; sera demand&eacute;e pour supprimer le projet">
+          <span class="input-group-addon" id="sizing-addon2">Clé</span>
+          <input type="password" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key_new">
+        </div>
+        <button class="remodal-confirm" id="btn_new_project">Cr&eacute;er</button>
       </div>
       <script src="PapaParse/papaparse.js"></script>
       <script src="js/dms.js"></script>
