@@ -186,12 +186,26 @@
       </div>
       <div data-remodal-id="modal-settings">
         <button data-remodal-action="close" class="remodal-close"></button>
-        <h1>Param&egrave;tres</h1>
+        <h2>Param&egrave;tres</h2>
         <br>
         <div class="input-group inp" title="Choisissez un nom pour votre projet">
           <span class="input-group-addon" id="sizing-addon2">Nom du projet</span>
           <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="nom_projet">
         </div>
+        <br>
+        <button class="btn btn-danger" id="del_local">Effacer les donn&eacute;es locales</button>
+        <br><br><br>
+        <button class="remodal-confirm" id="btn_sav_settings">Enregistrer</button>
+      </div>
+      <div data-remodal-id="modal-key">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <h2>La clé du projet est requise pour effectuer cette action</h2>
+        <br>
+        <div class="input-group inp" title="Entrez la cl&eacute; de ce projet">
+          <span class="input-group-addon" id="sizing-addon2">Clé</span>
+          <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key">
+        </div>
+        <button class="remodal-confirm" id="btn_confirm_key">Enregistrer</button>
       </div>
       <script src="PapaParse/papaparse.js"></script>
       <script src="js/dms.js"></script>

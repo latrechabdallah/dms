@@ -1,6 +1,7 @@
 function Projet(nom)
 {
   this.nom = nom;
+  this.key = "";
   this.tableau = {};
   this.tableau.colonnes = [];
   this.tableau.donnees = [];
@@ -8,23 +9,29 @@ function Projet(nom)
 }
 
 var projet;
-/*var projet = new Projet("Default project");
-projet.tableau.colonnes = Array(
-{ name: "Constructeur", type: "text" },
-{ name: "Couleur", type: "text" },
-{ name: "Puissance", type: "number" },
-{ name: "Millesime", type: "number" },
-{ name: "Nombre de portes", type: "number", valueField: "Id", textField: "Name" },
-{ name: "Nombre de places", type: "number", sorting: true},
-{ type: "control" });
+var settings;
+var key;
 
-projet.criteres_speciaux = Array(
-{"nom":"Couleurs", "variables":["bleu", "vert", "rouge", "noir"], "valeurs":["2", "3", "4", "6"]},
-{"nom":"Villes", "variables":["Lannion", "Plélo", "Saint-Brieuc"], "valeurs":["2", "5", "1"]},
-{"nom":"Refroidissements", "variables":["air", "eau", "huile"], "valeurs":["2", "3", "4"]}
-);*/
+if(typeof(Storage) !== "undefined") {
+    projet = JSON.parse(localStorage.getItem("projetDMS")) || undefined;
+} else {
+  var n = noty({
+    layout: 'bottomLeft',
+    theme: 'relax',
+    text: 'Attention, votre navigateur ne supporte pas le stockage local',
+    type: 'error',
+    animation: {
+      open: {height: 'toggle'}, // jQuery animate function property object
+      close: {height: 'toggle'}, // jQuery animate function property object
+      easing: 'swing', // easing
+      speed: 500 // opening & closing animation speed
+    }
+  });
+}
+
 if (typeof projet !== 'undefined')
 {
+  updateTitle();
   updateProject();
 }
 else
@@ -153,8 +160,12 @@ $("#btn_ouvrir_proj").click(function() {
 });
 
 $("#btn_settings").click(function() {
-  var settings = $('[data-remodal-id=modal-settings]').remodal();
-  settings.open();
+  if(projet != undefined)
+  {
+    $("#nom_projet").val(projet.nom);
+    settings = $('[data-remodal-id=modal-settings]').remodal();
+    settings.open();
+  }
 });
 
 $("#btnReinit").click(function() {
@@ -242,6 +253,11 @@ function updateProject()
     $("#btnExec").show();
     $("#btnReinit").show();
   }
+  else
+  {
+    $("#btnExec").hide();
+    $("#btnReinit").hide();
+  }
   if(projet.criteres_speciaux.length == 0)
   {
     $('#toggle-special').bootstrapToggle('disable');
@@ -255,9 +271,9 @@ function updateProject()
   $("#btn_open_csv").prop("disabled", false);
   $("#btnNouveauCritere").prop("disabled", false);
   $("#btnAjouterCol").prop("disabled", false);
-  $("btn_exp_proj").removeClass("disabled");
   loadSpecialCrit();
   loadCol();
+  saveProject();
 }
 
 function saveProject()
@@ -266,60 +282,124 @@ function saveProject()
   localStorage.setItem("projetDMS", projet_string);
 }
 
-  $(document).on('click', '.item_crit', function(){
-    $("#panel_edit").slideDown("slow");
-  });
+function changeTitle() {
+  console.log("Updating project name");
+  setTimeout(changeTitle, 3000);
+  projet.nom = $("#nom_projet").val();
+  updateTitle();
+}
 
-  $(".item_crit").click(function(){
-    $("#panel_edit").slideDown("slow");
-  });
+function updateTitle()
+{
+  document.title = "DMS - "+projet.nom;
+}
 
-  $("#close_edit_panel").click(function(){
-    $("#panel_edit").slideUp("slow");
-  });
+function confirmKey()
+{
+  key = $('[data-remodal-id=modal-key]').remodal();
+  key.open();
+}
 
-  $(".colonne").click(function(){
-    $("#panel_edit_col").slideDown("slow");
-  });
-
-  $("#close_edit_panel_col").click(function(){
-    $("#panel_edit_col").slideUp("slow");
-  });
-
-  $("#btnAjouterCol").click(function(){
-    $("#panel_ajouter_col").slideToggle("slow");
-  });
-
-  $("#close_ajouter_panel_col").click(function(){
-    $("#panel_ajouter_col").slideUp("slow");
-  });
-
-  $("#btn_sav_colonne").click(function() {
-  });
-
-  $("#btnNouveauCritere").click(function(){
-    $("#panel_nouveau_critere").slideToggle("slow");
-  });
-
-  $("#close_nouveau_critere").click(function(){
-    $("#panel_nouveau_critere").slideUp("slow");
-  });
-
-  $('#toggle-special').bootstrapToggle();
-  $('#selectCrit').hide();
-
-  $('#toggle-special').change(function() {
-      if($(this).prop('checked'))
-      {
-        $('#nomCol').hide();
-        $('#selectCrit').show();
+$("#btn_confirm_key").click(function(){
+  if($("project_key").val() == projet.key)
+  {
+    localStorage.removeItem("projetDMS");
+  }
+  else
+  {
+    var n = noty({
+      layout: 'bottomLeft',
+      theme: 'relax',
+      text: 'La clé entrée est incorrecte',
+      type: 'error',
+      animation: {
+        open: {height: 'toggle'}, // jQuery animate function property object
+        close: {height: 'toggle'}, // jQuery animate function property object
+        easing: 'swing', // easing
+        speed: 500 // opening & closing animation speed
       }
-      else
-      {
-        $('#nomCol').show();
-        $('#selectCrit').hide();
-      }
-    })
+    });
+  }
+});
+
+$(document).on('click', '.item_crit', function(){
+  $("#panel_edit").slideDown("slow");
+});
+
+$(".item_crit").click(function(){
+  $("#panel_edit").slideDown("slow");
+});
+
+$("#close_edit_panel").click(function(){
+  $("#panel_edit").slideUp("slow");
+});
+
+$(".colonne").click(function(){
+  $("#panel_edit_col").slideDown("slow");
+});
+
+$("#close_edit_panel_col").click(function(){
+  $("#panel_edit_col").slideUp("slow");
+});
+
+$("#btnAjouterCol").click(function(){
+  $("#panel_ajouter_col").slideToggle("slow");
+});
+
+$("#close_ajouter_panel_col").click(function(){
+  $("#panel_ajouter_col").slideUp("slow");
+});
+
+$("#btn_sav_colonne").click(function() {
+});
+
+$("#btnNouveauCritere").click(function() {
+  $("#panel_nouveau_critere").slideToggle("slow");
+});
+
+$("#close_nouveau_critere").click(function(){
+  $("#panel_nouveau_critere").slideUp("slow");
+});
+
+$("#btn_sav_settings").click(function() {
+  console.log("Saving settings");
+  if($("#nom_projet").val() != projet.nom) changeTitle();
+  settings.close();
+  saveProject();
+  var n = noty({
+    layout: 'bottomLeft',
+    theme: 'relax',
+    text: 'Les paramètres ont bien été enregistrés',
+    type: 'success',
+    animation: {
+      open: {height: 'toggle'}, // jQuery animate function property object
+      close: {height: 'toggle'}, // jQuery animate function property object
+      easing: 'swing', // easing
+      speed: 500 // opening & closing animation speed
+    }
+  });
+});
+
+$("#del_local").click(function() {
+  confirmKey();
+  key.close();
+});
+
+$('#toggle-special').bootstrapToggle();
+$('#selectCrit').hide();
+
+$('#toggle-special').change(function() {
+    if($(this).prop('checked'))
+    {
+      $('#nomCol').hide();
+      $('#selectCrit').show();
+    }
+    else
+    {
+      $('#nomCol').show();
+      $('#selectCrit').hide();
+    }
+  })
 
 $( "#fileOpen" ).change(function() {
   var file = document.getElementById('fileOpen').files[0];
