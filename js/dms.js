@@ -9,6 +9,7 @@ function Projet(nom, key)
 }
 
 var projet;
+var position_click;
 
 // Fenetres modales
 var confirmation;
@@ -69,11 +70,19 @@ $("#btn_exp_csv").click(function() {
   }
 });
 
-$("#btn_sav_critere").click(function() {
+function checkValidityNew()
+{
+  var valid = false;
   var vide = false;
+  var index = -1;
   var format_correct = true;
   var nb_egaux = true;
-  if($("#nCritereNom").val() == "" || $("#nCritereVar").val() == "" || $("#nCritereVal").val() == "")
+  var nom_crit = $("#nCritereNom").val();
+  var variables = $("#nCritereVar").val();
+  var valeurs = $("#nCritereVal").val();
+
+
+  if(nom_crit == "" || variables == "" || valeurs == "")
   {
     notification('error', 'Tous les champs doivent être remplis');
     vide = true;
@@ -85,19 +94,19 @@ $("#btn_sav_critere").click(function() {
     var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
     var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
 
-    if(!(reg1.test($("#nCritereVar").val())))
+    if(!(reg1.test(variables)))
     {
       format_correct = false;
       notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
     }
-    else if(!(reg2.test($("#nCritereVal").val())))
+    else if(!(reg2.test(valeurs)))
     {
       format_correct = false;
       notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
     }
     if(format_correct)
     {
-      if($("#nCritereVar").val().split(";").length != $("#nCritereVal").val().split(";").length)
+      if(variables.split(";").length != valeurs.split(";").length)
       {
         nb_egaux = false;
         notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
@@ -105,7 +114,10 @@ $("#btn_sav_critere").click(function() {
     }
     while(i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
     {
-      if(projet.criteres_speciaux[i].nom == $("#nCritereNom").val()) trouve = true;
+      if(projet.criteres_speciaux[i].nom == nom_crit)
+      {
+          trouve = true;
+      }
       i += 1;
     }
     if(trouve)
@@ -115,6 +127,74 @@ $("#btn_sav_critere").click(function() {
   }
   if(!vide && !trouve && format_correct && nb_egaux)
   {
+    valid = true;
+  }
+  return valid;
+}
+
+function checkValidityEdit()
+{
+  var valid = false;
+  var vide = false;
+  var format_correct = true;
+  var nb_egaux = true;
+  var nom_crit = $("#mCritereNom").val();
+  var variables = $("#mCritereVar").val();
+  var valeurs = $("#mCritereVal").val();
+
+
+  if(nom_crit == "" || variables == "" || valeurs == "")
+  {
+    notification('error', 'Tous les champs doivent être remplis');
+    vide = true;
+  }
+  if(!vide)
+  {
+    var i = 0;
+    var trouve = false;
+    var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
+    var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
+
+    if(!(reg1.test(variables)))
+    {
+      format_correct = false;
+      notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+    }
+    else if(!(reg2.test(valeurs)))
+    {
+      format_correct = false;
+      notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+    }
+    if(format_correct)
+    {
+      if(variables.split(";").length != valeurs.split(";").length)
+      {
+        nb_egaux = false;
+        notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
+      }
+    }
+    while(i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
+    {
+      if(projet.criteres_speciaux[i].nom == nom_crit && nom_crit != projet.criteres_speciaux[position_click].nom)
+      {
+          trouve = true;
+      }
+      i += 1;
+    }
+    if(trouve)
+    {
+      notification('error', 'Le critère doit soit porter le même nom, soit un nouveau nom');
+    }
+  }
+  if(!vide && !trouve && format_correct && nb_egaux)
+  {
+    valid = true;
+  }
+  return valid;
+}
+
+$("#btn_sav_critere").click(function() {
+  if(checkValidityNew()) {
     $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres'>"+$("#nCritereNom").val()+"</a>");
     var variables = $("#nCritereVar").val().split(";");
     var valeurs = $("#nCritereVal").val().split(";");
@@ -128,7 +208,19 @@ $("#btn_sav_critere").click(function() {
 });
 
 $("#btn_edit_crit").click(function() {
-  notification('information', "ne fonctionne pas pour l'instant");
+  if(checkValidityEdit())
+  {
+    $("#critere_"+position_click).val($("#mCritereNom").val());
+    var variables = $("#mCritereVar").val().split(";");
+    var valeurs = $("#mCritereVal").val().split(";");
+    projet.criteres_speciaux[position_click] = {'nom': $("#mCritereNom").val(), 'variables': variables, 'valeurs': valeurs};
+    $("#mCritereNom").val("");
+    $("#mCritereVar").val("");
+    $("#mCritereVal").val("");
+    $("#close_edit_panel").trigger('click');
+    loadSpecialCrit();
+    updateProject();
+  }
 });
 
 $("#btn_edit_col").click(function() {
@@ -457,8 +549,8 @@ $( "#fileOpen" ).change(function() {
 function editCritere(element)
 {
   var id_sub = element.attr("id").split("_");
-  var position = id_sub[1];
-  var critere_special = projet.criteres_speciaux[position];
+  position_click = id_sub[1];
+  var critere_special = projet.criteres_speciaux[position_click];
   var variables = critere_special.variables.join(";");
   var valeurs = critere_special.valeurs.join(";");
   $("#mCritereNom").val(critere_special.nom);
