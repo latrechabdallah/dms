@@ -567,6 +567,7 @@ function updateTitle()
 function confirmKey()
 {
   key = $('[data-remodal-id=modal-key]').remodal();
+  $("#project_key").val("");
   key.open();
 }
 
