@@ -5,11 +5,13 @@ function Projet(nom, key)
   this.tableau = {};
   this.tableau.colonnes = [];
   this.tableau.donnees = [];
+  this.tableau.poids = [];
   this.criteres_speciaux = [];
 }
 
 var projet;
 var position_click;
+var position_click_col;
 
 // Fenetres modales
 var confirmation;
@@ -26,6 +28,7 @@ if (typeof projet !== 'undefined')
 {
   updateTitle();
   updateProject();
+  updateTable();
 }
 else
 {
@@ -195,14 +198,12 @@ function checkValidityEdit()
 
 $("#btn_sav_critere").click(function() {
   if(checkValidityNew()) {
-    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres'>"+$("#nCritereNom").val()+"</a>");
     var variables = $("#nCritereVar").val().split(";");
     var valeurs = $("#nCritereVal").val().split(";");
     projet.criteres_speciaux.push({'nom': $("#nCritereNom").val(), 'variables': variables, 'valeurs': valeurs});
     $("#nCritereNom").val("");
     $("#nCritereVar").val("");
     $("#nCritereVal").val("");
-    loadSpecialCrit();
     updateProject();
   }
 });
@@ -210,7 +211,6 @@ $("#btn_sav_critere").click(function() {
 $("#btn_edit_crit").click(function() {
   if(checkValidityEdit())
   {
-    $("#critere_"+position_click).val($("#mCritereNom").val());
     var variables = $("#mCritereVar").val().split(";");
     var valeurs = $("#mCritereVal").val().split(";");
     projet.criteres_speciaux[position_click] = {'nom': $("#mCritereNom").val(), 'variables': variables, 'valeurs': valeurs};
@@ -218,12 +218,80 @@ $("#btn_edit_crit").click(function() {
     $("#mCritereVar").val("");
     $("#mCritereVal").val("");
     $("#close_edit_panel").trigger('click');
-    loadSpecialCrit();
     updateProject();
   }
 });
 
+function checkValidityCol()
+{
+  var valid = false;
+  var vide = false;
+  var number = true;
+  var trouve = false;
+  var nom_col_edit = $("#mColName").val();
+  var poids_edit = parseInt($("#mColPoids").val());
+
+  if(!Number.isInteger(poids_edit)) number = false;
+
+  if(!number) notification('error', 'Le poids doit être un nombre entier');
+
+  if(number)
+  {
+    if(specialChecked())
+    {
+        nom_col_edit = $("#selectCrit option:selected").text();
+    }
+    else
+    {
+      if(nom_col_edit == "") vide = true;
+    }
+
+    if(!vide)
+    {
+      var i = 0;
+      while(i < projet.tableau.colonnes.length)
+      {
+        if(nom_col_edit == projet.tableau.colonnes[i].name && nom_col_edit != projet.tableau.colonnes[position_click_col].name)
+        {
+          trouve = true;
+        }
+        i += 1;
+      }
+
+      if(trouve)
+      {
+        notification('error', 'Une autre colonne porte déjà ce nom');
+      }
+      else
+      {
+          valid = true;
+      }
+    }
+    else notification('error', 'Tous les champs doivent être remplis');
+  }
+  return valid;
+}
+
 $("#btn_edit_col").click(function() {
+  if(checkValidityCol())
+  {
+    var nom_col_edit;
+    if(specialChecked())
+    {
+      nom_col_edit = $("#selectCrit option:selected").text();
+      var trouve = false;
+      var i = 0;
+    }
+    else nom_col_edit = $("#mColName").val();
+    var poids_edit = $("#mColPoids").val();
+    projet.tableau.colonnes[position_click_col].name = nom_col_edit;
+    projet.tableau.poids[position_click_col] = poids_edit;
+    $("#mColName").val("");
+    $("#mColPoids").val("");
+    $("#close_edit_panel_col").trigger('click');
+    updateProject();
+    updateTable();
+  }
 });
 
 $("#btn_nouveau_proj").click(function() {
@@ -326,17 +394,72 @@ $("#btnReinit").click(function() {
       updateItem: $.noop,
       deleteItem: $.noop
     },
-    fields: projet.colonnes,
+    fields: projet.tableau.colonnes,
     data: []
   });
 });
 
 function updateTable()
 {
+  if(projet.tableau.colonnes.length > 0)
+  {
+    projet.tableau.colonnes.push({'type': 'control'});
+
+    $("#jsGrid").jsGrid({
+      height: "70%",
+      width: "100%",
+      filtering: true,
+      editing: true,
+      inserting: true,
+      sorting: true,
+      paging: true,
+      autoload: false,
+      pageSize: 15,
+      pageButtonCount: 5,
+      noDataContent: "Aucune donnée",
+      loadMessage: "Veuillez patienter...",
+      deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+      datatype: 'json',
+      controller: {
+        loadData: $.noop,
+        insertItem: $.noop,
+        updateItem: $.noop,
+        deleteItem: $.noop
+      },
+      fields: projet.tableau.colonnes,
+      data: projet.tableau.donnees
+    });
+
+    projet.tableau.colonnes.pop();
+    deleteControls();
+    if(projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
+    {
+      $("#btn_exp_csv").prop("disabled", false);
+      $("#btnExec").show();
+      $("#btnReinit").show();
+    }
+  }
+}
+
+function deleteControls()
+{
+  var finish = false;
+  var i = 0;
+  while(i < projet.tableau.colonnes.length && !finish)
+  {
+    if(projet.tableau.colonnes[i].type == 'control')
+    {
+      projet.tableau.colonnes = projet.tableau.colonnes.splice(i, 1);
+    }
+    i += 1;
+  }
+}
+
+function createDefaultTable()
+{
   $("#jsGrid").jsGrid({
-    height: "auto",
-    width: "auto",
-    autowidth: true,
+    height: "70%",
+    width: "100%",
     filtering: true,
     editing: true,
     inserting: true,
@@ -345,18 +468,26 @@ function updateTable()
     autoload: true,
     pageSize: 15,
     pageButtonCount: 5,
-    noDataContent: "Aucune donn&eacute;e",
+    noDataContent: "Aucune donnée",
     loadMessage: "Veuillez patienter...",
     deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
-    datatype: "json",
     controller: {
       loadData: $.noop,
       insertItem: $.noop,
       updateItem: $.noop,
       deleteItem: $.noop
     },
-    fields: projet.colonnes,
-    data: projet.donnees
+    fields: [
+      { name: "Name", type: "text", width: 150 },
+      { name: "Age", type: "number", width: 50 },
+      { name: "Address", type: "text", width: 200 },
+      { name: "Country", type: "text", valueField: "Id", textField: "Name" },
+      { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+      { type: "control" }
+    ],
+    data: [
+      //{"Pierre Nerzic", "82", "Ici", "Chine", true}
+    ]
   });
 }
 
@@ -376,7 +507,7 @@ function loadCol()
   $("#colList a").remove();
   for(colonne in projet.tableau.colonnes)
   {
-    $("#colList").append("<a href='#' class='list-group-item item_crit context-menu-colonnes' id='colonne_"+colonne+"'>"+projet.tableau.colonnes[colonne].name+"</a>");
+    $("#colList").append("<a href='#' class='list-group-item item_col context-menu-colonnes' id='colonne_"+colonne+"'>"+projet.tableau.colonnes[colonne].name+"</a>");
   }
 }
 
@@ -410,6 +541,11 @@ function updateProject()
   loadSpecialCrit();
   loadCol();
   saveProject();
+}
+
+function specialChecked()
+{
+  return $("#toggle-special").prop('checked');
 }
 
 function saveProject()
@@ -469,6 +605,11 @@ $(document).on('click', '.item_crit', function(){
   $("#panel_edit").slideDown("slow");
 });
 
+$(document).on('click', '.item_col', function(){
+  editCol($(this));
+  $("#panel_edit_col").slideDown("slow");
+});
+
 $("#close_edit_panel").click(function(){
   $("#panel_edit").slideUp("slow");
 });
@@ -490,6 +631,81 @@ $("#close_ajouter_panel_col").click(function(){
 });
 
 $("#btn_sav_colonne").click(function() {
+  var trouve = false;
+  var poids_entier = true;
+  var col_poids = parseInt($("#nColPoids").val());
+  var nom_col;
+
+  if(!Number.isInteger(col_poids))
+  {
+    poids_entier = false;
+    notification('error', 'Le poids doit être un entier');
+  }
+
+  if($("#toggle-special").prop('checked'))
+  {
+    nom_col = $("#selectCrit option:selected").text();
+    var i = 0;
+
+    while(i < projet.tableau.colonnes.length && !trouve && poids_entier)
+    {
+      if(nom_col == projet.tableau.colonnes[i].name) trouve = true;
+      i += 1;
+    }
+    if(trouve)
+    {
+      notification('error', 'Cette colonne existe déjà');
+    }
+    if(!trouve && poids_entier)
+    {
+      var j = 0;
+      var trouve2 = false;
+      var index;
+      while(!trouve2)
+      {
+        if(projet.criteres_speciaux[j].nom == nom_col)
+        {
+          trouve2 = true;
+          index = j;
+        }
+        j += 1;
+      }
+      projet.tableau.colonnes.push({'name': nom_col, 'type': 'select', 'items':projet.criteres_speciaux[index].variables});
+      projet.tableau.poids.push(col_poids);
+      updateProject();
+      updateTable();
+    }
+  }
+  else
+  {
+    nom_col = $("#nColName").val();
+    var vide = false;
+
+    if(nom_col == "" || col_poids == "")
+    {
+      vide = true;
+    }
+    if(!vide)
+    {
+      var k = 0;
+      while(k < projet.tableau.colonnes.length && !trouve && poids_entier)
+      {
+        if(nom_col == projet.tableau.colonnes[k].name) trouve = true;
+        k += 1;
+      }
+      if(trouve)
+      {
+        notification('error', 'Cette colonne existe déjà');
+      }
+      if(!trouve && poids_entier)
+      {
+        projet.tableau.colonnes.push({'name': nom_col, 'type': 'number'});
+        projet.tableau.poids.push(col_poids);
+        updateProject();
+        updateTable();
+      }
+    }
+  }
 });
 
 $("#btnNouveauCritere").click(function() {
@@ -558,6 +774,17 @@ function editCritere(element)
   $("#mCritereVal").val(valeurs);
 }
 
+function editCol(element)
+{
+  var id_sub = element.attr("id").split("_");
+  position_click_col = id_sub[1];
+  var colonne = projet.tableau.colonnes[position_click_col];
+  var nom_col = colonne.name;
+  var poids = projet.tableau.poids[position_click_col];
+  $("#mColName").val(nom_col);
+  $("#mColPoids").val(poids);
+}
+
 $.contextMenu({
             selector: '.context-menu-criteres',
             callback: function(key, options) {
@@ -574,7 +801,6 @@ $.contextMenu({
                   $(this).remove();
                   $("#close_edit_panel").trigger('click');
                   updateProject();
-                  saveProject();
                 }
             },
             items: {
@@ -586,17 +812,20 @@ $.contextMenu({
 $.contextMenu({
             selector: '.context-menu-colonnes',
             callback: function(key, options) {
+                var id_sub_col = $(this).attr("id").split("_");
+                var position_col = id_sub_col[1];
+
                 if(key == "edit")
                 {
-
+                  editCol($(this));
+                  $("#panel_edit_col").slideDown("slow");
                 }
                 else if(key == "delete")
                 {
-                  $(this).remove();
+                  projet.tableau.colonnes.splice(position_col, 1);
                   $("#close_edit_panel_col").trigger('click');
                   updateProject();
                   updateTable();
-                  saveProject();
                 }
               },
               items: {

@@ -97,7 +97,7 @@
             </div>
           </div> <!-- Fin du panel de gauche -->
           <div class="col-md-6">
-          	<div id="jsGrid" style="width: auto"></div>
+            <div id="jsGrid" style="position: relative; width: 100%"></div>
             <br>
             <div>
               <a href="electre1"><button type="button" class="btn btn-success btn-align" id="btnExec">Ex&eacute;cuter</button></a>
@@ -128,17 +128,17 @@
                     </select>
                     <div id="nomCol" class="input-group inp" title="Choisir un nom pour la colonne">
                       <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                      <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id="nListName">
+                      <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id="nColName">
                     </div>
                     <div class="input-group inp">
                       <span class="input-group-addon" id="sizing-addon2">Poids</span>
-                      <input type="text" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="nListVal">
+                      <input type="number" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="nColPoids">
                     </div>
                     <button type="button" class="btn btn-success" id="btn_sav_colonne">Ajouter</button>
                   </div>
                 </div> <!-- Fin panel nouvelle colonne -->
-                <ul class="list-group" id="colList">
-                </ul>
+                <div class="list-group scrollable-menu" id="colList">
+                </div>
                 <div id="panel_edit_col" class="panel panel-default" style="display: none"> <!-- Panel modifier colonne -->
                     <div class="panel-body">
                         <p>
@@ -149,11 +149,11 @@
                         </p>
                       <div class="input-group inp" title="Choisir un nom pour la colonne">
                         <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                        <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2">
+                        <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id ="mColName">
                       </div>
                       <div class="input-group inp">
                         <span class="input-group-addon" id="sizing-addon2">Poids</span>
-                        <input type="text" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2">
+                        <input type="number" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="mColPoids">
                       </div>
                       <button type="button" class="btn btn-success" id="btn_edit_col">Enregistrer</button>
                     </div>

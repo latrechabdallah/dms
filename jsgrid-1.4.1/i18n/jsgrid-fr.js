@@ -10,7 +10,7 @@
             pageFirstText: "<<",
             pageLastText: ">>",
             loadMessage: "Chargement en cours...",
-            invalidMessage: "Des données incorrectes sont entrés !"
+            invalidMessage: "Des données incorrectes sont entrées !"
         },
 
         loadIndicator: {
@@ -44,4 +44,3 @@
     };
 
 }(jsGrid, jQuery));
-
