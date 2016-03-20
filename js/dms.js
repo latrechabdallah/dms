@@ -538,9 +538,13 @@ $('#btnExec').on('click', function ()
 				action[projet.tableau.colonnes[j].name] = projet.tableau.donnees[i][projet.tableau.colonnes[j].name];
 			else
 			{
-				console.log(projet.criteres_speciaux);
-				console.log(projet.tableau.donnees[i]);
-				action[projet.tableau.colonnes[j].name] = projet.tableau.donnees[i][projet.tableau.colonnes[j].name];
+				var nomCritere = projet.tableau.colonnes[j].name;
+				var index = projet.criteres_speciaux.findIndex(function (el, index, array)
+				{
+					return el.nom == nomCritere;
+				});
+				
+				action[projet.tableau.colonnes[j].name] = projet.criteres_speciaux[index].valeurs[projet.tableau.donnees[i][projet.tableau.colonnes[j].name]]; // Damn
 			}
 		}
 		

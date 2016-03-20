@@ -26,6 +26,6 @@ else
 
 		default:
 			http_response_code(404);
-			echo '404 not found';
+			echo $uri.': 404 not found';
 			break;
 	}
