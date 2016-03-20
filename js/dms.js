@@ -409,6 +409,37 @@ $("#btn_settings").click(function()
 	}
 });
 
+// Afficher / cacher les boutons qui dépendent du contenu du tableau
+function updateTableDependentButtons()
+{
+	if (projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
+	{
+		$("#btn_exp_csv").prop("disabled", false);
+		$("#btnExec").show();
+		$("#btnReinit").show();
+	}
+	else
+	{
+		$("#btn_exp_csv").prop("disabled", true);
+		$("#btnExec").hide();
+		$("#btnReinit").hide();
+	}
+}
+
+// Fonction appellée lorsqu'une ligne est ajoutée au tableau
+function onItemInserted(args)
+{
+	updateTableDependentButtons();
+	console.log(projet.tableau.donnees);
+}
+
+// Fonction appellée lorsqu'une ligne est supprimée du tableau
+function onItemDeleted(args)
+{
+	updateTableDependentButtons();
+	console.log(projet.tableau.donnees);
+}
+
 // Clic sur le bouton "Réinitialiser"
 $("#btnReinit").click(function()
 {
@@ -434,6 +465,8 @@ $("#btnReinit").click(function()
 			updateItem: $.noop,
 			deleteItem: $.noop
 		},
+		onItemInserted: onItemInserted,
+		onItemDeleted: onItemDeleted,
 		fields: projet.tableau.colonnes,
 		data: []
 	});
@@ -467,6 +500,8 @@ function updateTable()
 				updateItem: $.noop,
 				deleteItem: $.noop
 			},
+			onItemInserted: onItemInserted,
+			onItemDeleted: onItemDeleted,
 			fields: projet.tableau.colonnes,
 			data: projet.tableau.donnees
 		});
@@ -474,14 +509,60 @@ function updateTable()
 		projet.tableau.colonnes.pop();
 		deleteControls();
 		
-		if (projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
-		{
-			$("#btn_exp_csv").prop("disabled", false);
-			$("#btnExec").show();
-			$("#btnReinit").show();
-		}
+		updateTableDependentButtons();
 	}
 }
+
+// Clic sur le bouton de calcul
+$('#btnExec').on('click', function ()
+{
+	var criteres = {};
+	
+	for (var i = 0; i < projet.tableau.colonnes.length; i++)
+	{
+		criteres[projet.tableau.colonnes[i].name] = projet.tableau.poids[i];
+		console.log(projet.tableau.colonnes[i]);
+	}
+	
+	var jsonCriteres = JSON.stringify(criteres);
+	
+	var actions = [];
+	
+	for (var i = 0; i < projet.tableau.donnees.length; i++)
+	{
+		var action = {};
+		
+		for (var j = 0; j < projet.tableau.colonnes.length; j++)
+		{
+			if (projet.tableau.colonnes[j].type == "number")
+				action[projet.tableau.colonnes[j].name] = projet.tableau.donnees[i][projet.tableau.colonnes[j].name];
+			else
+			{
+				console.log(projet.criteres_speciaux);
+				console.log(projet.tableau.donnees[i]);
+				action[projet.tableau.colonnes[j].name] = projet.tableau.donnees[i][projet.tableau.colonnes[j].name];
+			}
+		}
+		
+		actions.push(action);
+	}
+	
+	var jsonActions = JSON.stringify(actions);
+	
+	console.log(jsonCriteres);
+	console.log(jsonActions);
+	
+	$.post('electre1', { criteres: jsonCriteres, actions: jsonActions }, function (data)
+	{
+		console.log(data);
+		notification('success', "L'action n°" + data[0] + " est la meilleure.");
+	});
+});
+
+window.onunload = function (e)
+{
+	saveProject();
+};
 
 function deleteControls()
 {
@@ -520,6 +601,8 @@ function createDefaultTable()
 			updateItem: $.noop,
 			deleteItem: $.noop
 		},
+		onItemInserted: onItemInserted,
+		onItemDeleted: onItemDeleted,
 		fields: [
 			{ name: "Name", type: "text", width: 150 },
 			{ name: "Age", type: "number", width: 50 },
@@ -735,7 +818,7 @@ $("#btn_sav_colonne").click(function()
 			
 			while (!trouve2)
 			{
-				if(projet.criteres_speciaux[j].nom == nom_col)
+				if (projet.criteres_speciaux[j].nom == nom_col)
 				{
 					trouve2 = true;
 					index = j;
@@ -744,7 +827,7 @@ $("#btn_sav_colonne").click(function()
 				j++;
 			}
 			
-			projet.tableau.colonnes.push({'name': nom_col, 'type': 'select', 'items':projet.criteres_speciaux[index].variables});
+			projet.tableau.colonnes.push({'name': nom_col, 'type': 'select', 'items': projet.criteres_speciaux[index].variables});
 			projet.tableau.poids.push(col_poids);
 			
 			updateProject();
