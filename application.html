@@ -1,230 +1,266 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-    <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid.css" />
-    <link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid-theme.min.css" />
-    <link type="text/css" rel="stylesheet" href="jQuery-contextMenu/jquery.contextMenu.min.css" />
-    <link type="text/css" rel="stylesheet" href="bootstrap-toggle/bootstrap-toggle.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/remodal.css" />
-    <link type="text/css" rel="stylesheet" href="css/remodal-default-theme.css" />
-    <script src="js/jquery.js"></script>
-    <script type="text/javascript" src="jsgrid-1.4.1/jsgrid.min.js"></script>
-    <script type="text/javascript" src="jQuery-contextMenu/jquery.contextMenu.min.js"></script>
-    <script type="text/javascript" src="jQuery-contextMenu/jquery.ui.position.min.js"></script>
-    <script type="text/javascript" src="bootstrap-toggle/bootstrap-toggle.min.js"></script>
-    <script type="text/javascript" src="js/noty/packaged/jquery.noty.packaged.min.js"></script>
-    <script type="text/javascript" src="js/remodal.min.js"></script>
-    <title>DMS Project - Application</title>
-  </head>
-    <body>
-      <nav>
-        <ul class="nav nav-pills">
-          <li><a href="#" id="btn_nouveau_proj">Nouveau</a></li>
-          <li><a href="#" id="btn_ouvrir_proj">Ouvrir...</a></li>
-          <li><a href="#" id="btn_exp_proj" title="">Exporter le projet</a></li>
-          <li><a href="#">Aide</a></li>
-          <li><a href="#" id="btn_settings"><font color="grey" size="4"><span class="glyphicon glyphicon-cog"></span></font></a></li>
-        </ul>
-        <input type="file" id="fileOpen" name="project_open" title="Ouvrir un fichier json" accept =".json" style="display: none"/>
-      </nav>
-      <br>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">Crit&egrave;res sp&eacute;ciaux</div>
-              <div class="panel-body">
-                <button type="button" class="btn btn-success" id="btnNouveauCritere" title="Ajouter un crit&egrave;re">+</button>
-                <br><br>
-                <div id="panel_nouveau_critere" class="panel panel-default" style="display: none"> <!-- Panel nouveau critère -->
-                  <div class="panel-body">
-                    <p>
-                    Nouveau crit&egrave;re :
-                    <button id="close_nouveau_critere" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
-                      <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
-                    </button>
-                    </p>
-                    <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
-                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                      <input type="text" class="form-control" placeholder="Nom du crit&egrave;re" aria-describedby="sizing-addon2" id="nCritereNom">
-                    </div>
-                    <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
-                      <span class="input-group-addon" id="sizing-addon2">Variables</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nCritereVar">
-                    </div>
-                    <div class="input-group inp">
-                      <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
-                      <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="nCritereVal">
-                    </div>
-                    <button type="button" class="btn btn-success" id="btn_sav_critere">Enregistrer</button>
-                  </div>
-                </div> <!-- Fin panel nouveau critère -->
-                <div class="list-group scrollable-menu" id="specialCrit">
-                </div>
-                <div id="panel_edit" class="panel panel-default" style="display: none"> <!-- Panel modifier critère -->
-                    <div class="panel-body">
-                        <p>
-                        Modifier le crit&egrave;re :
-                        <button id="close_edit_panel" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
-                          <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
-                        </button>
-                        </p>
-                      <div class="input-group inp" title="Choisir un nom pour le crit&egrave;re sp&eacute;cial (ex : Couleurs)">
-                        <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                        <input type="text" class="form-control" placeholder="Nom du crit&egrave;re" aria-describedby="sizing-addon2" id="mCritereNom">
-                      </div>
-                      <div class="input-group inp" title="Entrer les variables pour ce crit&egrave;re sp&eacute;cial (ex: bleu;rouge;vert)">
-                        <span class="input-group-addon" id="sizing-addon2">Variables</span>
-                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="mCritereVar">
-                      </div>
-                      <div class="input-group inp">
-                        <span class="input-group-addon" id="sizing-addon2">Valeurs</span>
-                        <input type="text" class="form-control" placeholder="s&eacute;par&eacute;es par ' ; '" aria-describedby="sizing-addon2" id="mCritereVal">
-                      </div>
-                      <button type="button" class="btn btn-success" id="btn_edit_crit">Enregistrer</button>
-                    </div>
-                </div> <!-- Fin panel modifier critere -->
-              </div> <!-- Fin du contenu du panel de gauche -->
-            </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">Importer/Exporter un fichier CSV</div>
-              <div class="panel-body">
-                <button type="button" class="btn btn-primary" id="btn_open_csv">Importer...</button>
-                <button type="button" class="btn btn-primary" id="btn_exp_csv">Exporter</button>
-                <input type="file" id="fileLoader" name="files_open" title="Ouvrir un fichier CSV" accept =".csv" style="display: none"/>
-              </div>
-            </div>
-          </div> <!-- Fin du panel de gauche -->
-          <div class="col-md-6">
-            <div id="jsGrid" style="position: relative; width: 100%"></div>
-            <br>
-            <div>
-              <a href="electre1"><button type="button" class="btn btn-success btn-align" id="btnExec">Ex&eacute;cuter</button></a>
-              <a href="#"><button type="button" class="btn btn-danger" id="btnReinit">R&eacute;initialiser</button></a>
-            </div>
-          </div> <!-- Fin du panel central -->
-          <div class="col-md-3" id="entetes">
-            <div class="panel panel-default">
-              <div class="panel-heading">Colonnes</div>
-              <div class="panel-body">
-                <button type="button" class="btn btn-success" id="btnAjouterCol" title="Ajouter une colonne">+</button>
-                <br><br>
-                <div id="panel_ajouter_col" class="panel panel-default" style="display: none"> <!-- Panel nouvelle colonne -->
-                  <div class="panel-body">
-                    <p>
-                    Nouvelle colonne :
-                    <button id="close_ajouter_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
-                      <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
-                    </button>
-                    </p>
-                    <div class="checkbox">
-                      <label>
-                        <input id="toggle-special" data-toggle="toggle" data-onstyle="success" type="checkbox">
-                        Crit&egrave;re sp&eacute;cial
-                      </label>
-                    </div>
-                    <select id="selectCrit" class="form-control">
-                    </select>
-                    <div id="nomCol" class="input-group inp" title="Choisir un nom pour la colonne">
-                      <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                      <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id="nColName">
-                    </div>
-                    <div class="input-group inp">
-                      <span class="input-group-addon" id="sizing-addon2">Poids</span>
-                      <input type="number" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="nColPoids">
-                    </div>
-                    <button type="button" class="btn btn-success" id="btn_sav_colonne">Ajouter</button>
-                  </div>
-                </div> <!-- Fin panel nouvelle colonne -->
-                <div class="list-group scrollable-menu" id="colList">
-                </div>
-                <div id="panel_edit_col" class="panel panel-default" style="display: none"> <!-- Panel modifier colonne -->
-                    <div class="panel-body">
-                        <p>
-                        Modifier la colonne :
-                        <button id="close_edit_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
-                          <span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
-                        </button>
-                        </p>
-                      <div class="input-group inp" title="Choisir un nom pour la colonne">
-                        <span class="input-group-addon" id="sizing-addon2">Nom</span>
-                        <input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id ="mColName">
-                      </div>
-                      <div class="input-group inp">
-                        <span class="input-group-addon" id="sizing-addon2">Poids</span>
-                        <input type="number" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="mColPoids">
-                      </div>
-                      <button type="button" class="btn btn-success" id="btn_edit_col">Enregistrer</button>
-                    </div>
-                </div> <!-- Fin panel modifier colonne -->
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
-        <div href="#dialog" id="oeuf1"></div>
-        <div id="boxes">
-          <div id="dialog" class="window">
-            <p><img src="images/Koala.jpg"></p>
-            <p>Ceci est un secret, ne le montre à personne !</p>
-            <br/>
-            <a href="#" class="close">Fermer</a>
-          </div>
-        <div id="mask"></div>
-      </div>
-      <button id="oeuf2" style="display: none">Surprise</button>
-      <div data-remodal-id="modal">
-        <button data-remodal-action="close" class="remodal-close"></button>
-        <h1>Confirmation</h1>
-        <p>
-          Êtes-vous sûr de vouloir créer un nouveau projet ? <br><br><font color="red"><span class="glyphicon glyphicon-alert"></span> Vous perdrez les données du projet actuel <span class="glyphicon glyphicon-alert"></span></font>
-        </p>
-        <br>
-        <button class="remodal-cancel" id="btn_cancel_new_proj">Non</button>
-        <button class="remodal-confirm" id="btn_val_new_proj">Oui</button>
-      </div>
-      <div data-remodal-id="modal-settings">
-        <button data-remodal-action="close" class="remodal-close"></button>
-        <h2>Param&egrave;tres</h2>
-        <br>
-        <div class="input-group inp" title="Choisissez un nom pour votre projet">
-          <span class="input-group-addon" id="sizing-addon2">Nom du projet</span>
-          <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="nom_projet">
-        </div>
-        <br>
-        <button class="btn btn-danger" id="del_local">Effacer les donn&eacute;es locales</button>
-        <br><br><br>
-        <button class="remodal-confirm" id="btn_sav_settings">Enregistrer</button>
-      </div>
-      <div data-remodal-id="modal-key">
-        <button data-remodal-action="close" class="remodal-close"></button>
-        <h2>Veuillez entrer la cl&eacute; du projet</h2>
-        <br>
-        <div class="input-group inp" title="Entrez la cl&eacute; de ce projet">
-          <span class="input-group-addon" id="sizing-addon2">Clé</span>
-          <input type="password" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key">
-        </div>
-        <button class="remodal-confirm" id="btn_confirm_key_del">Valider</button>
-        <button class="remodal-confirm" id="btn_confirm_key_new">Valider</button>
-      </div>
-      <div data-remodal-id="modal-new-project">
-        <button data-remodal-action="close" class="remodal-close"></button>
-        <h2>Nouveau projet</h2>
-        <br>
-        <div class="input-group inp" title="Choisissez un nom pour ce projet">
-          <span class="input-group-addon" id="sizing-addon2">Nom</span>
-          <input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_name_new">
-        </div>
-        <div class="input-group inp" title="Cette cl&eacute; sera demand&eacute;e pour supprimer le projet">
-          <span class="input-group-addon" id="sizing-addon2">Clé</span>
-          <input type="password" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key_new">
-        </div>
-        <button class="remodal-confirm" id="btn_new_project">Cr&eacute;er</button>
-      </div>
-      <script src="PapaParse/papaparse.js"></script>
-      <script src="js/dms.js"></script>
-      <script src="Raptorize-Kit/jquery.raptorize.1.0.js"></script>
-      <script src="js/lol.js"></script>
-    </body>
-  </html>
+	<head>
+		<!-- ENCODING -->
+		<meta charset="UTF-8">
+		
+		<!-- TITLE -->
+		<title>DMS Project - Application</title>
+		
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid.css" />
+		<link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid-theme.min.css" />
+		<link type="text/css" rel="stylesheet" href="jQuery-contextMenu/jquery.contextMenu.min.css" />
+		<link type="text/css" rel="stylesheet" href="bootstrap-toggle/bootstrap-toggle.min.css" />
+		<link type="text/css" rel="stylesheet" href="css/remodal.css" />
+		<link type="text/css" rel="stylesheet" href="css/remodal-default-theme.css" />
+		
+		<!-- SCRIPTS -->
+		<script src="js/jquery.js"></script>
+		<script src="jsgrid-1.4.1/jsgrid.min.js"></script>
+		<script src="jQuery-contextMenu/jquery.contextMenu.min.js"></script>
+		<script src="jQuery-contextMenu/jquery.ui.position.min.js"></script>
+		<script src="bootstrap-toggle/bootstrap-toggle.min.js"></script>
+		<script src="js/noty/packaged/jquery.noty.packaged.min.js"></script>
+		<script src="js/remodal.min.js"></script>
+	</head>
+	
+	<body>
+		<!-- MENU -->
+		<nav>
+			<ul class="nav nav-pills">
+				<li><a href="#" id="btn_nouveau_proj">Nouveau</a></li>
+				<li><a href="#" id="btn_ouvrir_proj">Ouvrir...</a></li>
+				<li><a href="#" id="btn_exp_proj" title="">Exporter le projet</a></li>
+				<li><a href="#">Aide</a></li>
+				<li><a href="#" id="btn_settings"><font color="grey" size="4"><span class="glyphicon glyphicon-cog"></span></font></a></li>
+			</ul>
+			<input type="file" id="fileOpen" name="project_open" title="Ouvrir un fichier json" accept =".json" style="display: none" />
+		</nav>
+		
+		<!-- MAIN CONTAINER -->
+		<div class="container-fluid">
+			<div class="row">
+			
+				<!-- LEFT COLUMN -->
+				<div class="col-md-3">
+				
+					<!-- PANEL CRITERES SPECIAUX -->
+					<div class="panel panel-default">
+						<div class="panel-heading">Critères spéciaux</div>
+						<div class="panel-body">
+							<!-- BOUTON NOUVEAU CRITERE SPECIAL -->
+							<button type="button" class="btn btn-success" id="btnNouveauCritere" title="Ajouter un critère">+</button>
+							<br /><br />
+							
+							<!-- PANEL NOUVEAU CRITERE SPECIAL -->
+							<div id="panel_nouveau_critere" class="panel panel-default" style="display: none">
+								<div class="panel-body">
+									<p>
+										Nouveau critère :
+										<button id="close_nouveau_critere" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+											<span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+										</button>
+									</p>
+									<div class="input-group inp" title="Choisir un nom pour le critère spécial (ex : Couleurs)">
+										<span class="input-group-addon" id="sizing-addon2">Nom</span>
+										<input type="text" class="form-control" placeholder="Nom du critère" aria-describedby="sizing-addon2" id="nCritereNom">
+									</div>
+									<div class="input-group inp" title="Entrer les variables pour ce critère spécial (ex: bleu;rouge;vert)">
+										<span class="input-group-addon" id="sizing-addon2">Variables</span>
+										<input type="text" class="form-control" placeholder="séparées par ' ; '" aria-describedby="sizing-addon2" id="nCritereVar">
+									</div>
+									<div class="input-group inp">
+										<span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+										<input type="text" class="form-control" placeholder="séparées par ' ; '" aria-describedby="sizing-addon2" id="nCritereVal">
+									</div>
+									<button type="button" class="btn btn-success" id="btn_sav_critere">Enregistrer</button>
+								</div>
+							</div> <!-- END PANEL NOUVEAU CRITERE SPECIAL -->
+							
+							<!-- LISTE CRITERES SPECIAUX -->
+							<div class="list-group scrollable-menu" id="specialCrit"></div>
+							
+							<!-- PANEL MODIFICATION CRITERE SPECIAL -->
+							<div id="panel_edit" class="panel panel-default" style="display: none">
+								<div class="panel-body">
+									<p>
+										Modifier le critère :
+										<button id="close_edit_panel" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+											<span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+										</button>
+									</p>
+									<div class="input-group inp" title="Choisir un nom pour le critère spécial (ex : Couleurs)">
+										<span class="input-group-addon" id="sizing-addon2">Nom</span>
+										<input type="text" class="form-control" placeholder="Nom du critère" aria-describedby="sizing-addon2" id="mCritereNom">
+									</div>
+									<div class="input-group inp" title="Entrer les variables pour ce critère spécial (ex: bleu;rouge;vert)">
+										<span class="input-group-addon" id="sizing-addon2">Variables</span>
+										<input type="text" class="form-control" placeholder="séparées par ' ; '" aria-describedby="sizing-addon2" id="mCritereVar">
+									</div>
+									<div class="input-group inp">
+										<span class="input-group-addon" id="sizing-addon2">Valeurs</span>
+										<input type="text" class="form-control" placeholder="séparées par ' ; '" aria-describedby="sizing-addon2" id="mCritereVal">
+									</div>
+									<button type="button" class="btn btn-success" id="btn_edit_crit">Enregistrer</button>
+								</div>
+							</div> <!-- END PANEL MODIFICATION CRITERE SPECIAL -->
+						</div>
+					</div> <!-- END PANEL CRITERES SPECIAUX -->
+					
+					<!-- PANEL IMPORT / EXPORT -->
+					<div class="panel panel-default">
+						<div class="panel-heading">Importer/Exporter un fichier CSV</div>
+						
+						<div class="panel-body">
+							<button type="button" class="btn btn-primary" id="btn_open_csv">Importer...</button>
+							<button type="button" class="btn btn-primary" id="btn_exp_csv">Exporter</button>
+							<input type="file" id="fileLoader" name="files_open" title="Ouvrir un fichier CSV" accept =".csv" style="display: none" />
+						</div>
+					</div> <!-- END PANEL IMPORT / EXPORT -->
+					
+				</div> <!-- END LEFT COLUMN -->
+				
+				<!-- CENTER COLUMN -->
+				<div class="col-md-6">
+					<div id="jsGrid" style="position: relative; width: 100%"></div>
+					<br />
+					<div>
+						<a href="electre1"><button type="button" class="btn btn-success btn-align" id="btnExec">Exécuter</button></a>
+						<a href="#"><button type="button" class="btn btn-danger" id="btnReinit">Réinitialiser</button></a>
+					</div>
+				</div> <!-- END CENTER COLUMN -->
+				
+				<!-- RIGHT COLUMN -->
+				<div class="col-md-3" id="entetes">
+				
+					<!-- PANEL COLONNES -->
+					<div class="panel panel-default">
+						<div class="panel-heading">Colonnes</div>
+						
+						<div class="panel-body">
+							<!-- BOUTON AJOUTER COLONNE -->
+							<button type="button" class="btn btn-success" id="btnAjouterCol" title="Ajouter une colonne">+</button>
+							<br /><br />
+							
+							<!-- PANEL AJOUTER COLONNE -->
+							<div id="panel_ajouter_col" class="panel panel-default" style="display: none">
+								<div class="panel-body">
+									<p>
+										Nouvelle colonne :
+										<button id="close_ajouter_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+											<span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+										</button>
+									</p>
+									<div class="checkbox">
+										<label>
+											<input id="toggle-special" data-toggle="toggle" data-onstyle="success" type="checkbox">
+											Critère spécial
+										</label>
+									</div>
+									<select id="selectCrit" class="form-control">
+									</select>
+									<div id="nomCol" class="input-group inp" title="Choisir un nom pour la colonne">
+										<span class="input-group-addon" id="sizing-addon2">Nom</span>
+										<input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id="nColName">
+									</div>
+									<div class="input-group inp">
+										<span class="input-group-addon" id="sizing-addon2">Poids</span>
+										<input type="number" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="nColPoids">
+									</div>
+									<button type="button" class="btn btn-success" id="btn_sav_colonne">Ajouter</button>
+								</div>
+							</div> <!-- END PANEL AJOUTER COLONNE -->
+							
+							<!-- LISTE COLONNES -->
+							<div class="list-group scrollable-menu" id="colList"></div>
+							
+							<!-- PANEL MODIFICATION COLONNE -->
+							<div id="panel_edit_col" class="panel panel-default" style="display: none">
+								<div class="panel-body">
+									<p>
+									Modifier la colonne :
+									<button id="close_edit_panel_col" type="button" class="btn btn-default" aria-label="Left Align" style="float:right">
+										<span class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+									</button>
+									</p>
+									<div class="input-group inp" title="Choisir un nom pour la colonne">
+										<span class="input-group-addon" id="sizing-addon2">Nom</span>
+										<input type="text" class="form-control" placeholder="Nom de la colonne" aria-describedby="sizing-addon2" id ="mColName">
+									</div>
+									<div class="input-group inp">
+										<span class="input-group-addon" id="sizing-addon2">Poids</span>
+										<input type="number" class="form-control" placeholder="Entrez un nombre" aria-describedby="sizing-addon2" id="mColPoids">
+									</div>
+									<button type="button" class="btn btn-success" id="btn_edit_col">Enregistrer</button>
+								</div>
+							</div> <!-- END PANEL MODIFICATION COLONNE -->
+							
+						</div>
+					</div> <!-- END PANEL COLONES -->
+					
+				</div> <!-- END RIGHT COLUMN -->
+				
+			</div>
+		</div> <!-- END MAIN CONTAINER -->
+		
+		<!-- MODAL CONFIRMER NOUVEAU PROJET -->
+		<div data-remodal-id="modal">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h1>Confirmation</h1>
+			<p>Êtes-vous sûr de vouloir créer un nouveau projet ? <br /><font color="red"><span class="glyphicon glyphicon-alert"></span> Vous perdrez les données du projet actuel <span class="glyphicon glyphicon-alert"></span></font></p>
+			<br />
+			<button class="remodal-cancel" id="btn_cancel_new_proj">Non</button>
+			<button class="remodal-confirm" id="btn_val_new_proj">Oui</button>
+		</div> <!-- END MODAL CONFIRMER NOUVEAU PROJET -->
+		
+		<!-- MODAL PARAMETRES -->
+		<div data-remodal-id="modal-settings">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h2>Paramètres</h2>
+			<br />
+			<div class="input-group inp" title="Choisissez un nom pour votre projet">
+				<span class="input-group-addon" id="sizing-addon2">Nom du projet</span>
+				<input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="nom_projet">
+			</div>
+			<br />
+			<button class="btn btn-danger" id="del_local">Effacer les données locales</button>
+			<br />
+			<button class="remodal-confirm" id="btn_sav_settings">Enregistrer</button>
+		</div><!-- END MODAL PARAMETRES -->
+		
+		<!-- MODAL SAISIR CLE -->
+		<div data-remodal-id="modal-key">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h2>Veuillez entrer la clé du projet</h2>
+			<br />
+			<div class="input-group inp" title="Entrez la clé de ce projet">
+				<span class="input-group-addon" id="sizing-addon2">Clé</span>
+				<input type="password" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key">
+			</div>
+			<button class="remodal-confirm" id="btn_confirm_key_del">Valider</button>
+			<button class="remodal-confirm" id="btn_confirm_key_new">Valider</button>
+		</div> <!-- END MODAL SAISIR CLE -->
+		
+		<!-- MODAL SAISIR NOUVEAU PROJET -->
+		<div data-remodal-id="modal-new-project">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h2>Nouveau projet</h2>
+			<br />
+			<div class="input-group inp" title="Choisissez un nom pour ce projet">
+				<span class="input-group-addon" id="sizing-addon2">Nom</span>
+				<input type="text" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_name_new">
+			</div>
+			<div class="input-group inp" title="Cette clé sera demandée pour supprimer le projet">
+				<span class="input-group-addon" id="sizing-addon2">Clé</span>
+				<input type="password" class="form-control" placeholder="" aria-describedby="sizing-addon2" id="project_key_new">
+			</div>
+			<button class="remodal-confirm" id="btn_new_project">Créer</button>
+		</div> <!-- END SAISIR NOUVEAU PROJET -->
+		
+		<!-- SCRIPTS -->
+		<script src="PapaParse/papaparse.js"></script>
+		<script src="js/dms.js"></script>
+	</body>
+</html>
