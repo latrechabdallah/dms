@@ -519,10 +519,7 @@ $('#btnExec').on('click', function ()
 	var criteres = {};
 	
 	for (var i = 0; i < projet.tableau.colonnes.length; i++)
-	{
 		criteres[projet.tableau.colonnes[i].name] = projet.tableau.poids[i];
-		console.log(projet.tableau.colonnes[i]);
-	}
 	
 	var jsonCriteres = JSON.stringify(criteres);
 	
@@ -538,9 +535,13 @@ $('#btnExec').on('click', function ()
 				action[projet.tableau.colonnes[j].name] = projet.tableau.donnees[i][projet.tableau.colonnes[j].name];
 			else
 			{
-				console.log(projet.criteres_speciaux);
-				console.log(projet.tableau.donnees[i]);
-				action[projet.tableau.colonnes[j].name] = projet.tableau.donnees[i][projet.tableau.colonnes[j].name];
+				var nomCritere = projet.tableau.colonnes[j].name;
+				var index = projet.criteres_speciaux.findIndex(function (el, index, array)
+				{
+					return el.nom == nomCritere;
+				});
+				
+				action[projet.tableau.colonnes[j].name] = projet.criteres_speciaux[index].valeurs[projet.tableau.donnees[i][projet.tableau.colonnes[j].name]]; // Damn
 			}
 		}
 		
@@ -549,12 +550,8 @@ $('#btnExec').on('click', function ()
 	
 	var jsonActions = JSON.stringify(actions);
 	
-	console.log(jsonCriteres);
-	console.log(jsonActions);
-	
 	$.post('electre1', { criteres: jsonCriteres, actions: jsonActions }, function (data)
 	{
-		console.log(data);
 		notification('success', "L'action n°" + data[0] + " est la meilleure.");
 	});
 });
