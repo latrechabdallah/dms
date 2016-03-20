@@ -1,12 +1,16 @@
+// ========================================================================= //
+// Projet
+// ========================================================================= //
+
 function Projet(nom, key)
 {
-  this.nom = nom;
-  this.key = key;
-  this.tableau = {};
-  this.tableau.colonnes = [];
-  this.tableau.donnees = [];
-  this.tableau.poids = [];
-  this.criteres_speciaux = [];
+	this.nom = nom;
+	this.key = key;
+	this.tableau = {};
+	this.tableau.colonnes = [];
+	this.tableau.donnees = [];
+	this.tableau.poids = [];
+	this.criteres_speciaux = [];
 }
 
 var projet;
@@ -18,819 +22,915 @@ var confirmation;
 var settings;
 var key;
 
-if(typeof(Storage) !== "undefined") {
-    projet = JSON.parse(localStorage.getItem("projetDMS")) || undefined;
-} else {
-  notification('error', 'Attention, votre navigateur ne supporte pas le stockage local')
-}
+// Chargement du projet enregistré en Local Storage
+if (typeof(Storage) !== "undefined")
+	projet = JSON.parse(localStorage.getItem("projetDMS")) || undefined;
+else
+	notification('error', 'Attention, votre navigateur ne supporte pas le stockage local');
 
 if (typeof projet !== 'undefined')
 {
-  updateTitle();
-  updateProject();
-  updateTable();
+	updateTitle();
+	updateProject();
+	updateTable();
 }
 else
 {
-  $("#btnExec").hide();
-  $("#btnReinit").hide();
-  $("#btnNouveauCritere").prop("disabled", true);
-  $("#btnAjouterCol").prop("disabled", true);
-  $("#btn_open_csv").prop("disabled", true);
-  $("#btn_exp_csv").prop("disabled", true);
-  $("btn_exp_proj").addClass("disabled");
+	$("#btnExec").hide();
+	$("#btnReinit").hide();
+	$("#btnNouveauCritere").prop("disabled", true);
+	$("#btnAjouterCol").prop("disabled", true);
+	$("#btn_open_csv").prop("disabled", true);
+	$("#btn_exp_csv").prop("disabled", true);
+	$("btn_exp_proj").addClass("disabled");
 }
 
-$("#btn_open_csv").click(function() {
-  $('#fileLoader').trigger('click');
-});
-
-$("#btn_exp_csv").click(function() {
-  var entetes = projet.tableau.colonnes;
-  var lignes = projet.tableau.donnees;
-
-  /* merge defaults and options, without modifying defaults */
-  var tab = $.extend({}, entetes, lignes);
-  var csv = Papa.unparse(tab);
-  var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-  if (navigator.msSaveBlob)
-  { // IE 10+
-    navigator.msSaveBlob(blob, 'dms_table.csv');
-  }
-  else
-  {
-    var link = document.createElement("a");
-    if (link.download !== undefined)// feature detection Browsers that support HTML5 download attribute
-    {
-      var url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", 'dms_table.csv');
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-});
-
-function checkValidityNew()
+// Clic sur le bouton "Importer fichier CSV"
+$("#btn_open_csv").click(function()
 {
-  var valid = false;
-  var vide = false;
-  var index = -1;
-  var format_correct = true;
-  var nb_egaux = true;
-  var nom_crit = $("#nCritereNom").val();
-  var variables = $("#nCritereVar").val();
-  var valeurs = $("#nCritereVal").val();
+	$('#fileLoader').trigger('click');
+});
 
-
-  if(nom_crit == "" || variables == "" || valeurs == "")
-  {
-    notification('error', 'Tous les champs doivent être remplis');
-    vide = true;
-  }
-  if(!vide)
-  {
-    var i = 0;
-    var trouve = false;
-    var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
-    var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
-
-    if(!(reg1.test(variables)))
-    {
-      format_correct = false;
-      notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
-    }
-    else if(!(reg2.test(valeurs)))
-    {
-      format_correct = false;
-      notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
-    }
-    if(format_correct)
-    {
-      if(variables.split(";").length != valeurs.split(";").length)
-      {
-        nb_egaux = false;
-        notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
-      }
-    }
-    while(i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
-    {
-      if(projet.criteres_speciaux[i].nom == nom_crit)
-      {
-          trouve = true;
-      }
-      i += 1;
-    }
-    if(trouve)
-    {
-      notification('error', 'Il existe déjà un critère portant ce nom');
-    }
-  }
-  if(!vide && !trouve && format_correct && nb_egaux)
-  {
-    valid = true;
-  }
-  return valid;
-}
-
-function checkValidityEdit()
+// Click sur le bouton "Exporter fichier CSV"
+$("#btn_exp_csv").click(function()
 {
-  var valid = false;
-  var vide = false;
-  var format_correct = true;
-  var nb_egaux = true;
-  var nom_crit = $("#mCritereNom").val();
-  var variables = $("#mCritereVar").val();
-  var valeurs = $("#mCritereVal").val();
+	var entetes = projet.tableau.colonnes;
+	var lignes = projet.tableau.donnees;
+
+	/* merge defaults and options, without modifying defaults */
+	var tab = $.extend({}, entetes, lignes);
+	var csv = Papa.unparse(tab);
+	var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+	
+	if (navigator.msSaveBlob) // IE 10+
+		navigator.msSaveBlob(blob, 'dms_table.csv');
+	else
+	{
+		var link = document.createElement("a");
+		if (link.download !== undefined) // feature detection Browsers that support HTML5 download attribute
+		{
+			var url = URL.createObjectURL(blob);
+			link.setAttribute("href", url);
+			link.setAttribute("download", 'dms_table.csv');
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	}
+});
+
+// Vérification de la validité d'un nouveau critère spécial
+function checkValidityNewCritere()
+{
+	var valid = false;
+	var vide = false;
+	var index = -1;
+	var format_correct = true;
+	var nb_egaux = true;
+	var nom_crit = $("#nCritereNom").val();
+	var variables = $("#nCritereVar").val();
+	var valeurs = $("#nCritereVal").val();
 
 
-  if(nom_crit == "" || variables == "" || valeurs == "")
-  {
-    notification('error', 'Tous les champs doivent être remplis');
-    vide = true;
-  }
-  if(!vide)
-  {
-    var i = 0;
-    var trouve = false;
-    var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
-    var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
+	if (nom_crit == "" || variables == "" || valeurs == "")
+	{
+		notification('error', 'Tous les champs doivent être remplis');
+		vide = true;
+	}
+	if (!vide)
+	{
+		var i = 0;
+		var trouve = false;
+		var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
+		var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
 
-    if(!(reg1.test(variables)))
-    {
-      format_correct = false;
-      notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
-    }
-    else if(!(reg2.test(valeurs)))
-    {
-      format_correct = false;
-      notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
-    }
-    if(format_correct)
-    {
-      if(variables.split(";").length != valeurs.split(";").length)
-      {
-        nb_egaux = false;
-        notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
-      }
-    }
-    while(i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
-    {
-      if(projet.criteres_speciaux[i].nom == nom_crit && nom_crit != projet.criteres_speciaux[position_click].nom)
-      {
-          trouve = true;
-      }
-      i += 1;
-    }
-    if(trouve)
-    {
-      notification('error', 'Le critère doit soit porter le même nom, soit un nouveau nom');
-    }
-  }
-  if(!vide && !trouve && format_correct && nb_egaux)
-  {
-    valid = true;
-  }
-  return valid;
+		if (!(reg1.test(variables)))
+		{
+			format_correct = false;
+			notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+		}
+		else if (!(reg2.test(valeurs)))
+		{
+			format_correct = false;
+			notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+		}
+		
+		if (format_correct && variables.split(";").length != valeurs.split(";").length)
+		{
+			nb_egaux = false;
+			notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
+		}
+		
+		while (i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
+		{
+			if (projet.criteres_speciaux[i].nom == nom_crit)
+				trouve = true;
+			
+			i++;
+		}
+		
+		if (trouve)
+			notification('error', 'Il existe déjà un critère portant ce nom');
+	}
+	
+	if (!vide && !trouve && format_correct && nb_egaux)
+		valid = true;
+	
+	return valid;
 }
 
-$("#btn_sav_critere").click(function() {
-  if(checkValidityNew()) {
-    var variables = $("#nCritereVar").val().split(";");
-    var valeurs = $("#nCritereVal").val().split(";");
-    projet.criteres_speciaux.push({'nom': $("#nCritereNom").val(), 'variables': variables, 'valeurs': valeurs});
-    $("#nCritereNom").val("");
-    $("#nCritereVar").val("");
-    $("#nCritereVal").val("");
-    updateProject();
-  }
+// Vérification de la validité d'un critère spécial après modification
+function checkValidityEditCritere()
+{
+	var valid = false;
+	var vide = false;
+	var format_correct = true;
+	var nb_egaux = true;
+	var nom_crit = $("#mCritereNom").val();
+	var variables = $("#mCritereVar").val();
+	var valeurs = $("#mCritereVal").val();
+
+
+	if (nom_crit == "" || variables == "" || valeurs == "")
+	{
+		notification('error', 'Tous les champs doivent être remplis');
+		vide = true;
+	}
+	
+	if (!vide)
+	{
+		var i = 0;
+		var trouve = false;
+		var reg1 = new RegExp("^((([A-z]|[0-9])+;)*)[^;]+$");
+		var reg2 = new RegExp("^(([0-9]+;)*)[0-9]+$");
+
+		if (!(reg1.test(variables)))
+		{
+			format_correct = false;
+			notification('error', "Le format des variables est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+		}
+		else if (!(reg2.test(valeurs)))
+		{
+			format_correct = false;
+			notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
+		}
+		
+		if (format_correct && variables.split(";").length != valeurs.split(";").length)
+		{
+			nb_egaux = false;
+			notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
+		}
+		
+		while (i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
+		{
+			if(projet.criteres_speciaux[i].nom == nom_crit && nom_crit != projet.criteres_speciaux[position_click].nom)
+				trouve = true;
+			
+			i++;
+		}
+		
+		if (trouve)
+			notification('error', 'Le critère doit soit porter le même nom, soit un nouveau nom');
+	}
+	
+	if (!vide && !trouve && format_correct && nb_egaux)
+		valid = true;
+	
+	return valid;
+}
+
+// Clic sur le bouton "Enregistrer" après édition d'un critère spécial
+$("#btn_sav_critere").click(function()
+{
+	if (checkValidityNewCritere())
+	{
+		var variables = $("#nCritereVar").val().split(";");
+		var valeurs = $("#nCritereVal").val().split(";");
+		
+		projet.criteres_speciaux.push({
+			'nom': $("#nCritereNom").val(),
+			'variables': variables,
+			'valeurs': valeurs
+		});
+		
+		$("#nCritereNom").val("");
+		$("#nCritereVar").val("");
+		$("#nCritereVal").val("");
+		
+		updateProject();
+	}
 });
 
-$("#btn_edit_crit").click(function() {
-  if(checkValidityEdit())
-  {
-    var variables = $("#mCritereVar").val().split(";");
-    var valeurs = $("#mCritereVal").val().split(";");
-    projet.criteres_speciaux[position_click] = {'nom': $("#mCritereNom").val(), 'variables': variables, 'valeurs': valeurs};
-    $("#mCritereNom").val("");
-    $("#mCritereVar").val("");
-    $("#mCritereVal").val("");
-    $("#close_edit_panel").trigger('click');
-    updateProject();
-  }
+// Clic sur le bouton de modification d'un critère spécial
+$("#btn_edit_crit").click(function()
+{
+	if (checkValidityEditCritere())
+	{
+		var variables = $("#mCritereVar").val().split(";");
+		var valeurs = $("#mCritereVal").val().split(";");
+		
+		projet.criteres_speciaux[position_click] = {
+			'nom': $("#mCritereNom").val(),
+			'variables': variables,
+			'valeurs': valeurs
+		};
+		
+		$("#mCritereNom").val("");
+		$("#mCritereVar").val("");
+		$("#mCritereVal").val("");
+		$("#close_edit_panel").trigger('click');
+		
+		updateProject();
+	}
 });
 
+// Vérification de la validité d'une colonne
 function checkValidityCol()
 {
-  var valid = false;
-  var vide = false;
-  var number = true;
-  var trouve = false;
-  var nom_col_edit = $("#mColName").val();
-  var poids_edit = parseInt($("#mColPoids").val());
+	var valid = false;
+	var vide = false;
+	var number = true;
+	var trouve = false;
+	var nom_col_edit = $("#mColName").val();
+	var poids_edit = parseInt($("#mColPoids").val());
 
-  if(!Number.isInteger(poids_edit)) number = false;
+	if (!Number.isInteger(poids_edit))
+		number = false;
 
-  if(!number) notification('error', 'Le poids doit être un nombre entier');
+	if (!number)
+		notification('error', 'Le poids doit être un nombre entier');
 
-  if(number)
-  {
-    if(specialChecked())
-    {
-        nom_col_edit = $("#selectCrit option:selected").text();
-    }
-    else
-    {
-      if(nom_col_edit == "") vide = true;
-    }
+	if (number)
+	{
+		if (specialChecked())
+			nom_col_edit = $("#selectCrit option:selected").text();
+		else if (nom_col_edit == "")
+			vide = true;
 
-    if(!vide)
-    {
-      var i = 0;
-      while(i < projet.tableau.colonnes.length)
-      {
-        if(nom_col_edit == projet.tableau.colonnes[i].name && nom_col_edit != projet.tableau.colonnes[position_click_col].name)
-        {
-          trouve = true;
-        }
-        i += 1;
-      }
+		if (!vide)
+		{
+			var i = 0;
+			
+			while(i < projet.tableau.colonnes.length)
+			{
+				if (nom_col_edit == projet.tableau.colonnes[i].name && nom_col_edit != projet.tableau.colonnes[position_click_col].name)
+					trouve = true;
+				
+				i++;
+			}
 
-      if(trouve)
-      {
-        notification('error', 'Une autre colonne porte déjà ce nom');
-      }
-      else
-      {
-          valid = true;
-      }
-    }
-    else notification('error', 'Tous les champs doivent être remplis');
-  }
-  return valid;
+			if (trouve)
+				notification('error', 'Une autre colonne porte déjà ce nom');
+			else
+				valid = true;
+		}
+		else
+			notification('error', 'Tous les champs doivent être remplis');
+	}
+	
+	return valid;
 }
 
-$("#btn_edit_col").click(function() {
-  if(checkValidityCol())
-  {
-    var nom_col_edit;
-    if(specialChecked())
-    {
-      nom_col_edit = $("#selectCrit option:selected").text();
-      var trouve = false;
-      var i = 0;
-    }
-    else nom_col_edit = $("#mColName").val();
-    var poids_edit = $("#mColPoids").val();
-    projet.tableau.colonnes[position_click_col].name = nom_col_edit;
-    projet.tableau.poids[position_click_col] = poids_edit;
-    $("#mColName").val("");
-    $("#mColPoids").val("");
-    $("#close_edit_panel_col").trigger('click');
-    updateProject();
-    updateTable();
-  }
+// Clic sur le bouton de modification d'une colonne
+$("#btn_edit_col").click(function()
+{
+	if (checkValidityCol())
+	{
+		var nom_col_edit;
+		
+		if (specialChecked())
+		{
+			nom_col_edit = $("#selectCrit option:selected").text();
+			var trouve = false;
+			var i = 0;
+		}
+		else
+			nom_col_edit = $("#mColName").val();
+		
+		var poids_edit = $("#mColPoids").val();
+		
+		projet.tableau.colonnes[position_click_col].name = nom_col_edit;
+		projet.tableau.poids[position_click_col] = poids_edit;
+		
+		$("#mColName").val("");
+		$("#mColPoids").val("");
+		$("#close_edit_panel_col").trigger('click');
+		
+		updateProject();
+		updateTable();
+	}
 });
 
-$("#btn_nouveau_proj").click(function() {
-  if(projet != undefined)
-  {
-      $("#btn_confirm_key_del").hide();
-      $("#btn_confirm_key_new").show();
-      confirmKey();
-  }
-  else
-  {
-    $("#toggle-special").bootstrapToggle('off');
-    new_project = $('[data-remodal-id=modal-new-project]').remodal();
-    new_project.open();
-  }
+// Clic sur le bouton "Nouveau"
+$("#btn_nouveau_proj").click(function()
+{
+	if (projet != undefined)
+	{
+		$("#btn_confirm_key_del").hide();
+		$("#btn_confirm_key_new").show();
+		
+		confirmKey();
+	}
+	else
+	{
+		$("#toggle-special").bootstrapToggle('off');
+		
+		new_project = $('[data-remodal-id=modal-new-project]').remodal();
+		new_project.open();
+	}
 });
 
-$("#btn_confirm_key_new").click(function() {
-  if($("#project_key").val() == projet.key)
-  {
-    $("#project_key").val("");
-    key.close();
-    confirmation = $('[data-remodal-id=modal]').remodal();
-    confirmation.open();
-  }
-  else
-  {
-    notification('error', 'La clé entrée est incorrecte');
-  }
+// Clic sur le bouton de validation du formulaire demandant la clé du projet
+$("#btn_confirm_key_new").click(function()
+{
+	if ($("#project_key").val() == projet.key)
+	{
+		$("#project_key").val("");
+		key.close();
+		confirmation = $('[data-remodal-id=modal]').remodal();
+		confirmation.open();
+	}
+	else
+		notification('error', 'La clé entrée est incorrecte');
 });
 
-$("#btn_new_project").click(function() {
-  if($("#project_name_new").val() == "" || $("#project_key_new").val() == "")
-  {
-    notification('error', 'Tous les champs doivent être remplis');
-  }
-  else if($("#project_key_new").val().length < 4)
-  {
-    notification('error', 'La clé doit faire au moins 4 caractères');
-  }
-  else
-  {
-    projet = new Projet($("#project_name_new").val(), $("#project_key_new").val());
-    new_project.close();
-    updateProject();
-    changeTitle($("#project_name_new").val());
-    $("#project_name_new").val("");
-    $("#project_key_new").val("");
-    if(projet != undefined)
-    {
-      notification('success', 'Le projet '+projet.nom+' a bien été créé');
-    }
-  }
+// Clic sur le bouton "Créer" après avoir rempli le formulaire de création de projet
+$("#btn_new_project").click(function()
+{
+	if ($("#project_name_new").val() == "" || $("#project_key_new").val() == "")
+		notification('error', 'Tous les champs doivent être remplis');
+	else if ($("#project_key_new").val().length < 4)
+		notification('error', 'La clé doit faire au moins 4 caractères');
+	else
+	{
+		projet = new Projet($("#project_name_new").val(), $("#project_key_new").val());
+		new_project.close();
+		updateProject();
+		changeTitle($("#project_name_new").val());
+		
+		$("#project_name_new").val("");
+		$("#project_key_new").val("");
+		
+		if (projet != undefined)
+			notification('success', 'Le projet '+projet.nom+' a bien été créé');
+	}
 });
 
-$("#btn_ouvrir_proj").click(function() {
-  $('#fileOpen').trigger('click');
+// Clic sur le bouton "Ouvrir"
+$("#btn_ouvrir_proj").click(function()
+{
+	$('#fileOpen').trigger('click');
 });
 
-$("#btn_cancel_new_proj").click(function() {
-  confirmation.close();
+// Clic sur le bouton "Non" lors de la demande de confirmation de création de nouveau projet
+$("#btn_cancel_new_proj").click(function()
+{
+	confirmation.close();
 });
 
-$("#btn_val_new_proj").click(function() {
-  confirmation.close();
-  new_project = $('[data-remodal-id=modal-new-project]').remodal();
-  new_project.open();
-  $("#toggle-special").bootstrapToggle('off');
+// Clic sur le bouton "Oui" lors de la demande de confirmation de création de nouveau projet
+$("#btn_val_new_proj").click(function()
+{
+	confirmation.close();
+	new_project = $('[data-remodal-id=modal-new-project]').remodal();
+	new_project.open();
+	$("#toggle-special").bootstrapToggle('off');
 });
 
-$("#btn_settings").click(function() {
-  if(projet != undefined)
-  {
-    $("#nom_projet").val(projet.nom);
-    settings = $('[data-remodal-id=modal-settings]').remodal();
-    settings.open();
-  }
+// Clic sur le bouton "Paramètres"
+$("#btn_settings").click(function()
+{
+	if (projet != undefined)
+	{
+		$("#nom_projet").val(projet.nom);
+		settings = $('[data-remodal-id=modal-settings]').remodal();
+		settings.open();
+	}
 });
 
-$("#btnReinit").click(function() {
-  $("#jsGrid").jsGrid({
-    height: "auto",
-    width: "auto",
-    autowidth: true,
-    filtering: true,
-    editing: true,
-    inserting: true,
-    sorting: true,
-    paging: true,
-    autoload: true,
-    pageSize: 15,
-    pageButtonCount: 5,
-    noDataContent: "Aucune donn&eacute;e",
-    loadMessage: "Veuillez patienter...",
-    deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
-    datatype: "json",
-    controller: {
-      loadData: $.noop,
-      insertItem: $.noop,
-      updateItem: $.noop,
-      deleteItem: $.noop
-    },
-    fields: projet.tableau.colonnes,
-    data: []
-  });
+// Clic sur le bouton "Réinitialiser"
+$("#btnReinit").click(function()
+{
+	$("#jsGrid").jsGrid({
+		height: "auto",
+		width: "auto",
+		autowidth: true,
+		filtering: true,
+		editing: true,
+		inserting: true,
+		sorting: true,
+		paging: true,
+		autoload: true,
+		pageSize: 15,
+		pageButtonCount: 5,
+		noDataContent: "Aucune donn&eacute;e",
+		loadMessage: "Veuillez patienter...",
+		deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+		datatype: "json",
+		controller: {
+			loadData: $.noop,
+			insertItem: $.noop,
+			updateItem: $.noop,
+			deleteItem: $.noop
+		},
+		fields: projet.tableau.colonnes,
+		data: []
+	});
 });
 
+// Mise à jour du tableau jsGrid
 function updateTable()
 {
-  if(projet.tableau.colonnes.length > 0)
-  {
-    projet.tableau.colonnes.push({'type': 'control'});
+	if (projet.tableau.colonnes.length > 0)
+	{
+		projet.tableau.colonnes.push({'type': 'control'});
 
-    $("#jsGrid").jsGrid({
-      height: "70%",
-      width: "100%",
-      filtering: true,
-      editing: true,
-      inserting: true,
-      sorting: true,
-      paging: true,
-      autoload: false,
-      pageSize: 15,
-      pageButtonCount: 5,
-      noDataContent: "Aucune donnée",
-      loadMessage: "Veuillez patienter...",
-      deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
-      datatype: 'json',
-      controller: {
-        loadData: $.noop,
-        insertItem: $.noop,
-        updateItem: $.noop,
-        deleteItem: $.noop
-      },
-      fields: projet.tableau.colonnes,
-      data: projet.tableau.donnees
-    });
+		$("#jsGrid").jsGrid({
+			height: "70%",
+			width: "100%",
+			filtering: true,
+			editing: true,
+			inserting: true,
+			sorting: true,
+			paging: true,
+			autoload: false,
+			pageSize: 15,
+			pageButtonCount: 5,
+			noDataContent: "Aucune donnée",
+			loadMessage: "Veuillez patienter...",
+			deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+			datatype: 'json',
+			controller: {
+				loadData: $.noop,
+				insertItem: $.noop,
+				updateItem: $.noop,
+				deleteItem: $.noop
+			},
+			fields: projet.tableau.colonnes,
+			data: projet.tableau.donnees
+		});
 
-    projet.tableau.colonnes.pop();
-    deleteControls();
-    if(projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
-    {
-      $("#btn_exp_csv").prop("disabled", false);
-      $("#btnExec").show();
-      $("#btnReinit").show();
-    }
-  }
+		projet.tableau.colonnes.pop();
+		deleteControls();
+		
+		if (projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
+		{
+			$("#btn_exp_csv").prop("disabled", false);
+			$("#btnExec").show();
+			$("#btnReinit").show();
+		}
+	}
 }
 
 function deleteControls()
 {
-  var finish = false;
-  var i = 0;
-  while(i < projet.tableau.colonnes.length && !finish)
-  {
-    if(projet.tableau.colonnes[i].type == 'control')
-    {
-      projet.tableau.colonnes = projet.tableau.colonnes.splice(i, 1);
-    }
-    i += 1;
-  }
+	var finish = false;
+	var i = 0;
+	
+	while (i < projet.tableau.colonnes.length && !finish)
+	{
+		if(projet.tableau.colonnes[i].type == 'control')
+			projet.tableau.colonnes = projet.tableau.colonnes.splice(i, 1);
+		
+		i++;
+	}
 }
 
+// Initialisation du tableau avec des données d'exemple
 function createDefaultTable()
 {
-  $("#jsGrid").jsGrid({
-    height: "70%",
-    width: "100%",
-    filtering: true,
-    editing: true,
-    inserting: true,
-    sorting: true,
-    paging: true,
-    autoload: true,
-    pageSize: 15,
-    pageButtonCount: 5,
-    noDataContent: "Aucune donnée",
-    loadMessage: "Veuillez patienter...",
-    deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
-    controller: {
-      loadData: $.noop,
-      insertItem: $.noop,
-      updateItem: $.noop,
-      deleteItem: $.noop
-    },
-    fields: [
-      { name: "Name", type: "text", width: 150 },
-      { name: "Age", type: "number", width: 50 },
-      { name: "Address", type: "text", width: 200 },
-      { name: "Country", type: "text", valueField: "Id", textField: "Name" },
-      { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
-      { type: "control" }
-    ],
-    data: [
-      //{"Pierre Nerzic", "82", "Ici", "Chine", true}
-    ]
-  });
+	$("#jsGrid").jsGrid({
+		height: "70%",
+		width: "100%",
+		filtering: true,
+		editing: true,
+		inserting: true,
+		sorting: true,
+		paging: true,
+		autoload: true,
+		pageSize: 15,
+		pageButtonCount: 5,
+		noDataContent: "Aucune donnée",
+		loadMessage: "Veuillez patienter...",
+		deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
+		controller: {
+			loadData: $.noop,
+			insertItem: $.noop,
+			updateItem: $.noop,
+			deleteItem: $.noop
+		},
+		fields: [
+			{ name: "Name", type: "text", width: 150 },
+			{ name: "Age", type: "number", width: 50 },
+			{ name: "Address", type: "text", width: 200 },
+			{ name: "Country", type: "text", valueField: "Id", textField: "Name" },
+			{ name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+			{ type: "control" }
+		],
+		data: [
+			//{"Pierre Nerzic", "82", "Ici", "Chine", true}
+		]
+	});
 }
 
+// Ajout des critères spéciaux à la liste déroulante dans le panel de création de colonne
 function loadSpecialCrit()
 {
-  $("#selectCrit option").remove();
-  $("#specialCrit a").remove();
-  for(critere in projet.criteres_speciaux)
-  {
-    $("#selectCrit").append("<option>"+projet.criteres_speciaux[critere].nom+"</option>");
-    $("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres' id='critere_"+critere+"'>"+projet.criteres_speciaux[critere].nom+"</a>");
-  }
+	$("#selectCrit option").remove();
+	$("#specialCrit a").remove();
+	
+	for (critere in projet.criteres_speciaux)
+	{
+		$("#selectCrit").append("<option>" + projet.criteres_speciaux[critere].nom + "</option>");
+		$("#specialCrit").append("<a href='#' class='list-group-item item_crit context-menu-criteres' id='critere_" + critere + "'>" + projet.criteres_speciaux[critere].nom + "</a>");
+	}
 }
 
+// Ajout des colonnes à la liste des colonnes existentes
 function loadCol()
 {
-  $("#colList a").remove();
-  for(colonne in projet.tableau.colonnes)
-  {
-    $("#colList").append("<a href='#' class='list-group-item item_col context-menu-colonnes' id='colonne_"+colonne+"'>"+projet.tableau.colonnes[colonne].name+"</a>");
-  }
+	$("#colList a").remove();
+	
+	for (colonne in projet.tableau.colonnes)
+		$("#colList").append("<a href='#' class='list-group-item item_col context-menu-colonnes' id='colonne_" + colonne + "'>" + projet.tableau.colonnes[colonne].name + "</a>");
 }
 
+// Mise à jour de l'interface en fonction de l'état du projet
 function updateProject()
 {
-  if(projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
-  {
-    $("#btn_exp_csv").prop("disabled", false);
-    $("#btnExec").show();
-    $("#btnReinit").show();
-  }
-  else
-  {
-    $("#btnExec").hide();
-    $("#btnReinit").hide();
-  }
-  if(projet.criteres_speciaux.length == 0)
-  {
-    $("#toggle-special").bootstrapToggle('off');
-    $('#toggle-special').bootstrapToggle('disable');
-  }
-  else
-  {
-    $('#toggle-special').bootstrapToggle('enable');
-  }
+	if (projet.tableau.colonnes.length > 0 && projet.tableau.donnees.length > 0)
+	{
+		$("#btn_exp_csv").prop("disabled", false);
+		$("#btnExec").show();
+		$("#btnReinit").show();
+	}
+	else
+	{
+		$("#btnExec").hide();
+		$("#btnReinit").hide();
+	}
+	
+	if (projet.criteres_speciaux.length == 0)
+	{
+		$("#toggle-special").bootstrapToggle('off');
+		$('#toggle-special').bootstrapToggle('disable');
+	}
+	else
+		$('#toggle-special').bootstrapToggle('enable');
 
-  $("#toggle-special").bootstrapToggle('off');
-  $("#btn_open_csv").prop("disabled", false);
-  $("#btnNouveauCritere").prop("disabled", false);
-  $("#btnAjouterCol").prop("disabled", false);
-  loadSpecialCrit();
-  loadCol();
-  saveProject();
+	$("#toggle-special").bootstrapToggle('off');
+	$("#btn_open_csv").prop("disabled", false);
+	$("#btnNouveauCritere").prop("disabled", false);
+	$("#btnAjouterCol").prop("disabled", false);
+	
+	loadSpecialCrit();
+	loadCol();
+	saveProject();
 }
 
+// Retourne le type de critère sélectionné dans le panel de création de colonne
 function specialChecked()
 {
-  return $("#toggle-special").prop('checked');
+	return $("#toggle-special").prop('checked');
 }
 
+// Sauve le projet dans le Local Storage
 function saveProject()
 {
-  var projet_string = JSON.stringify(projet);
-  localStorage.setItem("projetDMS", projet_string);
+	var projet_string = JSON.stringify(projet);
+	localStorage.setItem("projetDMS", projet_string);
 }
 
-function changeTitle(newTitle) {
-  projet.nom = newTitle;
-  updateTitle();
+// Change le titre du projet
+function changeTitle(newTitle)
+{
+	projet.nom = newTitle;
+	updateTitle();
 }
 
+// Change le titre de la page
 function updateTitle()
 {
-  document.title = "DMS - "+projet.nom;
+	document.title = "DMS - "+projet.nom;
 }
 
+// Affiche la fenetre de saisie de la clé
 function confirmKey()
 {
-  key = $('[data-remodal-id=modal-key]').remodal();
-  $("#project_key").val("");
-  key.open();
+	key = $('[data-remodal-id=modal-key]').remodal();
+	$("#project_key").val("");
+	key.open();
 }
 
+// Affiche une notification
 function notification(type, message)
 {
-  var n = noty({
-    layout: 'bottomLeft',
-    theme: 'relax',
-    text: message,
-    type: type,
-    animation: {
-      open: {height: 'toggle'}, // jQuery animate function property object
-      close: {height: 'toggle'}, // jQuery animate function property object
-      easing: 'swing', // easing
-      speed: 500 // opening & closing animation speed
-    }
-  });
+	var n = noty({
+		layout: 'bottomLeft',
+		theme: 'relax',
+		text: message,
+		type: type,
+		animation: {
+			open: {height: 'toggle'}, // jQuery animate function property object
+			close: {height: 'toggle'}, // jQuery animate function property object
+			easing: 'swing', // easing
+			speed: 500 // opening & closing animation speed
+		}
+	});
 }
 
-$("#btn_confirm_key_del").click(function(){
-  if($("#project_key").val() == projet.key)
-  {
-    localStorage.removeItem("projetDMS");
-    $("#project_key").val("");
-    key.close();
-    location.reload();
-  }
-  else
-  {
-    notification('error', 'La clé entrée est incorrecte');
-  }
+// Clic sur le bouton de confirmation de suppression du projet dans le panel de saisie de la clé
+$("#btn_confirm_key_del").click(function()
+{
+	if ($("#project_key").val() == projet.key)
+	{
+		localStorage.removeItem("projetDMS");
+		$("#project_key").val("");
+		key.close();
+		location.reload();
+	}
+	else
+		notification('error', 'La clé entrée est incorrecte');
 });
 
-$(document).on('click', '.item_crit', function(){
-  editCritere($(this));
-  $("#panel_edit").slideDown("slow");
+// Clic sur un critère spécial dans la liste des critères spéciaux
+$(document).on('click', '.item_crit', function()
+{
+	editCritere($(this));
+	$("#panel_edit").slideDown("slow");
 });
 
-$(document).on('click', '.item_col', function(){
-  editCol($(this));
-  $("#panel_edit_col").slideDown("slow");
+// Clic sur une colonne dans la liste des colonnes
+$(document).on('click', '.item_col', function()
+{
+	editCol($(this));
+	$("#panel_edit_col").slideDown("slow");
 });
 
-$("#close_edit_panel").click(function(){
-  $("#panel_edit").slideUp("slow");
+// Clic sur le bouton de fermeture du panel de modification de critère spécial
+$("#close_edit_panel").click(function()
+{
+	$("#panel_edit").slideUp("slow");
 });
 
-$(".colonne").click(function(){
-  $("#panel_edit_col").slideDown("slow");
+$(".colonne").click(function()
+{
+	$("#panel_edit_col").slideDown("slow");
 });
 
-$("#close_edit_panel_col").click(function(){
-  $("#panel_edit_col").slideUp("slow");
+// Clic sur le bouton de fermeture du panel de modification de colonne
+$("#close_edit_panel_col").click(function()
+{
+	$("#panel_edit_col").slideUp("slow");
 });
 
-$("#btnAjouterCol").click(function(){
-  $("#panel_ajouter_col").slideToggle("slow");
+// Clic sur le bouton d'ajout d'une nouvelle colonne
+$("#btnAjouterCol").click(function()
+{
+	$("#panel_ajouter_col").slideToggle("slow");
 });
 
-$("#close_ajouter_panel_col").click(function(){
-  $("#panel_ajouter_col").slideUp("slow");
+// Clic sur le bouton de fermeture du panel de création de colonne
+$("#close_ajouter_panel_col").click(function()
+{
+	$("#panel_ajouter_col").slideUp("slow");
 });
 
-$("#btn_sav_colonne").click(function() {
-  var trouve = false;
-  var poids_entier = true;
-  var col_poids = parseInt($("#nColPoids").val());
-  var nom_col;
+// Clic sur le bouton de validation après modification d'une colonne
+$("#btn_sav_colonne").click(function()
+{
+	var trouve = false;
+	var poids_entier = true;
+	var col_poids = parseInt($("#nColPoids").val());
+	var nom_col;
 
-  if(!Number.isInteger(col_poids))
-  {
-    poids_entier = false;
-    notification('error', 'Le poids doit être un entier');
-  }
+	if (!Number.isInteger(col_poids))
+	{
+		poids_entier = false;
+		notification('error', 'Le poids doit être un entier');
+	}
 
-  if($("#toggle-special").prop('checked'))
-  {
-    nom_col = $("#selectCrit option:selected").text();
-    var i = 0;
+	if ($("#toggle-special").prop('checked'))
+	{
+		nom_col = $("#selectCrit option:selected").text();
+		var i = 0;
 
-    while(i < projet.tableau.colonnes.length && !trouve && poids_entier)
-    {
-      if(nom_col == projet.tableau.colonnes[i].name) trouve = true;
-      i += 1;
-    }
-    if(trouve)
-    {
-      notification('error', 'Cette colonne existe déjà');
-    }
-    if(!trouve && poids_entier)
-    {
-      var j = 0;
-      var trouve2 = false;
-      var index;
-      while(!trouve2)
-      {
-        if(projet.criteres_speciaux[j].nom == nom_col)
-        {
-          trouve2 = true;
-          index = j;
-        }
-        j += 1;
-      }
-      projet.tableau.colonnes.push({'name': nom_col, 'type': 'select', 'items':projet.criteres_speciaux[index].variables});
-      projet.tableau.poids.push(col_poids);
-      updateProject();
-      updateTable();
-    }
-  }
-  else
-  {
-    nom_col = $("#nColName").val();
-    var vide = false;
+		while (i < projet.tableau.colonnes.length && !trouve && poids_entier)
+		{
+			if(nom_col == projet.tableau.colonnes[i].name)
+				trouve = true;
+			
+			i++;
+		}
+		
+		if (trouve)
+			notification('error', 'Cette colonne existe déjà');
+		
+		if (!trouve && poids_entier)
+		{
+			var j = 0;
+			var trouve2 = false;
+			var index;
+			
+			while (!trouve2)
+			{
+				if(projet.criteres_speciaux[j].nom == nom_col)
+				{
+					trouve2 = true;
+					index = j;
+				}
+				
+				j++;
+			}
+			
+			projet.tableau.colonnes.push({'name': nom_col, 'type': 'select', 'items':projet.criteres_speciaux[index].variables});
+			projet.tableau.poids.push(col_poids);
+			
+			updateProject();
+			updateTable();
+		}
+	}
+	else
+	{
+		nom_col = $("#nColName").val();
+		var vide = false;
 
-    if(nom_col == "" || col_poids == "")
-    {
-      vide = true;
-    }
-    if(!vide)
-    {
-      var k = 0;
-      while(k < projet.tableau.colonnes.length && !trouve && poids_entier)
-      {
-        if(nom_col == projet.tableau.colonnes[k].name) trouve = true;
-        k += 1;
-      }
-      if(trouve)
-      {
-        notification('error', 'Cette colonne existe déjà');
-      }
-      if(!trouve && poids_entier)
-      {
-        projet.tableau.colonnes.push({'name': nom_col, 'type': 'number'});
-        projet.tableau.poids.push(col_poids);
-        updateProject();
-        updateTable();
-      }
-    }
-  }
+		if (nom_col == "" || col_poids == "")
+			vide = true;
+		
+		if (!vide)
+		{
+			var k = 0;
+			
+			while (k < projet.tableau.colonnes.length && !trouve && poids_entier)
+			{
+				if (nom_col == projet.tableau.colonnes[k].name)
+					trouve = true;
+				
+				k++;
+			}
+			
+			if (trouve)
+				notification('error', 'Cette colonne existe déjà');
+			
+			if (!trouve && poids_entier)
+			{
+				projet.tableau.colonnes.push({'name': nom_col, 'type': 'number'});
+				projet.tableau.poids.push(col_poids);
+				
+				updateProject();
+				updateTable();
+			}
+		}
+	}
 });
 
-$("#btnNouveauCritere").click(function() {
-  $("#panel_nouveau_critere").slideToggle("slow");
+// Clic sur le bouton d'ajout de critère spécial
+$("#btnNouveauCritere").click(function()
+{
+	$("#panel_nouveau_critere").slideToggle("slow");
 });
 
-$("#close_nouveau_critere").click(function(){
-  $("#panel_nouveau_critere").slideUp("slow");
+// Clic sur le bouton de fermeture du panel de création de nouveau critère spécial
+$("#close_nouveau_critere").click(function()
+{
+	$("#panel_nouveau_critere").slideUp("slow");
 });
 
-$("#btn_sav_settings").click(function() {
-  if($("#nom_projet").val() != projet.nom) changeTitle($("#nom_projet").val());
-  settings.close();
-  saveProject();
-  notification('success', 'Les paramètres ont bien été enregistrés');
+// Clic sur le bouton de bouton de sauvegarde après modification des paramètres
+$("#btn_sav_settings").click(function()
+{
+	if ($("#nom_projet").val() != projet.nom)
+		changeTitle($("#nom_projet").val());
+	
+	settings.close();
+	saveProject();
+	
+	notification('success', 'Les paramètres ont bien été enregistrés');
 });
 
-$("#del_local").click(function() {
-  $("#btn_confirm_key_del").show();
-  $("#btn_confirm_key_new").hide();
-  confirmKey();
-  key.close();
+// Clic sur le bouton de suppression des données enregistrées
+$("#del_local").click(function()
+{
+	$("#btn_confirm_key_del").show();
+	$("#btn_confirm_key_new").hide();
+	
+	confirmKey();
+	key.close();
 });
 
 $('#toggle-special').bootstrapToggle();
 $('#selectCrit').hide();
 
-$('#toggle-special').change(function() {
-    if($(this).prop('checked'))
-    {
-      $('#nomCol').hide();
-      $('#selectCrit').show();
-    }
-    else
-    {
-      $('#nomCol').show();
-      $('#selectCrit').hide();
-    }
-  })
+// Clic sur le bouton de changement du type de critère
+$('#toggle-special').change(function()
+{
+	if ($(this).prop('checked'))
+	{
+		$('#nomCol').hide();
+		$('#selectCrit').show();
+	}
+	else
+	{
+		$('#nomCol').show();
+		$('#selectCrit').hide();
+	}
+});
 
-$( "#fileOpen" ).change(function() {
-  var file = document.getElementById('fileOpen').files[0];
-  if(file)
-  {
-    var reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = function(e) {
-      temp =
-      projet = JSON.parse(reader.result);
+// Sélection d'un fichier à ouvrir
+$("#fileOpen").change(function()
+{
+	var file = document.getElementById('fileOpen').files[0];
+	
+	if (file)
+	{
+		var reader = new FileReader();
+		reader.readAsText(file);
+		
+		reader.onload = function(e)
+		{
+			temp = projet = JSON.parse(reader.result);
 
-      console.log(JSON.stringify(projet));
-      updateTable();
-    }
-  }
+			console.log(JSON.stringify(projet));
+			updateTable();
+		}
+	}
 });
 
 function editCritere(element)
 {
-  var id_sub = element.attr("id").split("_");
-  position_click = id_sub[1];
-  var critere_special = projet.criteres_speciaux[position_click];
-  var variables = critere_special.variables.join(";");
-  var valeurs = critere_special.valeurs.join(";");
-  $("#mCritereNom").val(critere_special.nom);
-  $("#mCritereVar").val(variables);
-  $("#mCritereVal").val(valeurs);
+	var id_sub = element.attr("id").split("_");
+	position_click = id_sub[1];
+	var critere_special = projet.criteres_speciaux[position_click];
+	var variables = critere_special.variables.join(";");
+	var valeurs = critere_special.valeurs.join(";");
+	
+	$("#mCritereNom").val(critere_special.nom);
+	$("#mCritereVar").val(variables);
+	$("#mCritereVal").val(valeurs);
 }
 
 function editCol(element)
 {
-  var id_sub = element.attr("id").split("_");
-  position_click_col = id_sub[1];
-  var colonne = projet.tableau.colonnes[position_click_col];
-  var nom_col = colonne.name;
-  var poids = projet.tableau.poids[position_click_col];
-  $("#mColName").val(nom_col);
-  $("#mColPoids").val(poids);
+	var id_sub = element.attr("id").split("_");
+	position_click_col = id_sub[1];
+	var colonne = projet.tableau.colonnes[position_click_col];
+	var nom_col = colonne.name;
+	var poids = projet.tableau.poids[position_click_col];
+	
+	$("#mColName").val(nom_col);
+	$("#mColPoids").val(poids);
 }
 
 $.contextMenu({
-            selector: '.context-menu-criteres',
-            callback: function(key, options) {
-                var id_sub = $(this).attr("id").split("_");
-                var position = id_sub[1];
-                if(key == "edit")
-                {
-                  editCritere($(this));
-                  $("#panel_edit").slideDown("slow");
-                }
-                else if(key == "delete")
-                {
-                  projet.criteres_speciaux.splice(position, 1);
-                  $(this).remove();
-                  $("#close_edit_panel").trigger('click');
-                  updateProject();
-                }
-            },
-            items: {
-                "edit": {name: "Modifier", icon: "edit"},
-                "delete": {name: "Supprimer", icon: "delete"}
-            }
-        });
+	selector: '.context-menu-criteres',
+	callback: function(key, options) {
+		var id_sub = $(this).attr("id").split("_");
+		var position = id_sub[1];
+		
+		if (key == "edit")
+		{
+			editCritere($(this));
+			$("#panel_edit").slideDown("slow");
+		}
+		else if (key == "delete")
+		{
+			projet.criteres_speciaux.splice(position, 1);
+			$(this).remove();
+			$("#close_edit_panel").trigger('click');
+			
+			updateProject();
+		}
+	},
+	items: {
+		"edit": {name: "Modifier", icon: "edit"},
+		"delete": {name: "Supprimer", icon: "delete"}
+	}
+});
 
 $.contextMenu({
-            selector: '.context-menu-colonnes',
-            callback: function(key, options) {
-                var id_sub_col = $(this).attr("id").split("_");
-                var position_col = id_sub_col[1];
+	selector: '.context-menu-colonnes',
+	callback: function(key, options) {
+		var id_sub_col = $(this).attr("id").split("_");
+		var position_col = id_sub_col[1];
 
-                if(key == "edit")
-                {
-                  editCol($(this));
-                  $("#panel_edit_col").slideDown("slow");
-                }
-                else if(key == "delete")
-                {
-                  projet.tableau.colonnes.splice(position_col, 1);
-                  $("#close_edit_panel_col").trigger('click');
-                  updateProject();
-                  updateTable();
-                }
-              },
-              items: {
-                "edit": {name: "Modifier", icon: "edit"},
-                "delete": {name: "Supprimer", icon: "delete"}
-              }
-            });
+		if (key == "edit")
+		{
+			editCol($(this));
+			$("#panel_edit_col").slideDown("slow");
+		}
+		else if (key == "delete")
+		{
+			projet.tableau.colonnes.splice(position_col, 1);
+			$("#close_edit_panel_col").trigger('click');
+			
+			updateProject();
+			updateTable();
+		}
+	},
+	items: {
+		"edit": {name: "Modifier", icon: "edit"},
+		"delete": {name: "Supprimer", icon: "delete"}
+	}
+});
