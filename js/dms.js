@@ -206,7 +206,7 @@ $("#btn_sav_critere").click(function()
 	if (checkValidityNewCritere())
 	{
 		var variables = $("#nCritereVar").val().split(";");
-		var valeurs = $("#nCritereVal").val().split(";");
+		var valeurs = $("#nCritereVal").val().split(";").map(function (i) { return parseInt(i, 10); });
 		
 		projet.criteres_speciaux.push({
 			'nom': $("#nCritereNom").val(),
@@ -228,7 +228,7 @@ $("#btn_edit_crit").click(function()
 	if (checkValidityEditCritere())
 	{
 		var variables = $("#mCritereVar").val().split(";");
-		var valeurs = $("#mCritereVal").val().split(";");
+		var valeurs = $("#mCritereVal").val().split(";").map(function (i) { return parseInt(i, 10); });
 		
 		projet.criteres_speciaux[position_click] = {
 			'nom': $("#mCritereNom").val(),
@@ -430,14 +430,12 @@ function updateTableDependentButtons()
 function onItemInserted(args)
 {
 	updateTableDependentButtons();
-	console.log(projet.tableau.donnees);
 }
 
 // Fonction appellée lorsqu'une ligne est supprimée du tableau
 function onItemDeleted(args)
 {
 	updateTableDependentButtons();
-	console.log(projet.tableau.donnees);
 }
 
 // Clic sur le bouton "Réinitialiser"
@@ -550,9 +548,13 @@ $('#btnExec').on('click', function ()
 	
 	var jsonActions = JSON.stringify(actions);
 	
+	console.log(jsonCriteres);
+	console.log(jsonActions);
+	
 	$.post('electre1', { criteres: jsonCriteres, actions: jsonActions }, function (data)
 	{
-		notification('success', "L'action n°" + data[0] + " est la meilleure.");
+		console.log(data);
+		notification('success', "Les actions intéressantes sont : " + data.map(function (i) { return parseInt(i, 10) + 1; }).join(', '));
 	});
 });
 
