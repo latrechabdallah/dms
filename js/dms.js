@@ -277,12 +277,32 @@ $("#btn_edit_crit").click(function()
 			'valeurs': valeurs
 		};
 
+		var col_exists = false;
+		var i = 0;
+		while (i < projet.tableau.colonnes.length && !col_exists)
+		{
+			if(projet.tableau.colonnes[i].name == $("#mCritereNom").val())
+			{
+				col_exists = true;
+				var index = i;
+			}
+
+			i++;
+		}
+
+		// Si le critère que l'on modifie correspond à une colonne déjà créée
+		if (col_exists)
+		{
+			projet.tableau.colonnes[index].items = variables;
+		}
+
 		$("#mCritereNom").val("");
 		$("#mCritereVar").val("");
 		$("#mCritereVal").val("");
 		$("#close_edit_panel").trigger('click');
 
 		updateProject();
+		updateTable();
 	}
 });
 
@@ -1059,6 +1079,7 @@ $.contextMenu({
 		else if (key == "delete")
 		{
 			projet.tableau.colonnes.splice(position_col, 1);
+			projet.tableau.poids.splice(position_col, 1);
 			$("#close_edit_panel_col").trigger('click');
 
 			updateProject();
