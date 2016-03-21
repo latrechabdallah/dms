@@ -80,7 +80,20 @@ $("#btn_exp_csv").click(function()
 		{
 			output += lignes[i][entetes[0].name];
 			for (var j = 1; j < entetes.length; j++)
-				output += ";" + lignes[i][entetes[j].name];
+			{
+				if (entetes[j].type == "number")
+					output += ";" + lignes[i][entetes[j].name];
+				else
+				{
+					var nomCritere = entetes[j].name;
+					var index = projet.criteres_speciaux.findIndex(function (el, index, array)
+					{
+						return el.nom == nomCritere;
+					});
+
+					output += ";" + projet.criteres_speciaux[index].valeurs[projet.tableau.donnees[i][entetes[j].name]];
+				}
+			}
 			output += "\n";
 		}
 	}
