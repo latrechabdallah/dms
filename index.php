@@ -6,8 +6,14 @@ $uri = $_SERVER['REQUEST_URI'];
 
 if (preg_match('/.*\\.(css|js|png|jpg|jpeg|mp3|ogg|woff|woff2|ttf)$/i', $uri) === 1)
 {
-	header('Content-Type: text/css');
-	readfile(preg_replace('#^/#', '', $uri), true);
+	$filename = preg_replace('#^/#', '', $uri);
+	if (file_exists($filename))
+	{
+		header('Content-Type: text/css');
+		readfile($filename, true);
+	}
+	else
+		http_response_code(404);
 }
 else
 	switch ($uri)
