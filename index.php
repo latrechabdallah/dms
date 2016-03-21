@@ -19,15 +19,12 @@ else
 	switch ($uri)
 	{
 		case '/':
-			echo 'Index';
+		case '/application':
+			require ROOT.'/application.html';
 			break;
 
 		case '/electre1':
 			require ROOT.'/electre/electre1.php';
-			break;
-
-		case '/application':
-			require ROOT.'/application.html';
 			break;
 
 		default:
