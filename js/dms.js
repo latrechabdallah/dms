@@ -21,6 +21,7 @@ var position_click_col;
 var confirmation;
 var settings;
 var key;
+var confirm_reinit;
 
 // Chargement du projet enregistré en Local Storage
 if (typeof(Storage) !== "undefined")
@@ -481,32 +482,20 @@ function onItemDeleted(args)
 // Clic sur le bouton "Réinitialiser"
 $("#btnReinit").click(function()
 {
-	$("#jsGrid").jsGrid({
-		height: "auto",
-		width: "auto",
-		autowidth: true,
-		filtering: true,
-		editing: true,
-		inserting: true,
-		sorting: true,
-		paging: true,
-		autoload: true,
-		pageSize: 15,
-		pageButtonCount: 5,
-		noDataContent: "Aucune donn&eacute;e",
-		loadMessage: "Veuillez patienter...",
-		deleteConfirm: "Etes-vous certain de vouloir supprimer cette ligne ?",
-		datatype: "json",
-		controller: {
-			loadData: $.noop,
-			insertItem: $.noop,
-			updateItem: $.noop,
-			deleteItem: $.noop
-		},
-		onItemInserted: onItemInserted,
-		onItemDeleted: onItemDeleted,
-		fields: projet.tableau.colonnes,
-		data: []
+	confirm_reinit = $('[data-remodal-id="modal-reinit"]').remodal();
+	confirm_reinit.open();
+
+	$('#btn_val_reinit').click(function ()
+	{
+		projet.tableau.donnees = [];
+		updateProject();
+		updateTable();
+		confirm_reinit.close();
+	});
+
+	$('#btn_cancel_reinit').click(function ()
+	{
+		confirm_reinit.close();
 	});
 });
 
