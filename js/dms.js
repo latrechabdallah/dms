@@ -428,6 +428,7 @@ $("#btn_new_project").click(function()
 		projet = new Projet($("#project_name_new").val(), $("#project_key_new").val());
 		new_project.close();
 		updateProject();
+		updateTable();
 		changeTitle($("#project_name_new").val());
 
 		$("#project_name_new").val("");
@@ -557,6 +558,10 @@ function updateTable()
 		deleteControls();
 
 		updateTableDependentButtons();
+	}
+	else
+	{
+		$("#jsGrid").empty();
 	}
 }
 
