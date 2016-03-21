@@ -525,7 +525,20 @@ function updateTable()
 {
 	if (projet.tableau.colonnes.length > 0)
 	{
-		projet.tableau.colonnes.push({'type': 'control'});
+		projet.tableau.colonnes.push(
+			{
+			'type': 'control',
+				'modeSwitchButton': true,
+				'searchModeButtonTooltip': "Passer en mode recherche", // tooltip of switching filtering/inserting button in inserting mode
+				'insertModeButtonTooltip': "Passer en mode insertion", // tooltip of switching filtering/inserting button in filtering mode
+				'editButtonTooltip': "Éditer",                      // tooltip of edit item button
+				'deleteButtonTooltip': "Supprimer",                  // tooltip of delete item button
+				'searchButtonTooltip': "Recherche",                  // tooltip of search button
+				'clearFilterButtonTooltip': "Enlever les filtres",       // tooltip of clear filter button
+				'insertButtonTooltip': "Insérer",                  // tooltip of insert button
+				'updateButtonTooltip': "Mettre à jour",                  // tooltip of update item button
+				'cancelEditButtonTooltip': "Annuler l'édition",         // tooltip of cancel editing button
+			});
 
 		$("#jsGrid").jsGrid({
 			height: "70%",
