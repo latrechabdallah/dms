@@ -800,6 +800,7 @@ $("#btn_confirm_key_del").click(function()
 		localStorage.removeItem("projetDMS");
 		$("#project_key").val("");
 		key.close();
+		projet = undefined;
 		location.reload();
 	}
 	else
