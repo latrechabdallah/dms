@@ -2,10 +2,10 @@
 	<head>
 		<!-- ENCODING -->
 		<meta charset="UTF-8">
-		
+
 		<!-- TITLE -->
 		<title>DMS Project - Application</title>
-		
+
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 		<link type="text/css" rel="stylesheet" href="jsgrid-1.4.1/jsgrid.css" />
@@ -14,7 +14,7 @@
 		<link type="text/css" rel="stylesheet" href="bootstrap-toggle/bootstrap-toggle.min.css" />
 		<link type="text/css" rel="stylesheet" href="css/remodal.css" />
 		<link type="text/css" rel="stylesheet" href="css/remodal-default-theme.css" />
-		
+
 		<!-- SCRIPTS -->
 		<script src="js/jquery.js"></script>
 		<script src="jsgrid-1.4.1/jsgrid.min.js"></script>
@@ -24,7 +24,7 @@
 		<script src="js/noty/packaged/jquery.noty.packaged.min.js"></script>
 		<script src="js/remodal.min.js"></script>
 	</head>
-	
+
 	<body>
 		<!-- MENU -->
 		<nav>
@@ -33,18 +33,19 @@
 				<li><a href="#" id="btn_ouvrir_proj">Ouvrir...</a></li>
 				<li><a href="#" id="btn_exp_proj" title="">Exporter le projet</a></li>
 				<li><a href="#">Aide</a></li>
-				<li><a href="#" id="btn_settings"><span class="glyphicon glyphicon-cog"></span></a></li>
+				<li><a href="#" id="btn_settings"><span class="glyphicon glyphicon-cog" style="font-size: 18px;"></span></a></li>
 			</ul>
 			<input type="file" id="fileOpen" name="project_open" title="Ouvrir un fichier json" accept =".json" style="display: none" />
 		</nav>
-		
+		<br />
+
 		<!-- MAIN CONTAINER -->
 		<div class="container-fluid">
 			<div class="row">
-			
+
 				<!-- LEFT COLUMN -->
 				<div class="col-md-3">
-				
+
 					<!-- PANEL CRITERES SPECIAUX -->
 					<div class="panel panel-default">
 						<div class="panel-heading">Critères spéciaux</div>
@@ -52,7 +53,7 @@
 							<!-- BOUTON NOUVEAU CRITERE SPECIAL -->
 							<button type="button" class="btn btn-success" id="btnNouveauCritere" title="Ajouter un critère">+</button>
 							<br /><br />
-							
+
 							<!-- PANEL NOUVEAU CRITERE SPECIAL -->
 							<div id="panel_nouveau_critere" class="panel panel-default" style="display: none">
 								<div class="panel-body">
@@ -77,10 +78,10 @@
 									<button type="button" class="btn btn-success" id="btn_sav_critere">Enregistrer</button>
 								</div>
 							</div> <!-- END PANEL NOUVEAU CRITERE SPECIAL -->
-							
+
 							<!-- LISTE CRITERES SPECIAUX -->
 							<div class="list-group scrollable-menu" id="specialCrit"></div>
-							
+
 							<!-- PANEL MODIFICATION CRITERE SPECIAL -->
 							<div id="panel_edit" class="panel panel-default" style="display: none">
 								<div class="panel-body">
@@ -107,20 +108,20 @@
 							</div> <!-- END PANEL MODIFICATION CRITERE SPECIAL -->
 						</div>
 					</div> <!-- END PANEL CRITERES SPECIAUX -->
-					
+
 					<!-- PANEL IMPORT / EXPORT -->
 					<div class="panel panel-default">
 						<div class="panel-heading">Importer/Exporter un fichier CSV</div>
-						
+
 						<div class="panel-body">
 							<button type="button" class="btn btn-primary" id="btn_open_csv">Importer...</button>
 							<button type="button" class="btn btn-primary" id="btn_exp_csv">Exporter</button>
 							<input type="file" id="fileLoader" name="files_open" title="Ouvrir un fichier CSV" accept =".csv" style="display: none" />
 						</div>
 					</div> <!-- END PANEL IMPORT / EXPORT -->
-					
+
 				</div> <!-- END LEFT COLUMN -->
-				
+
 				<!-- CENTER COLUMN -->
 				<div class="col-md-6">
 					<div id="jsGrid" style="position: relative; width: 100%"></div>
@@ -130,19 +131,19 @@
 						<button type="button" class="btn btn-danger" id="btnReinit">Réinitialiser</button>
 					</div>
 				</div> <!-- END CENTER COLUMN -->
-				
+
 				<!-- RIGHT COLUMN -->
 				<div class="col-md-3" id="entetes">
-				
+
 					<!-- PANEL COLONNES -->
 					<div class="panel panel-default">
 						<div class="panel-heading">Colonnes</div>
-						
+
 						<div class="panel-body">
 							<!-- BOUTON AJOUTER COLONNE -->
 							<button type="button" class="btn btn-success" id="btnAjouterCol" title="Ajouter une colonne">+</button>
 							<br /><br />
-							
+
 							<!-- PANEL AJOUTER COLONNE -->
 							<div id="panel_ajouter_col" class="panel panel-default" style="display: none">
 								<div class="panel-body">
@@ -171,10 +172,10 @@
 									<button type="button" class="btn btn-success" id="btn_sav_colonne">Ajouter</button>
 								</div>
 							</div> <!-- END PANEL AJOUTER COLONNE -->
-							
+
 							<!-- LISTE COLONNES -->
 							<div class="list-group scrollable-menu" id="colList"></div>
-							
+
 							<!-- PANEL MODIFICATION COLONNE -->
 							<div id="panel_edit_col" class="panel panel-default" style="display: none">
 								<div class="panel-body">
@@ -195,15 +196,15 @@
 									<button type="button" class="btn btn-success" id="btn_edit_col">Enregistrer</button>
 								</div>
 							</div> <!-- END PANEL MODIFICATION COLONNE -->
-							
+
 						</div>
 					</div> <!-- END PANEL COLONES -->
-					
+
 				</div> <!-- END RIGHT COLUMN -->
-				
+
 			</div>
 		</div> <!-- END MAIN CONTAINER -->
-		
+
 		<!-- MODAL CONFIRMER NOUVEAU PROJET -->
 		<div data-remodal-id="modal">
 			<button data-remodal-action="close" class="remodal-close"></button>
@@ -213,7 +214,7 @@
 			<button class="remodal-cancel" id="btn_cancel_new_proj">Non</button>
 			<button class="remodal-confirm" id="btn_val_new_proj">Oui</button>
 		</div> <!-- END MODAL CONFIRMER NOUVEAU PROJET -->
-		
+
 		<!-- MODAL PARAMETRES -->
 		<div data-remodal-id="modal-settings">
 			<button data-remodal-action="close" class="remodal-close"></button>
@@ -226,9 +227,10 @@
 			<br />
 			<button class="btn btn-danger" id="del_local">Effacer les données locales</button>
 			<br />
+			<br />
 			<button class="remodal-confirm" id="btn_sav_settings">Enregistrer</button>
 		</div><!-- END MODAL PARAMETRES -->
-		
+
 		<!-- MODAL SAISIR CLE -->
 		<div data-remodal-id="modal-key">
 			<button data-remodal-action="close" class="remodal-close"></button>
@@ -241,7 +243,7 @@
 			<button class="remodal-confirm" id="btn_confirm_key_del">Valider</button>
 			<button class="remodal-confirm" id="btn_confirm_key_new">Valider</button>
 		</div> <!-- END MODAL SAISIR CLE -->
-		
+
 		<!-- MODAL SAISIR NOUVEAU PROJET -->
 		<div data-remodal-id="modal-new-project">
 			<button data-remodal-action="close" class="remodal-close"></button>
@@ -257,7 +259,7 @@
 			</div>
 			<button class="remodal-confirm" id="btn_new_project">Créer</button>
 		</div> <!-- END SAISIR NOUVEAU PROJET -->
-		
+
 		<!-- SCRIPTS -->
 		<script src="PapaParse/papaparse.js"></script>
 		<script src="js/dms.js"></script>

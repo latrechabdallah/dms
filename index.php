@@ -7,7 +7,7 @@ $uri = $_SERVER['REQUEST_URI'];
 if (preg_match('/.*\\.(css|js|png|jpg|jpeg|mp3|ogg|woff|woff2|ttf)$/i', $uri) === 1)
 {
 	header('Content-Type: text/css');
-	readfile($uri, true);
+	readfile(preg_replace('#^/#', '', $uri), true);
 }
 else
 	switch ($uri)

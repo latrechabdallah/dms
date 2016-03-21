@@ -24,11 +24,21 @@ var key;
 
 // Chargement du projet enregistré en Local Storage
 if (typeof(Storage) !== "undefined")
-	projet = JSON.parse(localStorage.getItem("projetDMS")) || undefined;
+{
+	var jsonProjet = localStorage.getItem('projetDMS');
+
+	if (jsonProjet != 'undefined')
+		projet = JSON.parse(jsonProjet);
+	else
+	{
+		notification('error', "Erreur lors de l'ouverture du projet");
+		localStorage.removeItem('projetDMS');
+	}
+}
 else
 	notification('error', 'Attention, votre navigateur ne supporte pas le stockage local');
 
-if (typeof projet !== 'undefined')
+if (projet != undefined)
 {
 	updateTitle();
 	updateProject();
@@ -56,12 +66,29 @@ $("#btn_exp_csv").click(function()
 {
 	var entetes = projet.tableau.colonnes;
 	var lignes = projet.tableau.donnees;
+	var output = "";
 
-	/* merge defaults and options, without modifying defaults */
-	var tab = $.extend({}, entetes, lignes);
-	var csv = Papa.unparse(tab);
-	var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-	
+	if (entetes.length > 0)
+	{
+		output += entetes[0].name;
+		for (var i = 1; i < entetes.length; i++)
+			output += ";" + entetes[i].name;
+
+		output += "\n";
+
+		for (var i = 0; i < lignes.length; i++)
+		{
+			output += lignes[i][entetes[0].name];
+			for (var j = 1; j < entetes.length; j++)
+				output += ";" + lignes[i][entetes[j].name];
+			output += "\n";
+		}
+	}
+
+	output += "\n";
+
+	var blob = new Blob([output], {type: 'text/csv;charset=utf-8;'});
+
 	if (navigator.msSaveBlob) // IE 10+
 		navigator.msSaveBlob(blob, 'dms_table.csv');
 	else
@@ -115,28 +142,28 @@ function checkValidityNewCritere()
 			format_correct = false;
 			notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
 		}
-		
+
 		if (format_correct && variables.split(";").length != valeurs.split(";").length)
 		{
 			nb_egaux = false;
 			notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
 		}
-		
+
 		while (i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
 		{
 			if (projet.criteres_speciaux[i].nom == nom_crit)
 				trouve = true;
-			
+
 			i++;
 		}
-		
+
 		if (trouve)
 			notification('error', 'Il existe déjà un critère portant ce nom');
 	}
-	
+
 	if (!vide && !trouve && format_correct && nb_egaux)
 		valid = true;
-	
+
 	return valid;
 }
 
@@ -157,7 +184,7 @@ function checkValidityEditCritere()
 		notification('error', 'Tous les champs doivent être remplis');
 		vide = true;
 	}
-	
+
 	if (!vide)
 	{
 		var i = 0;
@@ -175,28 +202,28 @@ function checkValidityEditCritere()
 			format_correct = false;
 			notification('error', "Le format des valeurs est incorrect (Vérifiez qu'elles sont bien toutes séparées par des ; et qu'il n'y a pas de ; a la fin)");
 		}
-		
+
 		if (format_correct && variables.split(";").length != valeurs.split(";").length)
 		{
 			nb_egaux = false;
 			notification('error', "Il n'y a pas le même nombre de variables et de valeurs");
 		}
-		
+
 		while (i < projet.criteres_speciaux.length && !trouve && format_correct && nb_egaux)
 		{
 			if(projet.criteres_speciaux[i].nom == nom_crit && nom_crit != projet.criteres_speciaux[position_click].nom)
 				trouve = true;
-			
+
 			i++;
 		}
-		
+
 		if (trouve)
 			notification('error', 'Le critère doit soit porter le même nom, soit un nouveau nom');
 	}
-	
+
 	if (!vide && !trouve && format_correct && nb_egaux)
 		valid = true;
-	
+
 	return valid;
 }
 
@@ -207,17 +234,17 @@ $("#btn_sav_critere").click(function()
 	{
 		var variables = $("#nCritereVar").val().split(";");
 		var valeurs = $("#nCritereVal").val().split(";").map(function (i) { return parseInt(i, 10); });
-		
+
 		projet.criteres_speciaux.push({
 			'nom': $("#nCritereNom").val(),
 			'variables': variables,
 			'valeurs': valeurs
 		});
-		
+
 		$("#nCritereNom").val("");
 		$("#nCritereVar").val("");
 		$("#nCritereVal").val("");
-		
+
 		updateProject();
 	}
 });
@@ -229,18 +256,18 @@ $("#btn_edit_crit").click(function()
 	{
 		var variables = $("#mCritereVar").val().split(";");
 		var valeurs = $("#mCritereVal").val().split(";").map(function (i) { return parseInt(i, 10); });
-		
+
 		projet.criteres_speciaux[position_click] = {
 			'nom': $("#mCritereNom").val(),
 			'variables': variables,
 			'valeurs': valeurs
 		};
-		
+
 		$("#mCritereNom").val("");
 		$("#mCritereVar").val("");
 		$("#mCritereVal").val("");
 		$("#close_edit_panel").trigger('click');
-		
+
 		updateProject();
 	}
 });
@@ -271,12 +298,12 @@ function checkValidityCol()
 		if (!vide)
 		{
 			var i = 0;
-			
+
 			while(i < projet.tableau.colonnes.length)
 			{
 				if (nom_col_edit == projet.tableau.colonnes[i].name && nom_col_edit != projet.tableau.colonnes[position_click_col].name)
 					trouve = true;
-				
+
 				i++;
 			}
 
@@ -288,7 +315,7 @@ function checkValidityCol()
 		else
 			notification('error', 'Tous les champs doivent être remplis');
 	}
-	
+
 	return valid;
 }
 
@@ -298,7 +325,7 @@ $("#btn_edit_col").click(function()
 	if (checkValidityCol())
 	{
 		var nom_col_edit;
-		
+
 		if (specialChecked())
 		{
 			nom_col_edit = $("#selectCrit option:selected").text();
@@ -307,16 +334,16 @@ $("#btn_edit_col").click(function()
 		}
 		else
 			nom_col_edit = $("#mColName").val();
-		
+
 		var poids_edit = $("#mColPoids").val();
-		
+
 		projet.tableau.colonnes[position_click_col].name = nom_col_edit;
 		projet.tableau.poids[position_click_col] = poids_edit;
-		
+
 		$("#mColName").val("");
 		$("#mColPoids").val("");
 		$("#close_edit_panel_col").trigger('click');
-		
+
 		updateProject();
 		updateTable();
 	}
@@ -329,13 +356,13 @@ $("#btn_nouveau_proj").click(function()
 	{
 		$("#btn_confirm_key_del").hide();
 		$("#btn_confirm_key_new").show();
-		
+
 		confirmKey();
 	}
 	else
 	{
 		$("#toggle-special").bootstrapToggle('off');
-		
+
 		new_project = $('[data-remodal-id=modal-new-project]').remodal();
 		new_project.open();
 	}
@@ -368,10 +395,10 @@ $("#btn_new_project").click(function()
 		new_project.close();
 		updateProject();
 		changeTitle($("#project_name_new").val());
-		
+
 		$("#project_name_new").val("");
 		$("#project_key_new").val("");
-		
+
 		if (projet != undefined)
 			notification('success', 'Le projet '+projet.nom+' a bien été créé');
 	}
@@ -506,7 +533,7 @@ function updateTable()
 
 		projet.tableau.colonnes.pop();
 		deleteControls();
-		
+
 		updateTableDependentButtons();
 	}
 }
@@ -515,18 +542,18 @@ function updateTable()
 $('#btnExec').on('click', function ()
 {
 	var criteres = {};
-	
+
 	for (var i = 0; i < projet.tableau.colonnes.length; i++)
 		criteres[projet.tableau.colonnes[i].name] = projet.tableau.poids[i];
-	
+
 	var jsonCriteres = JSON.stringify(criteres);
-	
+
 	var actions = [];
-	
+
 	for (var i = 0; i < projet.tableau.donnees.length; i++)
 	{
 		var action = {};
-		
+
 		for (var j = 0; j < projet.tableau.colonnes.length; j++)
 		{
 			if (projet.tableau.colonnes[j].type == "number")
@@ -538,19 +565,19 @@ $('#btnExec').on('click', function ()
 				{
 					return el.nom == nomCritere;
 				});
-				
+
 				action[projet.tableau.colonnes[j].name] = projet.criteres_speciaux[index].valeurs[projet.tableau.donnees[i][projet.tableau.colonnes[j].name]]; // Damn
 			}
 		}
-		
+
 		actions.push(action);
 	}
-	
+
 	var jsonActions = JSON.stringify(actions);
-	
+
 	console.log(jsonCriteres);
 	console.log(jsonActions);
-	
+
 	$.post('electre1', { criteres: jsonCriteres, actions: jsonActions }, function (data)
 	{
 		console.log(data);
@@ -567,12 +594,12 @@ function deleteControls()
 {
 	var finish = false;
 	var i = 0;
-	
+
 	while (i < projet.tableau.colonnes.length && !finish)
 	{
 		if(projet.tableau.colonnes[i].type == 'control')
 			projet.tableau.colonnes = projet.tableau.colonnes.splice(i, 1);
-		
+
 		i++;
 	}
 }
@@ -621,7 +648,7 @@ function loadSpecialCrit()
 {
 	$("#selectCrit option").remove();
 	$("#specialCrit a").remove();
-	
+
 	for (critere in projet.criteres_speciaux)
 	{
 		$("#selectCrit").append("<option>" + projet.criteres_speciaux[critere].nom + "</option>");
@@ -633,7 +660,7 @@ function loadSpecialCrit()
 function loadCol()
 {
 	$("#colList a").remove();
-	
+
 	for (colonne in projet.tableau.colonnes)
 		$("#colList").append("<a href='#' class='list-group-item item_col context-menu-colonnes' id='colonne_" + colonne + "'>" + projet.tableau.colonnes[colonne].name + "</a>");
 }
@@ -652,7 +679,7 @@ function updateProject()
 		$("#btnExec").hide();
 		$("#btnReinit").hide();
 	}
-	
+
 	if (projet.criteres_speciaux.length == 0)
 	{
 		$("#toggle-special").bootstrapToggle('off');
@@ -665,7 +692,7 @@ function updateProject()
 	$("#btn_open_csv").prop("disabled", false);
 	$("#btnNouveauCritere").prop("disabled", false);
 	$("#btnAjouterCol").prop("disabled", false);
-	
+
 	loadSpecialCrit();
 	loadCol();
 	saveProject();
@@ -680,8 +707,11 @@ function specialChecked()
 // Sauve le projet dans le Local Storage
 function saveProject()
 {
-	var projet_string = JSON.stringify(projet);
-	localStorage.setItem("projetDMS", projet_string);
+	if (projet != undefined)
+	{
+		var projet_string = JSON.stringify(projet);
+		localStorage.setItem("projetDMS", projet_string);
+	}
 }
 
 // Change le titre du projet
@@ -802,19 +832,19 @@ $("#btn_sav_colonne").click(function()
 		{
 			if(nom_col == projet.tableau.colonnes[i].name)
 				trouve = true;
-			
+
 			i++;
 		}
-		
+
 		if (trouve)
 			notification('error', 'Cette colonne existe déjà');
-		
+
 		if (!trouve && poids_entier)
 		{
 			var j = 0;
 			var trouve2 = false;
 			var index;
-			
+
 			while (!trouve2)
 			{
 				if (projet.criteres_speciaux[j].nom == nom_col)
@@ -822,13 +852,13 @@ $("#btn_sav_colonne").click(function()
 					trouve2 = true;
 					index = j;
 				}
-				
+
 				j++;
 			}
-			
+
 			projet.tableau.colonnes.push({'name': nom_col, 'type': 'select', 'items': projet.criteres_speciaux[index].variables});
 			projet.tableau.poids.push(col_poids);
-			
+
 			updateProject();
 			updateTable();
 		}
@@ -840,27 +870,27 @@ $("#btn_sav_colonne").click(function()
 
 		if (nom_col == "" || col_poids == "")
 			vide = true;
-		
+
 		if (!vide)
 		{
 			var k = 0;
-			
+
 			while (k < projet.tableau.colonnes.length && !trouve && poids_entier)
 			{
 				if (nom_col == projet.tableau.colonnes[k].name)
 					trouve = true;
-				
+
 				k++;
 			}
-			
+
 			if (trouve)
 				notification('error', 'Cette colonne existe déjà');
-			
+
 			if (!trouve && poids_entier)
 			{
 				projet.tableau.colonnes.push({'name': nom_col, 'type': 'number'});
 				projet.tableau.poids.push(col_poids);
-				
+
 				updateProject();
 				updateTable();
 			}
@@ -885,10 +915,10 @@ $("#btn_sav_settings").click(function()
 {
 	if ($("#nom_projet").val() != projet.nom)
 		changeTitle($("#nom_projet").val());
-	
+
 	settings.close();
 	saveProject();
-	
+
 	notification('success', 'Les paramètres ont bien été enregistrés');
 });
 
@@ -897,7 +927,7 @@ $("#del_local").click(function()
 {
 	$("#btn_confirm_key_del").show();
 	$("#btn_confirm_key_new").hide();
-	
+
 	confirmKey();
 	key.close();
 });
@@ -920,21 +950,43 @@ $('#toggle-special').change(function()
 	}
 });
 
+$("#btn_exp_proj").click(function()
+{
+	console.log("test");
+	if (projet != undefined)
+	{
+		var res = JSON.stringify(projet);
+		var blob = new Blob([res], { type: 'text/json;charset=utf-8;' });
+		var link = document.createElement("a");
+
+		if (link.download !== undefined)
+		{
+			var url = URL.createObjectURL(blob);
+			link.setAttribute("href", url);
+			link.setAttribute("download", projet.nom + '.json');
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	}
+});
+
 // Sélection d'un fichier à ouvrir
 $("#fileOpen").change(function()
 {
 	var file = document.getElementById('fileOpen').files[0];
-	
+
 	if (file)
 	{
 		var reader = new FileReader();
 		reader.readAsText(file);
-		
+
 		reader.onload = function(e)
 		{
-			temp = projet = JSON.parse(reader.result);
+			projet = JSON.parse(reader.result);
 
-			console.log(JSON.stringify(projet));
+			updateProject();
 			updateTable();
 		}
 	}
@@ -947,7 +999,7 @@ function editCritere(element)
 	var critere_special = projet.criteres_speciaux[position_click];
 	var variables = critere_special.variables.join(";");
 	var valeurs = critere_special.valeurs.join(";");
-	
+
 	$("#mCritereNom").val(critere_special.nom);
 	$("#mCritereVar").val(variables);
 	$("#mCritereVal").val(valeurs);
@@ -960,7 +1012,7 @@ function editCol(element)
 	var colonne = projet.tableau.colonnes[position_click_col];
 	var nom_col = colonne.name;
 	var poids = projet.tableau.poids[position_click_col];
-	
+
 	$("#mColName").val(nom_col);
 	$("#mColPoids").val(poids);
 }
@@ -970,7 +1022,7 @@ $.contextMenu({
 	callback: function(key, options) {
 		var id_sub = $(this).attr("id").split("_");
 		var position = id_sub[1];
-		
+
 		if (key == "edit")
 		{
 			editCritere($(this));
@@ -981,7 +1033,7 @@ $.contextMenu({
 			projet.criteres_speciaux.splice(position, 1);
 			$(this).remove();
 			$("#close_edit_panel").trigger('click');
-			
+
 			updateProject();
 		}
 	},
@@ -1006,7 +1058,7 @@ $.contextMenu({
 		{
 			projet.tableau.colonnes.splice(position_col, 1);
 			$("#close_edit_panel_col").trigger('click');
-			
+
 			updateProject();
 			updateTable();
 		}
