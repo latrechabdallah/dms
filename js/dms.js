@@ -808,15 +808,17 @@ $("#btn_confirm_key_del").click(function()
 });
 
 // Clic sur un critère spécial dans la liste des critères spéciaux
-$(document).on('click', '.item_crit', function()
+$(document).on('click', '.item_crit', function(e)
 {
+	e.preventDefault();
 	editCritere($(this));
 	$("#panel_edit").slideDown("slow");
 });
 
 // Clic sur une colonne dans la liste des colonnes
-$(document).on('click', '.item_col', function()
+$(document).on('click', '.item_col', function(e)
 {
+	e.preventDefault();
 	editCol($(this));
 	$("#panel_edit_col").slideDown("slow");
 });
@@ -993,7 +995,6 @@ $('#toggle-special').change(function()
 
 $("#btn_exp_proj").click(function()
 {
-	console.log("test");
 	if (projet != undefined)
 	{
 		var res = JSON.stringify(projet);
