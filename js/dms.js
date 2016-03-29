@@ -1072,6 +1072,14 @@ $("#btn_exp_proj").click(function()
 	}
 });
 
+// Aide
+$("#btn_help").click(function()
+{
+	var help = $('[data-remodal-id=modal-help]').remodal();
+	help.open();
+});
+
+
 // Sélection d'un fichier à ouvrir
 $("#fileOpen").change(function()
 {
