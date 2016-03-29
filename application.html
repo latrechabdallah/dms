@@ -293,6 +293,76 @@
 			<button class="remodal-confirm" id="btn_val_del_col">Oui</button>
 		</div> <!-- END MODAL CONFIRMER DELETE COLONNES -->
 
+		<!-- MODAL AIDE -->
+		<div data-remodal-id="modal-help">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h2>Aide</h2>
+			<br />
+			<div class="input-group inp" title="">
+				<h4> I. Débuter avec l'application </h4>
+				<p>Tout d'abord, vous allez devoir créer un nouveau projet. Pour ce faire, cliquez sur le bouton <strong>Nouveau</strong>. </p>
+				<img max-width="630px" src="images/Nouveau.png" />
+				<p>Remplissez les champs de la fenêtre qui apparait comme suit :</p>
+				<img width="630px" src="images/NouveauProjet.png" />
+				<p>Cliquez sur <strong>Créer</strong> pour finaliser la création du nouveau projet.</p>
+				<br />
+				<h4> II. Ouvrir un projet </h4>
+				<p>Pour ouvrir un projet déjà existant, cliquez sur <strong>Ouvrir...</strong> puis sélectionnez le fichier que vous voulez charger (Vérifiez qu'il est bien au format .json).</p>
+				<img width="630px" src="images/OuvrirProjet.png" />
+				<br />
+				<h4> III. Exporter le projet </h4>
+				<p>Cliquez sur le bouton <strong>Exporter le projet</strong>, sélectionnez "Enregistrer le fichier" puis cliquez sur "OK".</p>
+				<br />
+				<h4> IV. Voir l'aide </h4>
+				<p>Félicitations ! Vous l'avez trouvé sans avoir besoin d'aide !</p>
+				<br />
+				<h4> V. Accèder aux paramètres de l'application </h4>
+				<p>En cliquant sur la roue dentée, la fenêtre suivante apparaitra :</p>
+				<img width="630px" src="images/Parametres.png" />
+				<p>Vous avez la possibilité de changer le nom de votre projet (et de l'enregistrer), et/ou d'effacer les données locales (<u><strong>attention:</strong></u> si vous effacez les données, vous ne pourrez pas les récupérer).</p>
+				<br /> 
+				<h4> VI. Créer de nouveaux Critères Spéciaux </h4>
+				<p>Cliquez sur le petit <strong>+</strong> dans la case verte pour ajouter un Critère Spécial. (exemple de gauche)</p>
+				<img width="630px" src="images/NouveauCritSpe.png" />
+				<!-- Changer l'image : rajouter flèche + ajouter champs pré-remplis -->
+				<p>Remplissez les champs comme montré ci-dessus, puis cliquez sur <strong>Enregistrer</strong> (exemple de droite).</p>
+				<p><u>Note:</u> Vous pouvez ajouter plusieurs variables et plusieurs valeurs. Séparez-les avec des ";".</p>
+				<br />
+				<h4> VII. Ajouter des colonnes de critères au tableau </h4>
+				<p>De même que pour le point précédent, cliquez sur le petit <strong>+</strong> dans la case verte pour ajouter une colonne.</p>
+				<img max-width="630px" src="images/NouvelleColonne.png" />
+				<p><u>S'il ne s'agit pas d'un critère spécial :</u> (image de gauche)</p>
+				<p>Entrez le nom de la colonne, affectez-lui un poids et enfin cliquez sur <strong>Ajouter</strong>.</p>
+				<p><u>S'il s'agit d'un critère spécial :</u> (image de droite)</p>
+				<p>Cliquez sur le bouton <strong>Critère Spécial</strong> pour qu'il passe à "Oui", sélectionnez le critère spécial à ajouter, affectez-lui un poids et enfin cliquez sur <strong>Ajouter</strong>.</p>
+				<p><u>Note:</u> Si vous ne trouvez pas votre critère dans la liste déroulante, vérifiez que vous l'avez créé au préalable (si besoin, revenez au point précédent).</p>
+				<br />
+				<h4> VIII. Le tableau de candidats </h4>
+				<p>Par défaut, le tableau est en mode "Affichage". La première ligne (en vert) sert à filtrer les données selon les infos qui y sont indiquées, et en cliquant sur la petite loupe à droite. Le petit entonoir sert quant à lui à vider les filtres de recherche.</p> 
+				<p>Les lignes suivantes (s'il y en a), sont les différents candidats saisis en mode "Ajout". Le petit crayon sur leur droite permet de les éditer, et la poubelle permet de les supprimer.</p>
+				<img max-width="630px" src="images/ModeTableau.png" />
+				<br />
+				<h4> IX. Ajouter des candidats </h4>
+				<p>Cliquer sur le <strong>+</strong> vert en haut à droite du tableau fera basculer celui-ci en mode "Ajout". Pour repasser en mode "Affichage", il suffit de cliquer sur la loupe qui a remplacé le <strong>+</strong> vert.</p>
+				<p>Dans ce mode, la ligne verte sert à ajouter des candidats, en indiquant les caractéristiques de chacun d'eux, puis en appuyant sur le petit <strong>+</strong> vert en bout de ligne.</p>
+				<img max-width="630px" src="images/AjoutLigneTableau.png" />
+				<p>Ce nouveau candidat est alors ajouté à la suite du tableau, et est également éditable et supprimable dans ce mode.</p>
+				<img max-width="630px" src="images/AjoutNouvelleLigneTableau.png" />
+				<br />
+				<h4> X. Exécuter </h4>
+				<p>Cliquez sur le bouton <strong>Exécuter</strong> pour lancer le tri des candidats. Ce tri consiste à éliminer les candidats les moins intéressants, tout en conservant tous les candidats dits incomparables.</p>
+				<br />
+				<h4> XI. Réinitialiser </h4>
+				<p>Cliquez sur le bouton <strong>Réinitialiser</strong> pour supprimer tous les candidats entrés dans le tableau.</p>
+				<br />
+				<h4> XII. Importer un fichier CSV </h4>
+				<p>Cliquez sur le bouton <strong>Importer...</strong>, sélectionnez votre fichier CSV à charger, et cliquez sur "Ouvrir".</p>
+				<br />
+				<h4> XIII. Exporter un fichier au format CSV </h4>
+				<p>Cliquez sur le bouton <strong>Exporter</strong>, sélectionnez "Engistrer le fichier" et cliquez sur "OK".</p>
+			</div>
+		</div> <!-- END AIDE -->
+
 		<!-- SCRIPTS -->
 		<script src="js/dms.js"></script>
 	</body>
