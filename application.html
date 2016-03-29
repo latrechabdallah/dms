@@ -52,7 +52,8 @@
 						<div class="panel-heading">Critères spéciaux</div>
 						<div class="panel-body">
 							<!-- BOUTON NOUVEAU CRITERE SPECIAL -->
-							<button type="button" class="btn btn-success" id="btnNouveauCritere" title="Ajouter un critère">+</button>
+							<button type="button" class="btn btn-success" id="btnNouveauCritere" title="Ajouter un critère"><span class="glyphicon glyphicon-plus-sign" style="font-size: 20px;"></span></button>
+							<button type="button" class="btn btn-danger" id="btnDelCrit" title="Supprimer tous les critères"><span class="glyphicon glyphicon-trash" style="font-size: 20px;"></span></button>
 							<br /><br />
 
 							<!-- PANEL NOUVEAU CRITERE SPECIAL -->
@@ -142,7 +143,8 @@
 
 						<div class="panel-body">
 							<!-- BOUTON AJOUTER COLONNE -->
-							<button type="button" class="btn btn-success" id="btnAjouterCol" title="Ajouter une colonne">+</button>
+							<button type="button" class="btn btn-success" id="btnAjouterCol" title="Ajouter une colonne"><span class="glyphicon glyphicon-plus-sign" style="font-size: 20px;"></span></button>
+							<button type="button" class="btn btn-danger" id="btnDelCol" title="Supprimer toutes les colonnes"><span class="glyphicon glyphicon-trash" style="font-size: 20px;"></span></button>
 							<br /><br />
 
 							<!-- PANEL AJOUTER COLONNE -->
@@ -270,6 +272,26 @@
 			<button class="remodal-cancel" id="btn_cancel_reinit">Non</button>
 			<button class="remodal-confirm" id="btn_val_reinit">Oui</button>
 		</div> <!-- END MODAL CONFIRMER REINIT TABLE -->
+
+		<!-- MODAL CONFIRMER DELETE CRITERES -->
+		<div data-remodal-id="modal-del-crit">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h1>Confirmation</h1>
+			<p>Êtes-vous sûr de vouloir supprimer tous les critères ?</p>
+			<br />
+			<button class="remodal-cancel" id="btn_cancel_del_crit">Non</button>
+			<button class="remodal-confirm" id="btn_val_del_crit">Oui</button>
+		</div> <!-- END MODAL CONFIRMER DELETE CRITERES -->
+
+		<!-- MODAL CONFIRMER DELETE COLONNES -->
+		<div data-remodal-id="modal-del-col">
+			<button data-remodal-action="close" class="remodal-close"></button>
+			<h1>Confirmation</h1>
+			<p>Êtes-vous sûr de vouloir supprimer tous les critères ?</p>
+			<br />
+			<button class="remodal-cancel" id="btn_cancel_del_col">Non</button>
+			<button class="remodal-confirm" id="btn_val_del_col">Oui</button>
+		</div> <!-- END MODAL CONFIRMER DELETE COLONNES -->
 
 		<!-- SCRIPTS -->
 		<script src="js/dms.js"></script>
