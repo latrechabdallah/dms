@@ -27,6 +27,10 @@ else
 			require ROOT.'/electre/electre1.php';
 			break;
 
+			case '/diapo':
+				require ROOT.'/diaporama.html';
+				break;
+
 		default:
 			http_response_code(404);
 			echo $uri.': 404 not found';

@@ -24,6 +24,7 @@ var key;
 var confirm_reinit;
 var confirm_del_crit;
 var confirm_del_col;
+var help;
 
 // Chargement du projet enregistré en Local Storage
 if (typeof(Storage) !== "undefined")
@@ -1075,7 +1076,7 @@ $("#btn_exp_proj").click(function()
 // Aide
 $("#btn_help").click(function()
 {
-	var help = $('[data-remodal-id=modal-help]').remodal();
+	help = $('[data-remodal-id=modal-help]').remodal();
 	help.open();
 });
 
