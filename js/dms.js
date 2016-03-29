@@ -725,6 +725,17 @@ function updateProject()
 		$("#btnReinit").hide();
 	}
 
+	if(projet.tableau.colonnes.length > 0)
+	{
+		$("#btn_exp_csv").prop("disabled", false);
+		$("#btnDelCol").prop("disabled", false);
+	}
+	else
+	{
+		$("#btn_exp_csv").prop("disabled", true);
+		$("#btnDelCol").prop("disabled", true);
+	}
+
 	if (projet.criteres_speciaux.length == 0)
 	{
 		$("#btnDelCrit").prop("disabled", true);
