@@ -54,6 +54,8 @@ else
 	$("#btnReinit").hide();
 	$("#btnNouveauCritere").prop("disabled", true);
 	$("#btnAjouterCol").prop("disabled", true);
+	$("#btnDelCol").prop("disabled", true);
+	$("#btnDelCrit").prop("disabled", true);
 	$("#btn_open_csv").prop("disabled", true);
 	$("#btn_exp_csv").prop("disabled", true);
 	$("btn_exp_proj").addClass("disabled");
