@@ -18,23 +18,40 @@
 				<h2>Projet d'Aide à la Décision Multicritères</h2>
 			</section>
 			<section>
+				<h2>Sommaire</h2>
 				<ul>
-					<li><h3>Le choix multicritères</h3></li>
-					<li><h3>Notre projet</h3></li>
+					<li>
+						<h3>Le choix multicritères</h3>
+						<ul>
+							<li>Principe</li>
+							<li>Méthodes</li>
+						</ul>
+					</li>
+
+					<li>
+						<h3>Notre projet</h3>
+						<ul>
+							<li>Technologies</li>
+							<li>Problèmes rencontrés</li>
+							<li>Organisation</li>
+							<li>Etat d'avancement</li>
+						</ul>
+					</li>
 				</ul>
 			</section>
 			<section>
-				<h2>Le choix multicritères</h2>
-				<h3>Principe généraux</h3>
+				<h2>La décision multicritères</h2>
+			</section>
+			<section>
+				<h3>Principes généraux</h3>
 				<ul>
 					<li>Chaque critère a un poids</li>
-					<li>Chaque candidat a des valeurs correspondant aux critières</li>
+					<li>Chaque candidat a des valeurs correspondant aux critères</li>
 					<li>But : classer les différents candidats en fonction de leurs scores, pour obtenir le(s) meilleur(s) choix</li>
 				</ul>
 			</section>
 			<!--  -->
 			<section>
-				<h2>Le choix multicritères</h2>
 				<h3>La méthode naïve</h3>
 				<ul>
 					<li>Pour chaque candidat, on fait la somme de ses valeurs, multipliées par les poids des critères</li>
@@ -42,14 +59,81 @@
 					<li>Problème 2 : phénomène de compensation entre critères</li>
 				</ul>
 			</section>
-			<!--  -->
 			<section>
-				<h2>Le choix multicritères</h2>
-				<h3>La méthode Electre</h3>
+				<h3>La méthode naïve</h3>
+				<table>
+						<th>Nombre de coeurs</th>
+						<th>Fréquence GHz</th>
+						<th>Espace disque SSD Go</th>
+						<th>Espace disque HDD Go</th>
+						<tr>
+							<td>4</td>
+							<td>3.5</td>
+							<td>128</td>
+							<td>3000</td>
+						</tr>
+						<tr>
+							<td>8</td>
+							<td>3</td>
+							<td>256</td>
+							<td>2000</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>3</td>
+							<td>0</td>
+							<td>750</td>
+						</tr>
+					</table>
 			</section>
 			<!--  -->
 			<section>
+				<h3>La méthode Electre I</h3>
+				<ul>
+					<li>Pour chaque candidat, on compare chacun de ses critères avec les critères corespondants des autres candidats</li>
+					<li>2 matrices : Concordance et Discordance</li>
+					<li>Définition des relations de surclassment par les seuils de concordance et discordance</li>
+				</ul>
+			</section>
+			<!-- -->
+			<section>
+				<h3>La méthode Electre I</h3>
+				<table>
+						<th>Nombre de coeurs</th>
+						<th>Fréquence GHz</th>
+						<th>Espace disque SSD Go</th>
+						<th>Espace disque HDD Go</th>
+						<tr>
+							<td>4</td>
+							<td>3.5</td>
+							<td>128</td>
+							<td>3000</td>
+						</tr>
+						<tr>
+							<td>8</td>
+							<td>3</td>
+							<td>256</td>
+							<td>2000</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>3</td>
+							<td>0</td>
+							<td>750</td>
+						</tr>
+					</table>
+			</section>
+			<!--  -->
+			<section>
+				<h3>Les méthodes Electre III et TRI</h3>
+				<ul>
+					<li>Avantages sur Electre I : les <i>surclassement flou</i> et la préférence faible</li>
+				</ul>
+			</section>
+			<section>
 				<h2>Notre projet</h2>
+			</section>
+			<section>
 				<h3>Choix des technologies</h3>
 			</section>
 			<section>
@@ -75,10 +159,13 @@
 				</ul>
 				<img src="images/client-serveur.png">
 			</section>
-			<!--  -->
 			<section>
-				<h2>Notre projet</h2>
-				<h3>Réalisation</h3>
+				<h3>Problèmes rencontrés</h3>
+				<ul>
+					<li>Tableau dynamique</li>
+					<li>Poids négatifs</li>
+					<li>Trac & SVN</li>
+				</ul>
 			</section>
 			<section>
 				<h3>Répartition des tâches</h3>
@@ -91,18 +178,18 @@
 					<th>Loïc</th>
 					<tr>
 						<td>Serveur PHP</td>
-						<td>-</td>
-						<td>-</td>
-						<td>Traduction du script electre 1</td>
+						<td>Recherches</td>
+						<td>Import/export projet</td>
+						<td>Script Electre I</td>
 						<td>Interface graphique</td>
-						<td>Import/Export CSV</td>
+						<td>Import/export CSV</td>
 					</tr>
 					<tr>
 						<td>Requêtes ajax</td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-						<td>Gestion des critères/colonnes</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Gestion critères/colonnes</td>
 						<td>Aide</td>
 					</tr>
 				</table>
@@ -112,12 +199,6 @@
 				<a href="gantt.html" target="_blank">Diagramme de Gantt</a>
 			</section>
 			<section>
-				<h3>Problèmes rencontrés</h3>
-				<ul>
-					<li>Tableau dynamique</li>
-				</ul>
-			</section>
-			<section>
 				<h3>Etat d'avancement</h3>
 				<ul>
 					<li>Chargement de la page Web client depuis le serveur</li>
@@ -125,7 +206,7 @@
 					<li>Création de critères simples et spéciaux</li>
 					<li>Ajout, modification et suppression de lignes</li>
 					<li>Export des données en format CSV</li>
-					<li>Traitement des données par le serveur pour la méthode Electre I</li>
+					<li>Application de la méthode Electre I</li>
 					<li>Affichage des résultats retournés par le serveur</li>
 				</ul>
 			</section>
