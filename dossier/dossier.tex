@@ -1,0 +1,144 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\title{Aide à la Décision Multicritères \\ Rapport de projet}
+\author{\\\\ Tristan DANIEL, Adrien ERCKSEN, Pierre FERNANDEZ,\\* Tanguy MAZE, Quentin MAZOUA, Loïc REDON \\\\ Encadrant : Pierre NERZIC \\\\\\\\\\\\\\\\ IUT Lannion}
+
+\begin{document}
+\maketitle
+
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{La décision multicritères}
+
+\subsection{Principes}
+
+\subsection{Méthode naïve}
+
+Le score d'un candidat est calculé de la manière suivante avec cette méthode :
+\[\mbox{score }i\footnote{Candidat dont le score est calculé}=\sum_{i}valeur*poids\]
+
+Problèmes:
+\begin{itemize}
+   \item si les poids ne sont pas très bien répartis
+   \item s'il existe des anomalies $\rightarrow$ effets de compensation entre criteres
+\end{itemize}
+
+Exemple :
+\begin{table}[!ht]
+\begin{tabular}{|c||c|c|c|c}
+  \hline
+  \hphantom & Coeurs & Fréquence & Espace SSD &  Espace HDD \\
+  \hline
+  Ordinateur 1 & 4 & 3.5 & 128 & 3000 \\
+  Ordinateur 2 & 8 & 3 & 256 &	2000 \\
+  Ordinateur 3 & 2 & 3 & 0 & 750 \\
+  \hline
+\end{tabular}
+\caption{Liste de candidats, ici des ordinateurs}
+\end{table}
+
+
+\subsection{Méthodes Electre}
+
+\newpage
+
+\section{Projet}
+
+\subsection{Architecture}
+
+Le projet à réaliser est une application qui doit permettre à un utilisateur n'ayant pas connaissance des méthodes citées plus haut de réaliser sa propre comparaison. Cette application doit être composée d'un logiciel client ainsi que d'un moteur de calcul indépendant.
+
+\subsubsection{Client}
+
+\paragraph{Projets} Le logiciel client fonctionne sur la base de \textit{projets}, qui représentent des instances de l'application. L'utilisateur peut ainsi créer un projet, l'enregistrer sous forme de fichier sur son ordinateur, l'ouvrir depuis un fichier ou laisser l'application se charger de l'enregistrer automatiquement dans le navigateur.
+
+\paragraph{Critères} Le logiciel doit permettre à l'utilisateur de définir ses propres critères de classement. Il existe deux types de critères : les critères simples dont la valeur est numérique, et les critères spéciaux dont la valeur est choisie dans une liste prédéfinie. Lorsque l'utilisateur créé un critère, une colonne est ajoutée dans le tableau des candidats.
+
+\paragraph{Candidats} L'utilisateur peut ensuite saisir la liste des candidats, avec une valeur pour chaque critère, puis soumettre les données au moteur de calcul.
+
+\subsubsection{Moteur de calcul}
+
+Le moteur de calcul est appelé par le logiciel client afin d'appliquer la méthode Electre. Il doit cependant rester autonome et pouvoir être appelé en ligne de commande. De ce fait, il peut être considéré comme une application \textit{serveur}. Par commodité, cette application serveur est également chargée de transmettre la page web client au navigateur de l'utilisateur.
+
+\newpage
+
+\subsection{Choix des technologies}
+
+\subsubsection{Client}
+
+Nous avons choisi de réaliser l'interface client sous forme de page web, afin de ne pas nécessiter d'installation sur l'ordinateur de l'utilisateur. De plus, les langages Web permettent de réaliser des interfaces graphiques très personnalisées. Nous avons donc opté pour les langages HTML, CSS et JavaScript.
+
+\paragraph{Base} Le framework Bootstrap fournit tous les composants de base et de mise en page nécéssaires à la création de l'application. Il permet de créer des pages web \textit{responsive} et esthétiques rapidement. 
+
+\paragraph{Saisie des candidats} Afin de permettre aux utilisateurs de saisir la liste des candidats, l'application doit contenir un tableau dans lequel il est possible d'ajouter, modifier et supprimer des lignes et des colonnes. Les tableaux HTML de base ne permettent pas cela, il faut donc avoir recours à une librairie JavaScript tierce. Malgré un large choix, il a été difficile de trouver un système existant répondant à nos critères. Le plugin jsGrid pour jQuery est la solution qui se rapproche le plus de nos besoins.
+
+\subsubsection{Serveur}
+
+La partie serveur doit être capable d'interagir avec la page web client. Le seul langage permettant cela que nous connaissions était PHP, et nous l'avons donc choisi. PHP convient parfaitement car il comporte de nombreuses fonctionnalités de traitement de données, facilitant ainsi la programmation des algorithmes Electre.
+
+\subsubsection{Communication client - serveur}
+
+\paragraph{Protocole} La voie de communication la plus simple d'utilisation avec les langages choisis est le protocole HTTP. Celui-ci contient lui-même plusieurs méthodes, dont GET et POST qui permettent de transférer des informations. La méthode POST a été choisie car elle permet de transférer de plus grandes quantités de données que la méthode GET.
+
+\paragraph{Format} Afin de pouvoir communiquer, le client et le serveur doivent échanger des données dans un format commun. Le plus simple d'utilisation avec le client est le JSON, un format créé dans le but de représenter un objet JavaScript sous forme de chaîne de caractères. PHP est également capable d'interpréter ce format à l'aide de fonctions des librairies standards. 
+
+\newpage
+
+\subsection{Implémentation}
+
+\subsubsection{Problèmes rencontrés}
+
+La principale source de problèmes a été le tableau dynamique. Il est difficile de trouver une solution existante qui réponde à tous les critères que nous nous étions fixés. Réaliser ce système nous-mêmes aurait été plus rapide et plus flexible.
+
+\subsubsection{Etat d'avancement}
+
+Voici les fonctionnalités qui ont pour l'instant été implémentées :
+
+\begin{itemize}
+\item Chargement de la page web client depuis le serveur
+\item Création, sauvegarde et suppression de projets
+\item Création de critères simples et spéciaux
+\item Ajout, modification et suppression de lignes
+\item Export des données en format CSV
+\item Traitement des données par le serveur pour la méthode Electre I
+\item Affichage des résultats retournés par le serveur
+\end{itemize}
+
+\subsubsection{Améliorations possibles}
+
+\paragraph{Fonctionnalités} Notre implémentation ne supporte actuellement que la méthode Electre I. Il serait intéressant d'implémenter Electre III et Tri car les résultats sont meilleurs.
+
+\paragraph{Ergonomie} Les résultats sont actuellement retournés à l'utilisateur sous forme de numéros de candidats. Il faudrait les afficher dans un tableau séparé pour une meilleur lisibilité et éviter toute confusion.
+
+\paragraph{Performances} La sauvegarde en particulier peut engendrer des problèmes de performance. Actuellement, à chaque modification de critère ou des donnée, une sauvegarde complète est effectuée. Cela ne pose pas de problèmes sur des petits volumes, mais si l'utilisateur travaille sur de gros fichiers, il pourrait subir des ralentissement.
+
+\paragraph{Interface} L'interface client n'est pour le moment pas \textit{responsive}. Même s'il est peu probable qu'un utilisateur saisisse des grandes quantités de données depuis un terminal mobile, c'est un cas qu'il faut envisager.
+
+\subsubsection{Résultat}
+
+Le code source final est hébergé à l'adresse \url{https://github.com/MazouaIndustries/dms}, et une démonstration a été mise en ligne sur \url{http://dms.13h37.tk}.
+
+\newpage
+
+\subsection{Organisation}
+
+\subsubsection{Répartition des tâches}
+
+GANT ICI
+
+\subsubsection{Méthode de développement}
+
+Dire qu'on a utilisé Github toussa toussa
+
+\end{document}
