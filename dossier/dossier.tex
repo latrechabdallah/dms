@@ -7,12 +7,26 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage[colorinlistoftodos]{todonotes}
+\usepackage[parfill]{parskip}
 
-\title{Aide à la Décision Multicritères \\ Rapport de projet}
-\author{\\\\ Tristan DANIEL, Adrien ERCKSEN, Pierre FERNANDEZ,\\* Tanguy MAZE, Quentin MAZOUA, Loïc REDON \\\\ Encadrant : Pierre NERZIC \\\\\\\\\\\\\\\\ IUT Lannion}
+\title{Aide à la décision multicritères \\ Rapport de projet}
+\author{\\\\ Tristan DANIEL, Adrien ERCKSEN, Pierre FERNANDEZ,\\ Tanguy MAZE, Quentin MAZOUA, Loïc REDON \\\\ Encadrant : Pierre NERZIC \\\\\\\\\\\\\\\\ IUT de Lannion}
 
 \begin{document}
 \maketitle
+
+\newpage
+
+\subsection*{Introduction}
+
+\paragraph{Contexte}
+Nous sommes six étudiants en seconde année de DUT informatique à l'IUT de Lannion. Dans le cadre de notre formation, nous avons été amenés à réaliser un projet. Celui-ci n'a pas pour unique but de programmer ; tous les aspects et acteurs de la conception d'une application sont représentés. Ainsi, plutôt que de se limiter à appliquer les consignes et à en tirer une application générique, nous avons été amenés à effectuer des recherches, expérimenter et prendre des décisions concernant les outils à utiliser.
+
+\paragraph{Le choix du sujet}
+Deux choix s'offraient à nous : sélectionner un sujet parmi ceux proposés ou en proposer un personnalisé. Nous avons étudié les sujets mis à notre disposition, et notre intérêt s'est porté sur celui concernant l'aide à la décision multicritère. Ce choix a été motivé par plusieurs raisons : premièrement, le fait que celui-ci concerne les méthodes d'aide à la décision ; il nous a paru intéressant d'en apprendre un peu plus sur celles-ci. Ces méthodes peuvent s'avérer utiles dans de nombreuses situations du quotidien. Deuxièmement, le fait que l'application elle-même ne concerne pas l'informatique pure : le travail de recherche à effectuer, les formules mathématiques et algorithmes de comparaison mis en oeuvre en employant ces méthodes.
+
+\paragraph{But du projet}
+Le but est de produire une application employant les méthodes ELECTRE qui puisse fournir une aide à la décision dans le cadre de choix parmis plusieurs options aux critères communs et multiples. Nous décrirons dans ce document certaines des méthodes existantes, leurs avantages et leurs inconvénients.
 
 \newpage
 \tableofcontents
@@ -23,22 +37,28 @@
 
 \subsection{Principes}
 
+L'aide à la décision est une approche scientifique permettant à l'utilisateur d'effectuer le meilleur choix possible. L'utilisation d'algorithmes de calcul assure l'obtention rapide de résultats de tri et corrects sans les erreurs humaines possibles dans le cas de classements à la main ou par simple jugement.
+
+\paragraph{Candidat} On appelle \textit{candidat}, \textit{solution} ou \textit{action}, un élément que l'utilisateur souhaite classer.
+
+\paragraph{Critère} Un \textit{critère} est, comme son nom l'indique, une propriété partagée par tous les candidats sur laquelle ils seront classés. Chaque candidat doit attribuer une valeur numérique à chaque critère. Un critère possède un \textit{poids} qui détermine son importance. Un poids négatif peut être utilisé si l'on veut minimiser un critère tel qu'un prix.
+
+\par
+Les algorithmes de tri fonctionnent selon un principe commun : pour chaque candidat, on calcule un ou plusieurs scores qui servent ensuite à classer les candidats du plus au intéressant.
+
+\newpage
+
 \subsection{Méthode naïve}
 
-Le score d'un candidat est calculé de la manière suivante avec cette méthode :
-\[\mbox{score }i\footnote{Candidat dont le score est calculé}=\sum_{i}valeur*poids\]
+La méthode naïve (ou méthode classique) de tri multicritères consiste à attribuer un score total à une solution qui est la somme des valeurs de chaque critère. Soit \(C\) un candidat, \(C_i\) la valeur pour le critère \(i\), \(p_i\) le poids du critère \(i\) et \(n\) le nombre de critères ; le score d'un candidat est calculé par somme pondérée :
+\[\mbox{score}_{C}=\sum_{i=1}^nC_i*poids_i\]
 
-Problèmes:
-\begin{itemize}
-   \item si les poids ne sont pas très bien répartis
-   \item s'il existe des anomalies $\rightarrow$ effets de compensation entre criteres
-\end{itemize}
+Cette méthode pose cependant plusieurs problèmes, dont le plus gênant est l'effet de compensation. En effet, il suffit qu'un candidat ait des scores excellents dans assez de critères à bas coefficients pour compenser un mauvais score dans un critère important.
 
-Exemple :
 \begin{table}[!ht]
-\begin{tabular}{|c||c|c|c|c}
+\begin{tabular}{|c|c|c|c|c|}
   \hline
-  \hphantom & Coeurs & Fréquence & Espace SSD &  Espace HDD \\
+  \hphantom & Coeurs CPU & Fréquence CPU & Espace SSD &  Espace HDD \\
   \hline
   Ordinateur 1 & 4 & 3.5 & 128 & 3000 \\
   Ordinateur 2 & 8 & 3 & 256 &	2000 \\
@@ -48,8 +68,25 @@ Exemple :
 \caption{Liste de candidats, ici des ordinateurs}
 \end{table}
 
+\newpage
 
-\subsection{Méthodes Electre}
+\subsection{Méthodes ELECTRE}
+
+Les méthodes ELECTRE sont des méthodes d'aide à la décision multi-critères dont la première (ELECTRE I) a été imaginée par Bernard ROY dans les années 1960. Son but était de représenter les choix de la façon la plus réaliste possible (d'où ELECTRE : ELimination Et Choix Traduisant la REalité) afin d'aider les entreprises dans la prise de décision. Depuis, de nombreuses méthodes dérivées sont apparues avec chacune leurs avantages (ELECTRE II, ELECTRE III, ELECTRE TRI, etc.). Dans ce projet, nous utilisons la méthode ELECTRE I.
+
+\subsubsection{Méthode ELECTRE I}
+
+Première méthode ELECTRE, elle reprend les poids de critères de la méthode classique. Cependant, toute ressemblance entre les deux méthodes s'arrête ici car, contrairement à la méthode pondérée, la méthode ELECTRE va comparer les performances de chaque candidats entre eux pour déterminer deux coefficients : celui de concordance et celui de discordance. Ceux-ci serviront à déterminer le surclassement (supériorité) d'un candidat par rapport à un autre.
+
+\paragraph{Concordance}
+Soient deux solutions \(a\) et \(b\) ; \(a\) est concordante à \(b\) si la somme des poids des critères pour lesquels la performance de \(a\) est supérieure ou égale à celle de \(b\) sur la somme totale des poids des critères est inférieure à un seuil de concordance défini par l'utilisateur. Dans ce cas, la solution \(a\) est considérée comme équivalente à \(b\) et ne la surclasse pas.
+
+\paragraph{Discordance}
+Soient deux solutions \(a\) et \(b\), \(a\) est discordante à \(b\) si la plus grande différence de performance entre tous les critères de \(a\) et \(b\) sur la plus grande différence de performance observée entre toutes les solutions est supérieure à un seuil de discordance défini par l'utilisateur. Dans ce cas, la solution \(a\) est considérée comme totalement différente de \(b\), si bien qu'aucune ne surclasse l'autre.
+
+\subsubsection{Méthodes ELECTRE III et ELECTRE TRI}
+
+TODO
 
 \newpage
 
@@ -63,13 +100,13 @@ Le projet à réaliser est une application qui doit permettre à un utilisateur 
 
 \paragraph{Projets} Le logiciel client fonctionne sur la base de \textit{projets}, qui représentent des instances de l'application. L'utilisateur peut ainsi créer un projet, l'enregistrer sous forme de fichier sur son ordinateur, l'ouvrir depuis un fichier ou laisser l'application se charger de l'enregistrer automatiquement dans le navigateur.
 
-\paragraph{Critères} Le logiciel doit permettre à l'utilisateur de définir ses propres critères de classement. Il existe deux types de critères : les critères simples dont la valeur est numérique, et les critères spéciaux dont la valeur est choisie dans une liste prédéfinie. Lorsque l'utilisateur créé un critère, une colonne est ajoutée dans le tableau des candidats.
+\paragraph{Critères} Le logiciel doit permettre à l'utilisateur de définir ses propres critères de classement. Il existe deux types de critères : les critères simples dont la valeur est numérique, et les critères spéciaux, non-numériques, dont la valeur est choisie dans une liste prédéfinie (par exemple, un utilisateur veut entrer une couleur comme critère spécial, il créera ce critère en sélectionant les couleurs existantes et leur attribue une valeur : 1 pour le bleu et 2 pour le vert par exemple ; le vert sera donc préféré au bleu). Lorsque l'utilisateur créé un critère, une colonne est ajoutée dans le tableau des candidats. 
 
 \paragraph{Candidats} L'utilisateur peut ensuite saisir la liste des candidats, avec une valeur pour chaque critère, puis soumettre les données au moteur de calcul.
 
 \subsubsection{Moteur de calcul}
 
-Le moteur de calcul est appelé par le logiciel client afin d'appliquer la méthode Electre. Il doit cependant rester autonome et pouvoir être appelé en ligne de commande. De ce fait, il peut être considéré comme une application \textit{serveur}. Par commodité, cette application serveur est également chargée de transmettre la page web client au navigateur de l'utilisateur.
+Le moteur de calcul est appelé par le logiciel client afin d'appliquer la méthode ELECTRE. Il doit cependant rester autonome et pouvoir être appelé en ligne de commande. De ce fait, il peut être considéré comme une application \textit{serveur}. Par commodité, cette application serveur est également chargée de transmettre la page web client au navigateur de l'utilisateur.
 
 \newpage
 
@@ -85,7 +122,7 @@ Nous avons choisi de réaliser l'interface client sous forme de page web, afin d
 
 \subsubsection{Serveur}
 
-La partie serveur doit être capable d'interagir avec la page web client. Le seul langage permettant cela que nous connaissions était PHP, et nous l'avons donc choisi. PHP convient parfaitement car il comporte de nombreuses fonctionnalités de traitement de données, facilitant ainsi la programmation des algorithmes Electre.
+La partie serveur doit être capable d'interagir avec la page web client. Le seul langage permettant cela que nous connaissions était PHP, et nous l'avons donc choisi. PHP convient parfaitement car il comporte de nombreuses fonctionnalités de traitement de données, facilitant ainsi la programmation des algorithmes ELECTRE.
 
 \subsubsection{Communication client - serveur}
 
@@ -111,13 +148,13 @@ Voici les fonctionnalités qui ont pour l'instant été implémentées :
 \item Création de critères simples et spéciaux
 \item Ajout, modification et suppression de lignes
 \item Export des données en format CSV
-\item Traitement des données par le serveur pour la méthode Electre I
+\item Traitement des données par le serveur pour la méthode ELECTRE I
 \item Affichage des résultats retournés par le serveur
 \end{itemize}
 
 \subsubsection{Améliorations possibles}
 
-\paragraph{Fonctionnalités} Notre implémentation ne supporte actuellement que la méthode Electre I. Il serait intéressant d'implémenter Electre III et Tri car les résultats sont meilleurs.
+\paragraph{Fonctionnalités} Notre implémentation ne supporte actuellement que la méthode ELECTRE I. Il serait intéressant d'implémenter ELECTRE III et Tri car les résultats sont meilleurs.
 
 \paragraph{Ergonomie} Les résultats sont actuellement retournés à l'utilisateur sous forme de numéros de candidats. Il faudrait les afficher dans un tableau séparé pour une meilleur lisibilité et éviter toute confusion.
 
@@ -135,10 +172,19 @@ Le code source final est hébergé à l'adresse \url{https://github.com/MazouaIn
 
 \subsubsection{Répartition des tâches}
 
-GANT ICI
+\begin{itemize}
+\item \textbf{Quentin} : interface graphique, gestion des critères et colonnes
+\item \textbf{Tristan} : serveur PHP, requêtes Ajax
+\item \textbf{Pierre} : import - export de projets
+\item \textbf{Tanguy} : algorithme ELECTRE I
+\item \textbf{Loïc} : import - export des données au format CSV, aide utilisateur
+\end{itemize}
+
+Le gantt prévisionnel est disponible à l'adresse
+\url{http://dms.13h37.tk/gantt.html}.
 
 \subsubsection{Méthode de développement}
 
-Dire qu'on a utilisé Github toussa toussa
+Tout au long du processus de développement de l'application, nous avons utilisé la plateforme GitHub pour versionner notre code. Ainsi, tout ajout de fonctionnalité ou correction de bug pouvait être partagé facilement et rapidement avec les autres membres du groupe.
 
 \end{document}
