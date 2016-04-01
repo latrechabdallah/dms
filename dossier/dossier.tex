@@ -23,7 +23,7 @@
 Nous sommes six étudiants en seconde année de DUT informatique à l'IUT de Lannion. Dans le cadre de notre formation, nous avons été amenés à réaliser un projet. Celui-ci n'a pas pour unique but de programmer ; tous les aspects et acteurs de la conception d'une application sont représentés. Ainsi, plutôt que de se limiter à appliquer les consignes et à en tirer une application générique, nous avons été amenés à effectuer des recherches, expérimenter et prendre des décisions concernant les outils à utiliser.
 
 \paragraph{Le choix du sujet}
-Deux choix s'offraient à nous : sélectionner un sujet parmi ceux proposés ou en proposer un personnalisé. Nous avons étudié les sujets mis à notre disposition, et notre intérêt s'est porté sur celui concernant l'aide à la décision multicritère. Ce choix a été motivé par plusieurs raisons : premièrement, le fait que celui-ci concerne les méthodes d'aide à la décision ; il nous a paru intéressant d'en apprendre un peu plus sur celles-ci. Ces méthodes peuvent s'avérer utiles dans de nombreuses situations du quotidien. Deuxièmement, le fait que l'application elle-même ne concerne pas l'informatique pure : le travail de recherche à effectuer, les formules mathématiques et algorithmes de comparaison mis en oeuvre en employant ces méthodes.
+Deux choix s'offraient à nous : sélectionner un sujet parmi ceux proposés ou en proposer un personnalisé. Nous avons étudié les sujets mis à notre disposition, et notre intérêt s'est porté sur celui concernant l'aide à la décision multicritères. Ce choix a été motivé par plusieurs raisons. Premièrement, le fait que celui-ci concerne les méthodes d'aide à la décision ; il nous a paru intéressant d'en apprendre un peu plus sur celles-ci. Ces méthodes peuvent s'avérer utiles dans de nombreuses situations du quotidien. Deuxièmement, le fait que l'application elle-même ne concerne pas l'informatique pure : le travail de recherche à effectuer et les formules mathématiques et algorithmes de comparaison mis en oeuvre par ces méthodes constituent un socle théorique au projet.
 
 \paragraph{But du projet}
 Le but est de produire une application employant les méthodes ELECTRE qui puisse fournir une aide à la décision dans le cadre de choix parmis plusieurs options aux critères communs et multiples. Nous décrirons dans ce document certaines des méthodes existantes, leurs avantages et leurs inconvénients.
@@ -37,14 +37,14 @@ Le but est de produire une application employant les méthodes ELECTRE qui puiss
 
 \subsection{Principes}
 
-L'aide à la décision est une approche scientifique permettant à l'utilisateur d'effectuer le meilleur choix possible. L'utilisation d'algorithmes de calcul assure l'obtention rapide de résultats de tri et corrects sans les erreurs humaines possibles dans le cas de classements à la main ou par simple jugement.
+L'aide à la décision est une approche scientifique permettant à l'utilisateur d'effectuer le meilleur choix possible lui correspondant. L'utilisation d'algorithmes de calcul assure l'obtention rapide de résultats de tri corrects sans les erreurs humaines possibles dans le cas de classements à la main ou par simple jugement.
 
 \paragraph{Candidat} On appelle \textit{candidat}, \textit{solution} ou \textit{action}, un élément que l'utilisateur souhaite classer.
 
 \paragraph{Critère} Un \textit{critère} est, comme son nom l'indique, une propriété partagée par tous les candidats sur laquelle ils seront classés. Chaque candidat doit attribuer une valeur numérique à chaque critère. Un critère possède un \textit{poids} qui détermine son importance. Un poids négatif peut être utilisé si l'on veut minimiser un critère tel qu'un prix.
 
 \par
-Les algorithmes de tri fonctionnent selon un principe commun : pour chaque candidat, on calcule un ou plusieurs scores qui servent ensuite à classer les candidats du plus au intéressant.
+Les algorithmes de tri fonctionnent selon un principe commun : pour chaque candidat, on calcule un ou plusieurs scores qui servent ensuite à classer les candidats du plus au moins intéressant ou par groupes rassemblant plusieurs candidats proches.
 
 \newpage
 
@@ -72,21 +72,17 @@ Cette méthode pose cependant plusieurs problèmes, dont le plus gênant est l'e
 
 \subsection{Méthodes ELECTRE}
 
-Les méthodes ELECTRE sont des méthodes d'aide à la décision multi-critères dont la première (ELECTRE I) a été imaginée par Bernard ROY dans les années 1960. Son but était de représenter les choix de la façon la plus réaliste possible (d'où ELECTRE : ELimination Et Choix Traduisant la REalité) afin d'aider les entreprises dans la prise de décision. Depuis, de nombreuses méthodes dérivées sont apparues avec chacune leurs avantages (ELECTRE II, ELECTRE III, ELECTRE TRI, etc.). Dans ce projet, nous utilisons la méthode ELECTRE I.
+Les méthodes ELECTRE sont des méthodes d'aide à la décision multicritères dont la première (ELECTRE I) a été imaginée par Bernard ROY dans les années 1960. Son but était de représenter les choix de la façon la plus réaliste possible (d'où ELECTRE : ELimination Et Choix Traduisant la REalité) afin d'aider les entreprises dans la prise de décision. Depuis, de nombreuses méthodes dérivées sont apparues avec chacune leurs avantages (ELECTRE II, ELECTRE III, ELECTRE TRI, etc.). Dans ce projet, nous nous intéresseront à la méthode ELECTRE I.
 
 \subsubsection{Méthode ELECTRE I}
 
-Première méthode ELECTRE, elle reprend les poids de critères de la méthode classique. Cependant, toute ressemblance entre les deux méthodes s'arrête ici car, contrairement à la méthode pondérée, la méthode ELECTRE va comparer les performances de chaque candidats entre eux pour déterminer deux coefficients : celui de concordance et celui de discordance. Ceux-ci serviront à déterminer le surclassement (supériorité) d'un candidat par rapport à un autre.
+Première méthode ELECTRE, elle reprend les poids de critères de la méthode classique. Cependant, toute ressemblance entre les deux méthodes s'arrête ici car, contrairement à la méthode pondérée, la méthode ELECTRE va comparer les performances de tous les candidats entre eux pour déterminer deux coefficients : celui de concordance et celui de discordance. Ceux-ci serviront à déterminer le surclassement (supériorité) d'un candidat par rapport à un autre.
 
 \paragraph{Concordance}
 Soient deux solutions \(a\) et \(b\) ; \(a\) est concordante à \(b\) si la somme des poids des critères pour lesquels la performance de \(a\) est supérieure ou égale à celle de \(b\) sur la somme totale des poids des critères est inférieure à un seuil de concordance défini par l'utilisateur. Dans ce cas, la solution \(a\) est considérée comme équivalente à \(b\) et ne la surclasse pas.
 
 \paragraph{Discordance}
 Soient deux solutions \(a\) et \(b\), \(a\) est discordante à \(b\) si la plus grande différence de performance entre tous les critères de \(a\) et \(b\) sur la plus grande différence de performance observée entre toutes les solutions est supérieure à un seuil de discordance défini par l'utilisateur. Dans ce cas, la solution \(a\) est considérée comme totalement différente de \(b\), si bien qu'aucune ne surclasse l'autre.
-
-\subsubsection{Méthodes ELECTRE III et ELECTRE TRI}
-
-TODO
 
 \newpage
 
@@ -100,7 +96,7 @@ Le projet à réaliser est une application qui doit permettre à un utilisateur 
 
 \paragraph{Projets} Le logiciel client fonctionne sur la base de \textit{projets}, qui représentent des instances de l'application. L'utilisateur peut ainsi créer un projet, l'enregistrer sous forme de fichier sur son ordinateur, l'ouvrir depuis un fichier ou laisser l'application se charger de l'enregistrer automatiquement dans le navigateur.
 
-\paragraph{Critères} Le logiciel doit permettre à l'utilisateur de définir ses propres critères de classement. Il existe deux types de critères : les critères simples dont la valeur est numérique, et les critères spéciaux, non-numériques, dont la valeur est choisie dans une liste prédéfinie (par exemple, un utilisateur veut entrer une couleur comme critère spécial, il créera ce critère en sélectionant les couleurs existantes et leur attribue une valeur : 1 pour le bleu et 2 pour le vert par exemple ; le vert sera donc préféré au bleu). Lorsque l'utilisateur créé un critère, une colonne est ajoutée dans le tableau des candidats. 
+\paragraph{Critères} Le logiciel doit permettre à l'utilisateur de définir ses propres critères de classement. Il existe deux types de critères : les critères simples dont la valeur est numérique, et les critères spéciaux, non-numériques, dont la valeur est choisie dans une liste prédéfinie (par exemple, un utilisateur veut entrer une couleur comme critère spécial, il créera ce critère en sélectionant les couleurs existantes et leur attribuera une valeur : 1 pour le bleu et 2 pour le vert par exemple ; le vert sera donc préféré au bleu). Lorsque l'utilisateur crée un critère, une colonne est ajoutée dans le tableau des candidats. 
 
 \paragraph{Candidats} L'utilisateur peut ensuite saisir la liste des candidats, avec une valeur pour chaque critère, puis soumettre les données au moteur de calcul.
 
@@ -156,9 +152,9 @@ Voici les fonctionnalités qui ont pour l'instant été implémentées :
 
 \paragraph{Fonctionnalités} Notre implémentation ne supporte actuellement que la méthode ELECTRE I. Il serait intéressant d'implémenter ELECTRE III et Tri car les résultats sont meilleurs.
 
-\paragraph{Ergonomie} Les résultats sont actuellement retournés à l'utilisateur sous forme de numéros de candidats. Il faudrait les afficher dans un tableau séparé pour une meilleur lisibilité et éviter toute confusion.
+\paragraph{Ergonomie} Les résultats sont actuellement retournés à l'utilisateur sous forme de numéros de candidats. Il faudrait les afficher dans un tableau séparé pour une meilleure lisibilité et éviter toute confusion.
 
-\paragraph{Performances} La sauvegarde en particulier peut engendrer des problèmes de performance. Actuellement, à chaque modification de critère ou des donnée, une sauvegarde complète est effectuée. Cela ne pose pas de problèmes sur des petits volumes, mais si l'utilisateur travaille sur de gros fichiers, il pourrait subir des ralentissement.
+\paragraph{Performances} La sauvegarde en particulier peut engendrer des problèmes de performance. Actuellement, à chaque modification de critère ou de donnée, une sauvegarde complète est effectuée. Cela ne pose pas de problèmes sur des petits volumes, mais si l'utilisateur travaille sur de gros fichiers, il pourrait subir des ralentissements.
 
 \paragraph{Interface} L'interface client n'est pour le moment pas \textit{responsive}. Même s'il est peu probable qu'un utilisateur saisisse des grandes quantités de données depuis un terminal mobile, c'est un cas qu'il faut envisager.
 
@@ -175,6 +171,7 @@ Le code source final est hébergé à l'adresse \url{https://github.com/MazouaIn
 \begin{itemize}
 \item \textbf{Quentin} : interface graphique, gestion des critères et colonnes
 \item \textbf{Tristan} : serveur PHP, requêtes Ajax
+\item \textbf{Adrien} : Recherches (JSON, tableaux dynamiques)
 \item \textbf{Pierre} : import - export de projets
 \item \textbf{Tanguy} : algorithme ELECTRE I
 \item \textbf{Loïc} : import - export des données au format CSV, aide utilisateur
